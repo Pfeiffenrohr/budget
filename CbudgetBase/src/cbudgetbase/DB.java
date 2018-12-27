@@ -1288,7 +1288,7 @@ public class DB {
 					"kategorie = "+kategorie +"," +
 					"kor_id = "+ hash.get("neue_kor_id") +"," +
 					"cycle = "+ hash.get("cycle")+"," +
-					"planed = '"+ hash.get("planed")+
+					"planed = '"+ hash.get("planed")+ 
 					"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum >= to_date('"+datum+"', 'YYYY-MM-DD')";
 			whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum >=to_date('"+datum +"', 'YYYY-MM-DD')";
 			}
