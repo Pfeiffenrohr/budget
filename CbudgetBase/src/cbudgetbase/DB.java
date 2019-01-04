@@ -1054,18 +1054,18 @@ public class DB {
 			String stm_str ="";
 			if (schonEingetragen)
 			{
-			stm_str="select count(*) from transaktionen  where kor_id = "+kor_id+" and datum <= to_date('"+convDatum(datum)+"','YYYY-MM-DD')";
+			stm_str="select count(*) as anz from transaktionen  where kor_id = "+kor_id+" and datum <= to_date('"+convDatum(datum)+"','YYYY-MM-DD')";
 			}
 			else
 			{
-				stm_str="select count(*) from transaktionen  where kor_id = "+kor_id+" and datum > to_date('"+convDatum(datum)+"','YYYY-MM-DD')";
+				stm_str="select count(*) as anz from transaktionen  where kor_id = "+kor_id+" and datum > to_date('"+convDatum(datum)+"','YYYY-MM-DD')";
 				}	
 			if (debug) System.out.println(stm_str);
 			stmt = con
 					.prepareStatement(stm_str);
 			res = stmt.executeQuery();
 			while (res.next()) {
-				erg= new Integer (res.getInt("count(*)")).intValue();
+				erg= new Integer (res.getInt("anz")).intValue();
 				
 			}
 		} catch (SQLException e) {
