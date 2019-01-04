@@ -190,7 +190,7 @@ public class DBBatch extends DB {
 		try {
 
 			PreparedStatement stmt;
-			String stm= "insert into plan_aktuell values(null," 
+			String stm= "insert into plan_aktuell values(default," 
 				+ plan_id + ",'"
 				+ datum + "','"
 			    + zeit + "',"
