@@ -1289,8 +1289,8 @@ public class DB {
 					"kor_id = "+ hash.get("neue_kor_id") +"," +
 					"cycle = "+ hash.get("cycle")+"," +
 					"planed = '"+ hash.get("planed")+ 
-					"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum >= to_date('"+datum+"', 'YYYY-MM-DD')";
-			whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum >=to_date('"+datum +"', 'YYYY-MM-DD')";
+					"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum >= to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
+			whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum >=to_date('"+convDatum(datum) +"', 'YYYY-MM-DD')";
 			}
 			if (groesser==0)//einzeln
 			{
@@ -1304,8 +1304,8 @@ public class DB {
 				"kor_id = "+ hash.get("neue_kor_id") +"," +
 				"cycle = "+ hash.get("cycle")+"," +
 				"planed = '"+ hash.get("planed")+
-				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum = to_date('"+datum.replaceAll("-","")+"', 'YYYY-MM-DD')";
-				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum =to_date('"+datum.replaceAll("-","")+"', 'YYYY-MM-DD')";
+				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum = to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
+				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum =to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
 			}
 			if (groesser==2)//zuvor vorher false
 			{
@@ -1319,8 +1319,8 @@ public class DB {
 				"kor_id = "+ hash.get("neue_kor_id") +"," +
 				"cycle = "+ hash.get("cycle")+"," +
 				"planed = '"+ hash.get("planed")+
-				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum <=to_date('"+datum.replaceAll("-","")+"', 'YYYY-MM-DD')";
-				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum <=to_date('"+datum.replaceAll("-","")+"', 'YYYY-MM-DD')";
+				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum <=to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
+				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum <=to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
 			}	
 			if (debug) System.out.println(str);
 			PreparedStatement stmt;
