@@ -234,11 +234,11 @@ import javax.servlet.http.HttpSession;
 						}
 						if(operator.equals("eq"))
 						{
-						command=command+"( "+db.getRuleCommand(new Integer(title)).replaceAll("\\'", "\\\\'")+" ) ";
+						command=command+"( "+db.getRuleCommand(new Integer(title)).replaceAll("'", "''")+" ) ";
 						}
 						else
 						{
-							command=command+" NOT( "+db.getRuleCommand(new Integer(title)).replaceAll("\\'", "\\\\'")+" ) ";
+							command=command+" NOT( "+db.getRuleCommand(new Integer(title)).replaceAll("'", "''")+" ) ";
 						}
 						count++;
 					}
