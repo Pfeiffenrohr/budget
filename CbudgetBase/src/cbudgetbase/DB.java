@@ -156,7 +156,7 @@ public class DB {
 			PreparedStatement stmt;
 			// ResultSet res = null;
 			//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
-			String stm= "insert into konten values(null,'" 
+			String stm= "insert into konten values(default,'" 
 				+ name + "','"
 				+ versteckt + "',0,1000,'" + beschreibung +"','"+ mode + "')";
 			stmt = con.prepareStatement(stm);
