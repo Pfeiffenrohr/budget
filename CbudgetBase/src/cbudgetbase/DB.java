@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=true;
+    protected boolean debug=false;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -980,7 +980,7 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm=("select id, name, konto_id, wert, datum, partner, beschreibung, kategorie, kor_id, cycle,planed from transaktionen  where kor_id = "+kor_id+" and datum <= to_date('"+convDatum(datum)+"', 'DD-MM-YYYY')"+" order by datum desc limit 1");
+			String str_stm=("select id, name, konto_id, wert, datum, partner, beschreibung, kategorie, kor_id, cycle,planed from transaktionen  where kor_id = "+kor_id+" and datum <= to_date('"+convDatum(datum)+"', 'yyyy-MM-DD')"+" order by datum desc limit 1");
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
@@ -1201,7 +1201,7 @@ public class DB {
 			String str_stm="select id from transaktionen where " +
 					" name = '"+ trans.get("name")+"' and " +
 					" konto_id = "+ trans.get("konto") + " and "+
-					" datum = " + convDatum(((String)(trans.get("datum")))) + " and "+
+					" datum = to_date('" + convDatum(((String)(trans.get("datum")))) + "','YYYY-MM-DD') and "+
 					" kategorie = "+ trans.get("kategorie")+ " and "+
 					" kor_id =  "+ trans.get("kor_id");
 			if (debug) System.out.println(str_stm);

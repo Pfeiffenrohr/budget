@@ -18,7 +18,7 @@ public class UpdateZyklischeTransaktion {
 		//Überprüfe, ob zu überprüfen ist
 		Calendar cal= Calendar.getInstance();
 		Calendar cal_end= Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Vector planed =new Vector();
 		if (db.getPlanedTransaktionen(formatter.format(cal.getTime()),planed))
 		{
