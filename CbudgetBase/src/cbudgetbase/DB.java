@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=false;
+    protected boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -878,7 +878,7 @@ public class DB {
 		try {
 			
 			PreparedStatement stmt;
-			String stm= "insert into transaktionen values(,'" 
+			String stm= "insert into transaktionen values(default,'" 
 				+ hash.get("name") + "',"
 				+ hash.get("konto") + ","
 				+ hash.get("wert")  + ",'"
@@ -925,7 +925,7 @@ public class DB {
 			else
 			{
 				stm= "update reccuring set " +
-						"enddatum= " + ((String)hash.get("end_datum")).replaceAll("-", "") +
+						"enddatum= to_date('" + (String)hash.get("end_datum") +"','YYYY-MM-DD')"+
 						",type = '"+ hash.get("wiederholung") + 
 						"',name = '"+ hash.get("name") +
 						"',noend = '"+ hash.get("noend") +
