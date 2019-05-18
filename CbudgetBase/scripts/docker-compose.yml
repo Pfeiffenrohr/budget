@@ -1,0 +1,19 @@
+myapp-web:  
+  build: ./web
+  ports:
+    - "8087:8080"
+  links:
+    - myapp-db
+
+myapp-db:  
+    image: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    expose:
+      - "5431"
+    environment:
+      POSTGRES_USER: budget
+      POSTGRES_PASSWORD: budget
+      POSTGRES_DB: budget

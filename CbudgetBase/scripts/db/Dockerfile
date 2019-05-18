@@ -1,0 +1,6 @@
+FROM postgres:9.4  
+MAINTAINER lpradel
+
+ENV POSTGRES_USER budget
+ENV POSTGRES_PASSWORD budget
+ENV POSTGRES_DB budget
