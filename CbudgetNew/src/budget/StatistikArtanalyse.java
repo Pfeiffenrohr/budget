@@ -254,11 +254,10 @@ public class StatistikArtanalyse extends javax.servlet.http.HttpServlet {
 						aktwertVerbindlichkeit+=(Double) ((Hashtable) trans.elementAt(i))
 								.get("wert");
 					}
-					
-					hash_chart.put("Geldkonto", aktwertGeldkonto);
-					hash_chart.put("Geldanlage", aktwertGeldanlage + aktwertGeldkonto);
-					hash_chart.put("Verbindlichkeit", aktwertVerbindlichkeit+aktwertSachanlage + aktwertGeldanlage + aktwertGeldkonto);
-					hash_chart.put("Sachanlage", aktwertSachanlage +aktwertVerbindlichkeit+ aktwertGeldanlage + aktwertGeldkonto);
+					hash_chart.put("Verbindlichkeit",aktwertVerbindlichkeit);
+					hash_chart.put("Geldkonto", aktwertVerbindlichkeit+aktwertGeldkonto);
+					hash_chart.put("Geldanlage", aktwertVerbindlichkeit + aktwertGeldanlage + aktwertGeldkonto);
+					hash_chart.put("Sachanlage", +aktwertVerbindlichkeit + aktwertSachanlage + aktwertGeldanlage + aktwertGeldkonto);
 					
 										// System.out.println("Aktwert = "+aktwert
 					chartvec.addElement(hash_chart);
