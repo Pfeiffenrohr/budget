@@ -161,6 +161,7 @@ public class GenerateChart extends HttpServlet {
         TimeSeries s1 = new TimeSeries("Geldkonto", Day.class);
         TimeSeries s2 = new TimeSeries("Geldanlage", Day.class);
         TimeSeries s3 = new TimeSeries("Sachanlage", Day.class);
+        TimeSeries s4 = new TimeSeries("Verbindlichkeit", Day.class);
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
@@ -169,6 +170,7 @@ public class GenerateChart extends HttpServlet {
         	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Geldkonto"));
         	s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Geldanlage"));
         	s3.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Sachanlage"));
+        	s4.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Verbindlichkeit"));
         	
         	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
         	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("Sachanlage")+" Datum " + ((Hashtable)vec.elementAt(i)).get("datum"));
@@ -181,7 +183,7 @@ public class GenerateChart extends HttpServlet {
         dataset.addSeries(s1);
         dataset.addSeries(s2);
         dataset.addSeries(s3);
-        //dataset.addSeries(s2);
+        dataset.addSeries(s4);
         return dataset;
 	}
 	

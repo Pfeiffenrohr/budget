@@ -49,6 +49,7 @@ import javax.servlet.http.HttpSession;
 					out.println("<input type=\"radio\" id=\"0\" name=\"mode\" value=\"Geldkonto\"><label for=\"mc\"> Geldkonto</label><br>"); 
 					out.println("<input type=\"radio\" id=\"1\" name=\"mode\" value=\"Geldanlage\"><label for=\"mc\"> Geldanlage</label><br>");
 					out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Sachanlage\"><label for=\"mc\"> Sachanlage</label><br>");
+					out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Verbindlichkeit\"><label for=\"mc\"> Verbindlichkeit</label><br>");
 					out.println("</fieldset>");
 					out.println("<p>");
 					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes konto <br>");

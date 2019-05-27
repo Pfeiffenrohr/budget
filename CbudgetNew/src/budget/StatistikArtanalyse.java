@@ -220,6 +220,7 @@ public class StatistikArtanalyse extends javax.servlet.http.HttpServlet {
 				Double aktwertGeldkonto = db.getKategorienSummeKontoart("Geldkonto",startdatum.replaceAll("-", ""),rule);
 				Double aktwertGeldanlage = db.getKategorienSummeKontoart("Geldanlage",startdatum.replaceAll("-", ""),rule);
 				Double aktwertSachanlage = db.getKategorienSummeKontoart("Sachanlage",startdatum.replaceAll("-", ""),rule);
+				Double aktwertVerbindlichkeit = db.getKategorienSummeKontoart("Verbindlichkeit",startdatum.replaceAll("-", ""),rule);
 				trans = db.getAllTransaktionenWithKontoArt(startdatum.replaceAll("-", ""),enddatum.replaceAll("-", ""),rule);
 				
    			    
@@ -248,10 +249,17 @@ public class StatistikArtanalyse extends javax.servlet.http.HttpServlet {
 								.get("wert");
 						//System.out.println("aktwertSachanlage = "+ aktwertSachanlage );
 					}
+					if (((String)((Hashtable)trans.elementAt(i)).get("mode")).equals("Verbindlichkeit"))
+					{
+						aktwertVerbindlichkeit+=(Double) ((Hashtable) trans.elementAt(i))
+								.get("wert");
+					}
 					
 					hash_chart.put("Geldkonto", aktwertGeldkonto);
 					hash_chart.put("Geldanlage", aktwertGeldanlage + aktwertGeldkonto);
-					hash_chart.put("Sachanlage", aktwertSachanlage + aktwertGeldanlage + aktwertGeldkonto);
+					hash_chart.put("Verbindlichkeit", aktwertVerbindlichkeit+aktwertSachanlage + aktwertGeldanlage + aktwertGeldkonto);
+					hash_chart.put("Sachanlage", aktwertSachanlage +aktwertVerbindlichkeit+ aktwertGeldanlage + aktwertGeldkonto);
+					
 										// System.out.println("Aktwert = "+aktwert
 					chartvec.addElement(hash_chart);
 				}

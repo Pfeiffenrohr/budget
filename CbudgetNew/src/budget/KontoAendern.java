@@ -100,6 +100,8 @@ import javax.servlet.http.HttpSession;
 				out.println("<input type=\"radio\" id=\"1\" name=\"mode\" value=\"Geldanlage\" "+mode+"><label for=\"mc\"> Geldanlage</label><br>");
 				if (((String)kontosatz.get("mode")).equals("Sachanlage")) mode="checked";else mode=""; 
 				out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Sachanlage\" "+mode+"><label for=\"mc\"> Sachanlage</label><br>");
+				if (((String)kontosatz.get("mode")).equals("Verbindlichkeit")) mode="checked";else mode=""; 
+				out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Verbindlichkeit\" "+mode+"><label for=\"mc\"> Verbindlichkeit</label><br>");
 				out.println("</fieldset>");
 				out.println("<p>");
 				
