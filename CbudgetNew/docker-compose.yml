@@ -1,0 +1,19 @@
+myapp-web:  
+  image: cbudgetnew 
+  ports:
+    - "8081:8080"
+  links:
+    - myapp-db
+
+myapp-db:  
+    image: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: budget
+      POSTGRES_PASSWORD: budget
+      POSTGRES_DB: budget
