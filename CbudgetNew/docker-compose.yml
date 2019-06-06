@@ -1,12 +1,13 @@
 myapp-web:  
-  image: cbudgetnew 
+  image: pfeiffenrohr/cbudgetnew:latest
   ports:
     - "8081:8080"
   links:
     - myapp-db
 
 myapp-db:  
-    image: postgres
+    container_name: "myapp-db"  
+    image: "postgres:9"
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:
