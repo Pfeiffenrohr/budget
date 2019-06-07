@@ -25,4 +25,4 @@ RUN dos2unix /var/lib/cbudgetbatch/budget_server.sh
 ADD scripts/plan_cache_trigger.sh /var/lib/cbudgetbatch/plan_cache_trigger.sh
 RUN dos2unix /var/lib/cbudgetbatch/plan_cache_trigger.sh
 ADD lib/postgresql-42.2.4.jar /var/lib/cbudgetbatch/postgresql-42.2.4.jar
-CMD ["java","-classpath","/var/lib/cbudgetbatch/server.jar:/var/lib/cbudgetbatch/postgresql-42.2.4.jar","cbudgetbatch/Server  budget budget budget"]
+ENTRYPOINT ["/var/lib/cbudgetbatch/budget_server.sh"]
