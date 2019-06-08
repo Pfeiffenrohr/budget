@@ -32,6 +32,6 @@ ADD scripts/plan_cache_trigger.sh /var/lib/cbudgetbatch/plan_cache_trigger.sh
 RUN chmod 777 /var/lib/cbudgetbatch/plan_cache_trigger.sh
 RUN dos2unix /var/lib/cbudgetbatch/plan_cache_trigger.sh
 
-COPY lib/*.jar /var/lib/cbudgetbatch
-COPY target/lib/*.jar /var/lib/cbudgetbatch
+COPY lib/*.jar /var/lib/cbudgetbatch/
+COPY target/lib/*.jar /var/lib/cbudgetbatch/
 ENTRYPOINT ["/var/lib/cbudgetbatch/wrapper.sh"]
