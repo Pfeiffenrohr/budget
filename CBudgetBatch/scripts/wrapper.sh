@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start the first process
-/var/lib/cbudgetbatch/budget_server.sh -D
+/var/lib/cbudgetbatch/budget_server.sh -D &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start my_first_process: $status"
@@ -9,7 +9,7 @@ if [ $status -ne 0 ]; then
 fi
 
 # Start the second process
-/var/lib/cbudgetbatch/plan_cache_trigger.sh -D
+/var/lib/cbudgetbatch/plan_cache_trigger.sh -D &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start my_second_process: $status"
