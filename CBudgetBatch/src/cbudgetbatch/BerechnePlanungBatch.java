@@ -14,7 +14,7 @@ public class BerechnePlanungBatch {
 	static String user;
 	static String pass;
 	static String datenbank;
-	boolean debug=true;
+	boolean debug=false;
 	
 	
 	
