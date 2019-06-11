@@ -4,4 +4,4 @@ cbudgetbatch:
     - "7777:7777"
   restart: always
   environment:
-      connectstring: secret
+      connectstring: jdbc:postgresql://192.168.2.28
