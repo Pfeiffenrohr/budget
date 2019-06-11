@@ -1,5 +1,5 @@
 myapp-web:  
-  image: pfeiffenrohr/cbudgetnew:latest
+  image: cbudgetnew 
   ports:
     - "8081:8080"
   restart: always   
@@ -7,8 +7,7 @@ myapp-web:
     - myapp-db
 
 myapp-db:  
-    container_name: "myapp-db"  
-    image: "postgres:9"
+    image: postgres
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:

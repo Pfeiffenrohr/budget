@@ -11,7 +11,7 @@ import cbudgetbase.DB;
 
 
 public class DBBatch extends DB {
-	public boolean dataBaseConnect(String user, String passwort, String datenbank) {
+	public boolean dataBaseConnect(String user, String passwort, String connectstring) {
 		if (debug) if (debug) System.out.println("Verbinde mich zur Datenbank");
 		try {
 			try {
@@ -24,8 +24,8 @@ public class DBBatch extends DB {
 				return false;
 			}
 
-			String url = "jdbc:postgresql://192.168.2.28/"+datenbank;
-
+			//String url = "jdbc:postgresql://192.168.2.28/"+datenbank;
+			String url = connectstring;
 			con = DriverManager.getConnection(url, user, passwort); // Verbindung
 																		// herstellen
 			if (debug) System.out.println("Verbindung erstellt");
