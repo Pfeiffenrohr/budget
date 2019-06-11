@@ -66,7 +66,7 @@ class ConnectionHandler implements Runnable {
 	    String user;
 		 String pass;
 		 String datenbank;
-		 boolean debug=true;
+		 boolean debug=false;
 	    public ConnectionHandler(Socket socket,String user,String pass,String datenbank) {
 	        this.socket = socket;
 	        this.user=user;
