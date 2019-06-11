@@ -1,0 +1,7 @@
+cbudgetbatch:  
+  image: pfeiffenrohr/cbudgetbatch:latest
+  ports:
+    - "7777:7777"
+  restart: always
+  environment:
+      connectstring: secret
