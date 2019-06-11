@@ -678,7 +678,7 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
 		// TODO Auto-generated method stub
 		if (args.length != 4)
     	{
-    		System.out.println("usage: BerechnePlanungBatch <user> <password> <datenbank> all|trigger");
+    		System.out.println("usage: BerechnePlanungBatch <user> <password> <connectstring,z.B: jdbc:postgresql://192.168.2.28/> all|trigger  ");
     		System.exit(1);
     	}
 		user = args[0];
