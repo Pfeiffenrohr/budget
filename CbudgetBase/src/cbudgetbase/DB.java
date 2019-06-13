@@ -2576,7 +2576,7 @@ public class DB {
 
 				PreparedStatement stmt;
 				ResultSet res = null;
-				String str="select id,trans_id,type,datum,zeit,user from transaktion_history where trans_id="+trans_id+" order by datum,zeit";
+				String str="select id,trans_id,type,datum,zeit,curruser from transaktion_history where trans_id="+trans_id+" order by datum,zeit";
 				if (debug) System.out.println(str);
 				stmt = con
 						.prepareStatement(str);
@@ -2588,7 +2588,7 @@ public class DB {
 					hash.put("type", new Integer(res.getInt("type")));
 					hash.put("datum", (Date)( res.getDate("datum")));
 					hash.put("zeit", (Date) res.getTime("zeit"));
-					hash.put("user", (String) res.getString("user"));										
+					hash.put("user", (String) res.getString("curruser"));										
 					vec.addElement(hash);
 				}
 			} catch (SQLException e) {
