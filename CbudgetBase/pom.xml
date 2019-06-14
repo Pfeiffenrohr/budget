@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>CbudgetBase</groupId>
   <artifactId>CbudgetBase</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0</version>
   <name>CbudgetBase</name>
   <description>Basis für Budget</description>
   <build>
