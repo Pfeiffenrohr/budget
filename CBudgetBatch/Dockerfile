@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y dos2unix
 
 RUN mkdir /var/lib/cbudgetbatch
 WORKDIR /var/lib/cbudgetbatch/
-ADD target/CBudgetBatch-0.0.1-SNAPSHOT.jar /var/lib/cbudgetbatch/server.jar
+ADD target/CBudgetBatch-1.0.jar /var/lib/cbudgetbatch/server.jar
 ADD scripts/budget_server.sh /var/lib/cbudgetbatch/budget_server.sh
 RUN chmod 777 /var/lib/cbudgetbatch/budget_server.sh
 RUN dos2unix /var/lib/cbudgetbatch/budget_server.sh
