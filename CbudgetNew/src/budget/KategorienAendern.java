@@ -106,7 +106,7 @@ import javax.servlet.http.HttpSession;
 				
 				out.println("<p>Kategotrie ist Aktiv: <br>");
 				out.println("<input type=\"radio\" name=\"active\" value=\"1\"checked> Aktiv <br>");
-				out.println("<input type=\"radio\" name=\"active\" value=\"0\"> Inactive <br>");
+				out.println("<input type=\"radio\" name=\"active\" value=\"0\"> Inaktiv <br>");
 				
 				out.println("<input type=\"checkbox\" name=\"loeschen\" value=\"ja\"> Kategorie komplett löschen <br>");
 				out.println("<input type=\"submit\" value=\" Absenden \">");

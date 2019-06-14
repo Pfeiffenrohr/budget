@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
 					out.println("<input type=\"radio\" name=\"art\" value=\"buchung\"> Buchung <br>");
 					out.println("<p>Kategotrie ist Aktiv: <br>");
 					out.println("<input type=\"radio\" name=\"active\" value=\"1\" checked > Aktiv <br>");
-					out.println("<input type=\"radio\" name=\"active\" value=\"0\"> Inactive <br>");
+					out.println("<input type=\"radio\" name=\"active\" value=\"0\"> Inaktive <br>");
 
 					out.println("<input type=\"submit\" value=\" Absenden \">");
 					out.println("</form>");
