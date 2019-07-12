@@ -23,3 +23,29 @@ myapp-db:
       POSTGRES_USER: budget
       POSTGRES_PASSWORD: budget
       POSTGRES_DB: budget
+
+myapp2-web:  
+  image: pfeiffenrohr/cbudgetnew:latest
+  container_name: budget_web
+  environment:
+    - DBPort=5432
+  ports:
+    - "8082:8080"
+  restart: always   
+  links:
+    - myapp-db
+
+myapp2-db:  
+    container_name: "myapp2-db"  
+    image: "postgres:9"
+    volumes:
+      - ./data2 :/var/lib/postgresql/data
+    ports:
+      - "5431:5432"
+    restart: always   
+    expose:
+      - "5431"
+    environment:
+      POSTGRES_USER: budget
+      POSTGRES_PASSWORD: budget
+      POSTGRES_DB: budget
