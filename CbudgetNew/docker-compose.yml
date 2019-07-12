@@ -1,8 +1,6 @@
 myapp-web:  
   image: pfeiffenrohr/cbudgetnew:latest
   container_name: budget_web
-  environment:
-    - DBPort=5432
   ports:
     - "8081:8080"
   restart: always   
@@ -24,22 +22,20 @@ myapp-db:
       POSTGRES_PASSWORD: budget
       POSTGRES_DB: budget
 
-myapp2-web:  
+rent-web:  
   image: pfeiffenrohr/cbudgetnew:latest
-  container_name: budget_web2
-  environment:
-    - DBPort=5432
+  container_name: rent_web
   ports:
     - "8082:8080"
   restart: always   
   links:
-    - myapp-db
+    - rent-db
 
-myapp2-db:  
-    container_name: "myapp2-db"  
+rent-db:  
+    container_name: "rent-db"  
     image: "postgres:9"
     volumes:
-      - ./data2 :/var/lib/postgresql/data
+      - ./data_rent :/var/lib/postgresql/data
     ports:
       - "5431:5432"
     restart: always   
