@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Hashtable;
+import java.util.Vector;
 import cbudgetbase.DB;
 
 import javax.servlet.RequestDispatcher;
@@ -240,6 +241,9 @@ import javax.servlet.http.HttpSession;
 						{
 							command=command+" NOT( "+db.getRuleCommand(new Integer(title)).replaceAll("'", "''")+" ) ";
 						}
+						// TODO Insert here the recursion for Ruleupdate
+					 
+						updateRule(db,strRuleId);
 						count++;
 					}
 					if (filter.equals("konto"))
@@ -360,6 +364,220 @@ import javax.servlet.http.HttpSession;
 			}
 			return true;
 		}
-}
+		
+		private void updateRule(DB db, String strRuleId)
+		{
+			System.out.printf("updateRule ..., ");
+			Vector allRules=db.getAllRules();
+			for (int i=0; i< allRules.size(); i++)
+			{
+				Hashtable rule=(Hashtable) allRules.elementAt(i);
+				//Hole alle Ruleitems zu dieser Rule
+				Vector allRuleItems = (Vector) db.getRulesItems((Integer)rule.get("rule_id"));
+				//Schaue nun nach, ob es eine Regel gibt, die updatet werden muss.
+					for ( int j=0; j < allRuleItems.size();j++)
+					{
+						Hashtable testruleItem = (Hashtable)allRuleItems.elementAt(j);
+						if ((((String)testruleItem.get("art")).equals("rule")) && ((((String)testruleItem.get("value")).equals(strRuleId))))
+						{
+							//Hier is was zu tun. Die Regel muss updatet werden
+							 String mode = (String) rule.get("mode");
+							 System.out.printf("Found rule to update ..., ");
+							 //Integer count=0;
+								boolean done=false;
+								String conjunc;
+								boolean first=true;
+								if (mode.equals("alle"))
+								{
+									conjunc=" AND ";
+								}
+								else
+								{
+									conjunc=" OR ";
+								}
+								String command="";
+								Integer anz= allRuleItems.size() ;
+								System.out.println("anz = "+anz);
+							 
+							for ( int k=0; k < allRuleItems.size();k++)
+							{
+								Hashtable ruleItem = (Hashtable)allRuleItems.elementAt(j);
+							    String art = (String)ruleItem.get("art");
+							    String operator = (String)ruleItem.get("operator");
+							    String value = (String)ruleItem.get("value");
+							    
+								
+								
+									//String filter = request.getParameter("filterSelect"+count.toString());
+									
+									
+									if (art.equals("title"))
+									{
+										
+										if (operator==null)
+										{
+											operator="eq";
+										}
+										
+										if (!first)
+										{
+											command=command+conjunc;
+										}
+										else
+										{
+											first=false;
+										}
+										command=command+" name ";
+										if (operator.equals("eq"))
+										{
+											command=command+" = ''"+value+"''";
+										}
+										if (operator.equals("ne"))
+										{
+											command=command+" != ''"+value+"''";
+										}
+										if (operator.equals("bw"))
+										{
+											command=command+" like ''"+value+"%''";
+										}
+										if (operator.equals("ew"))
+										{
+											command=command+" like ''%"+value+"''";
+										}
+										if (operator.equals("ct"))
+										{
+											command=command+" like ''%"+value+"%''";
+										}
+										
+									}
+									if (art.equals("category"))
+									{
+										
+										if (!first)
+										{
+											command=command+conjunc;
+										}
+										else
+										{
+											first=false;
+										}
+										command=command+" kategorie ";
+										if (operator.equals("eq"))
+										{
+											command=command+" = "+value;
+										}
+										if (operator.equals("ne"))
+										{
+											command=command+" != "+value;
+										}
+										
+									}
+									if (art.equals("rule"))
+									{
+										
+										if (!first)
+										{
+											command=command+conjunc;
+										}
+										else
+										{
+											first=false;
+										}
+										if(operator.equals("eq"))
+										{
+										command=command+"( "+db.getRuleCommand(new Integer(value)).replaceAll("'", "''")+" ) ";
+										}
+										else
+										{
+											command=command+" NOT( "+db.getRuleCommand(new Integer(value)).replaceAll("'", "''")+" ) ";
+										}
+										
+									 
+										
+									}
+									if (art.equals("konto"))
+									{
+										
+										if (!first)
+										{
+											command=command+conjunc;
+										}
+										else
+										{
+											first=false;
+										}
+										command=command+" konto_id ";
+										if (operator.equals("eq"))
+										{
+											command=command+" = "+value;
+										}
+										if (operator.equals("ne"))
+										{
+											command=command+" != "+value;
+										}
+										
+									}
+									if (art.equals("betrag"))
+									{
+										
+										if (!first)
+										{
+											command=command+conjunc;
+										}
+										else
+										{
+											first=false;
+										}
+										command=command+" wert ";
+										if (operator.equals("eq"))
+										{
+											command=command+" = "+value;
+										}
+										if (operator.equals("lt"))
+										{
+											command=command+" < "+value;
+										}
+										if (operator.equals("le"))
+										{
+											command=command+" <= "+value;
+										}
+										if (operator.equals("gt"))
+										{
+											command=command+" > "+value;
+										}
+										if (operator.equals("ge"))
+										{
+											command=command+" >= "+value;
+										}
+										if (operator.equals("ne"))
+										{
+											command=command+" != "+value;
+										}
+										
+									}
+									
+								}
+						
+						//------------------------------------------------------------------------------------------------------	    
+							command = "("+ command +")";
+							System.out.println("Command = "+command);
+							db.updateRuleCommand((Integer)rule.get("rule_id"), command);
+							//String filter = request.getParameter("filterSelect1");	
+							
+							if ( ! ((String)rule.get("rule_id")).equals(strRuleId))
+									{
+									updateRule(db,(String)rule.get("rule_id") );
+									}
+							break;
+						}
+						
+					}
+							
+								
+				}
+		}
+			
+	}
+
 
 				

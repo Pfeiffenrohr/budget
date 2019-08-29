@@ -2024,7 +2024,7 @@ public class DB {
 		return sum;
 	}
 	
-	//TODO
+	
 	public double getPlanungAllWhere(Integer plan_id,Double faktor,String where) {
 		double sum=0.0;
 		PreparedStatement stmt;
