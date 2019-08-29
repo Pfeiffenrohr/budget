@@ -6,7 +6,7 @@ myapp-web:
   restart: always   
   links:
     - myapp-db
-
+ 
 myapp-db:   
     container_name: "myapp-db"  
     image: "postgres:9"
