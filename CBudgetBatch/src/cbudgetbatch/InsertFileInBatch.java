@@ -130,7 +130,7 @@ public class InsertFileInBatch {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		
 		String user = args[0];
 		String pass = args[1];
