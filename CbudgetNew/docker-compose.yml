@@ -6,8 +6,8 @@ myapp-web:
   restart: always   
   links:
     - myapp-db
-
-myapp-db:  
+ 
+myapp-db:   
     container_name: "myapp-db"  
     image: "postgres:9"
     volumes:
@@ -17,30 +17,6 @@ myapp-db:
     restart: always   
     expose:
       - "5432"
-    environment:
-      POSTGRES_USER: budget
-      POSTGRES_PASSWORD: budget
-      POSTGRES_DB: budget
-
-rent-web:  
-  image: pfeiffenrohr/cbudgetnew:latest
-  container_name: rent_web
-  ports:
-    - "8082:8080"
-  restart: always   
-  links:
-    - rent-db
-
-rent-db:  
-    container_name: "rent-db"  
-    image: "postgres:9"
-    volumes:
-      - ./data_rent :/var/lib/postgresql/data
-    ports:
-      - "5431:5432"
-    restart: always   
-    expose:
-      - "5431"
     environment:
       POSTGRES_USER: budget
       POSTGRES_PASSWORD: budget
