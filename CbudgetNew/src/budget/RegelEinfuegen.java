@@ -100,7 +100,7 @@ import javax.servlet.http.HttpSession;
 				else
 				{
 					//Regel existiert 
-					System.out.println("rule_id "+rule);
+					//System.out.println("rule_id "+rule);
 					db.deleteRuleItem(new Integer(strRuleId));
 					rule.put("rule_id", new Integer(strRuleId));
 					db.updateRule(rule);
@@ -121,12 +121,12 @@ import javax.servlet.http.HttpSession;
 				}
 				String command="";
 				Integer anz=new Integer (request.getParameter("filter_anzahl"));
-				System.out.println("anz = "+anz);
+				//System.out.println("anz = "+anz);
 				while (! done)
 				{
 					String filter = request.getParameter("filterSelect"+count.toString());
-					System.out.println("Filter "+filter);
-					System.out.println("count "+count);
+					//System.out.println("Filter "+filter);
+					//System.out.println("count "+count);
 					if (filter==null||filter.equals("null"))
 					{
 						count++;
@@ -144,7 +144,7 @@ import javax.servlet.http.HttpSession;
 							operator="eq";
 						}
 						String title = request.getParameter("title"+count.toString());
-						System.out.println("Regel "+count+" Name "+operator+" "+title);
+						//System.out.println("Regel "+count+" Name "+operator+" "+title);
 						rule.put("art","title");
 						rule.put("operator",operator);
 						rule.put("value",title);
@@ -188,7 +188,7 @@ import javax.servlet.http.HttpSession;
 							operator="eq";
 						}
 						String title = request.getParameter("categoryId"+count.toString());
-						System.out.println("Regel "+count+" Kategorie "+operator+" "+title);
+						//System.out.println("Regel "+count+" Kategorie "+operator+" "+title);
 						rule.put("art","category");
 						rule.put("operator",operator);
 						rule.put("value",title);
@@ -220,7 +220,7 @@ import javax.servlet.http.HttpSession;
 							operator="eq";
 						}
 						String title = request.getParameter("ruleId"+count.toString());
-						System.out.println("Regel "+count+" Regel "+operator+" "+title);
+						//System.out.println("Regel "+count+" Regel "+operator+" "+title);
 						rule.put("art","rule");
 						rule.put("operator",operator);
 						rule.put("value",title);
@@ -253,7 +253,7 @@ import javax.servlet.http.HttpSession;
 							operator="eq";
 						}
 						String title = request.getParameter("kontoId"+count.toString());
-						System.out.println("Regel "+count+" Konto "+operator+" "+title);
+						//System.out.println("Regel "+count+" Konto "+operator+" "+title);
 						rule.put("art","konto");
 						rule.put("operator",operator);
 						rule.put("value",title);
@@ -285,7 +285,7 @@ import javax.servlet.http.HttpSession;
 							operator="eq";
 						}
 						String title = request.getParameter("betrag"+count.toString());
-						System.out.println("Regel "+count+" Betrag "+operator+" "+title);
+						//System.out.println("Regel "+count+" Betrag "+operator+" "+title);
 						rule.put("art","betrag");
 						rule.put("operator",operator);
 						rule.put("value",title);
@@ -331,7 +331,7 @@ import javax.servlet.http.HttpSession;
 					}
 				}
 				command = "("+ command +")";
-				System.out.println("Command = "+command);
+				//System.out.println("Command = "+command);
 				db.updateRuleCommand((Integer)rule.get("rule_id"), command);
 				updateRule(db,strRuleId);
 				
@@ -368,7 +368,7 @@ import javax.servlet.http.HttpSession;
 		
 		private void updateRule(DB db, String strRuleId)
 		{
-			System.out.println("updateRule ..., ");
+			//System.out.println("updateRule ..., ");
 			Vector allRules=db.getAllRules();
 			for (int i=0; i< allRules.size(); i++)
 			{
@@ -379,14 +379,14 @@ import javax.servlet.http.HttpSession;
 					for ( int j=0; j < allRuleItems.size();j++)
 					{
 						Hashtable testruleItem = (Hashtable)allRuleItems.elementAt(j);
-						//System.out.println("Art: " +((String)testruleItem.get("art"))  );
-						//System.out.println("Value: " +((String)testruleItem.get("value")) + " RuleId "+ strRuleId);
+						////System.out.println("Art: " +((String)testruleItem.get("art"))  );
+						////System.out.println("Value: " +((String)testruleItem.get("value")) + " RuleId "+ strRuleId);
 						if ((((String)testruleItem.get("art")).equals("rule")) && 
 								((((String)testruleItem.get("value")).equals(strRuleId))))
 						{
 							//Hier is was zu tun. Die Regel muss updatet werden
 							 String mode = (String) rule.get("mode");
-							 System.out.println("Found rule to update ..., ");
+							 //System.out.println("Found rule to update ..., ");
 							 //Integer count=0;
 								boolean done=false;
 								String conjunc;
@@ -401,7 +401,7 @@ import javax.servlet.http.HttpSession;
 								}
 								String command="";
 								Integer anz= allRuleItems.size() ;
-								System.out.println("anz = "+anz);
+								//System.out.println("anz = "+anz);
 							 
 							for ( int k=0; k < allRuleItems.size();k++)
 							{
@@ -564,7 +564,7 @@ import javax.servlet.http.HttpSession;
 						
 						//------------------------------------------------------------------------------------------------------	    
 							command = "("+ command +")";
-							System.out.println("Command = "+command);
+							//System.out.println("Command = "+command);
 							db.updateRuleCommand((Integer)rule.get("rule_id"), command);
 							//String filter = request.getParameter("filterSelect1");	
 							
