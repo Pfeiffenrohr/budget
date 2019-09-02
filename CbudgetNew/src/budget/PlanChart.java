@@ -199,6 +199,7 @@ import javax.servlet.http.HttpSession;
 							}
 					}
 					session.setAttribute("chart_vec", daten);
+					session.setAttribute("kategorieNamne",(String) db.getKategorieName(new Integer(kategorie_id)));
 					//System.out.println(daten);
 					out.println("<p><img src=chart?mode=plan width'600' height='400'>");
 					out.println("</body>");

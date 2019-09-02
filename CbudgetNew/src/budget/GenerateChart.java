@@ -74,8 +74,9 @@ public class GenerateChart extends HttpServlet {
 		if (mode.equals("plan")) {
 			//System.err.println("Create Chart");
 			XYDataset dataset = createDataset(chartVec);
+			String kategorieName= (String) session.getAttribute("kategorieNamne");
 			//System.err.println("Create Dataset");
-			JFreeChart chart = createPlanChart(dataset);
+			JFreeChart chart = createPlanChart(dataset,kategorieName);
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
@@ -225,9 +226,9 @@ public class GenerateChart extends HttpServlet {
 
   }
 	 
-	 private static JFreeChart createPlanChart(XYDataset dataset) {
+	 private static JFreeChart createPlanChart(XYDataset dataset, String kategorieName) {
 			JFreeChart chart = ChartFactory.createTimeSeriesChart(
-		            "Planungsverlauf",  // title
+		            "Planungsverlauf " + kategorieName,  // title
 		            "Datum",             // x-axis label
 		            "Wert",   // y-axis label
 		            dataset,            // data
