@@ -199,7 +199,20 @@ import javax.servlet.http.HttpSession;
 							}
 					}
 					session.setAttribute("chart_vec", daten);
-					session.setAttribute("kategorieNamne",(String) db.getKategorieName(new Integer(kategorie_id)));
+					
+					//Setze hier den Kategorienamen für das Plan Chart
+					int kategorieID=new Integer(kategorie_id);
+					String kategorieName;
+					if (kategorieID == -1)
+						kategorieName="Alle Ausgaben";
+					else
+					{
+						if (kategorieID == -2)
+							kategorieName="Alle Einnahmen";
+						else
+							kategorieName=(String) db.getKategorieName(new Integer(kategorie_id));
+					}	
+					session.setAttribute("kategorieNamne",kategorieName);
 					//System.out.println(daten);
 					out.println("<p><img src=chart?mode=plan width'600' height='400'>");
 					out.println("</body>");
