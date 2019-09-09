@@ -292,7 +292,7 @@ import javax.servlet.http.HttpSession;
 							{
 								where=where +" and ";
 							}
-							where=where+" name like '%"+name+"%' ";
+							where=where+" name ilike '%"+name+"%' ";
 							first=false;
 						}
 						if (!konto.equals(""))
