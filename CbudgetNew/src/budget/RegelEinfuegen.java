@@ -241,7 +241,6 @@ import javax.servlet.http.HttpSession;
 						{
 							command=command+" NOT( "+db.getRuleCommand(new Integer(title)).replaceAll("'", "''")+" ) ";
 						}
-						// TODO Insert here the recursion for Ruleupdate
 						
 						count++;
 					}

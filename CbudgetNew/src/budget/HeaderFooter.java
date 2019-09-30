@@ -5,21 +5,7 @@ import java.util.Vector;
 
 public class HeaderFooter {
 	
-	/*public void writeHeader(PrintWriter out)
-	{
 
-		out.println(" <img src=\"icons/budget.gif\" width='1200' height='40'><p>");
-		out.println("<h1><font color=\"black\" size=1> Datenbank: Testversion</font></h1><p>");
-		out.println("<a href='kontouebersicht'>Kontouebersicht</a>");
-		out.println("<a href='regelverwaltung'>Regeln</a>");
-		out.println("<a href='kontoverwaltung'>Kontoverwaltung</a>");
-		out.println("<a href='transaktionen'>Transaktionen</a>");
-		out.println("<a href='kategorieverwaltung'>Kategorieverwaltung</a>");
-		out.println("<a href='planungsverwaltung'>Planung</a>");
-		out.println("<a href='auswertung?mode=none'>Statistische Auswertung</a>");
-		out.println("<a href='abmelden'>Abmelden</a>");
-	}
-*/
 	public void writeHeader(PrintWriter out,String database)
 	{
 
@@ -33,6 +19,7 @@ public class HeaderFooter {
 		out.println("<a href='planungsverwaltung'>Planung</a>");
 		out.println("<a href='auswertung?mode=none'>Statistische Auswertung</a>");
 		out.println("<a href='einstellungen'>Einstellungen</a>");
+		out.println("<a href='frugal'>Frugal</a>");
 		out.println("<a href='abmelden'>Abmelden</a>");
 	}
 	public void writeStatisticHeader(PrintWriter out)
