@@ -72,7 +72,7 @@ import javax.servlet.http.HttpSession;
 				}
 				else
 				{
-					System.out.println("update =" +update);
+					//System.out.println("update =" +update);
 				hash_trans=db.getLastCycleTransaktion(formatter.format(cal_begin.getTime()),new Integer(update));
 				db.deleteTransaktionExcept(new Integer(update),formatter.format(hash_trans.get("datum")));
 				}
@@ -149,7 +149,17 @@ import javax.servlet.http.HttpSession;
 				Calendar cal_kor=Calendar.getInstance();
 				cal_kor=(Calendar)cal_begin.clone();
 				Calendar cal_end= Calendar.getInstance();
+				//System.out.println("NOEND = "+noend );
+				if (noend.equals("ja"))
+				{
+					//System.out.println("CalEnd before:" + formatter.format(cal_end.getTime()));
+					cal_end.add(Calendar.YEAR, 30);
+					//System.out.println("CalEnd after:" + formatter.format(cal_end.getTime()));
+				}
+				else
+				{
 				cal_end.setTime(formatter.parse(end_datum));
+				}
 				int int_delta= new Integer(delta).intValue();
 				if (wiederholung.equals("taeglich"))
 				{
@@ -167,9 +177,11 @@ import javax.servlet.http.HttpSession;
 				hash_trans.put("kor_id",korid);
 				hash_trans.put("user","Wiederholung");
 				db.setKorId(korid.toString(),hash_trans.get("id").toString());
-				
-				while (cal_begin.compareTo(cal_end)<0 && ende<20)
-				{
+				//System.out.println("Beginn:" + formatter.format(cal_begin.getTime()));
+				//System.out.println("Ende:" + formatter.format(cal_end.getTime()));
+				while (cal_begin.compareTo(cal_end)<0 && ende<500)
+				{ 
+					//System.out.println("in while");
 					//System.out.println(formatter.format(cal_begin.getTime()));
 					//System.out.println("wiederholung =" + wiederholung);
 					hash_trans.put("datum",formatter.format(cal_begin.getTime()));
@@ -209,9 +221,9 @@ import javax.servlet.http.HttpSession;
 					ende=0;
 					db.setKorId(korid.toString(),hash_trans.get("id").toString());
 					db.setCycle(hash_trans.get("id").toString(),"2");
-					while (cal_kor.compareTo(cal_end)<0 && ende<20)
+					while (cal_kor.compareTo(cal_end)<0 && ende<500)
 					{
-						System.out.println(formatter.format(cal_kor.getTime()));
+						//System.out.println(formatter.format(cal_kor.getTime()));
 						hash_trans.put("datum",formatter.format(cal_kor.getTime()));
 						hash_trans.put("cycle", 2);
 						hash_trans.put("user","Wiederholung");
