@@ -38,7 +38,7 @@ public class UpdateZyklischeTransaktion {
 		} catch (Exception ex)
 		{
 			System.err.println("Falsches Datumsformat in der Datenbank");
-			System.out.println((String)settings.get("checkdatum"));
+			//System.out.println((String)settings.get("checkdatum"));
 		}
 		cal_end.add(Calendar.MONTH, 1);
 		if (cal_end.after(cal))
@@ -48,25 +48,34 @@ public class UpdateZyklischeTransaktion {
 		}
 		db.updatesetting("checkdatum",formatter.format(cal.getTime()));
 		cal_end=Calendar.getInstance();
-		cal_end.add(Calendar.YEAR,30);
+		
 		for (int i=0; i<vec.size();i++)
 		{
 		hash=(Hashtable)vec.elementAt(i);
-		System.out.println(hash);
+		//System.out.println(hash);
 		if (((String)hash.get("noend")).equals("ja"))
 		{
 			
 			String datum=formatter.format(cal.getTime());
-			trans=db.getLastCycleTransaktion(formatter.format(cal.getTime()),(Integer)hash.get("korid"));
-			System.out.println( "Last = "+trans);
-			if(trans.get("id")== null)
-			{
-				continue;
-			}
+			cal_end.add(Calendar.YEAR,30);
 			
+		}
+		else
+		{
 			
+			cal_end.setTime((java.util.Date)hash.get("end_datum"));
+			
+		}
+			
+		trans=db.getLastCycleTransaktion(formatter.format(cal.getTime()),(Integer)hash.get("korid"));
+		//System.out.println( "Last = "+trans);
+		if(trans.get("id")== null)
+		{
+			continue;
+		}
 			cal.setTime((java.util.Date)trans.get("datum"));
-			while (cal.before(cal_end))
+			while (cal.before(cal_end)) 
+				//TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 			{
 				//Einfuegen
 				//zuerst schauen, ob der Eintrag schon da ist
@@ -132,7 +141,7 @@ public class UpdateZyklischeTransaktion {
 					
 			}
 		}
-		}
+		
 		return meldung;
 	}
 
