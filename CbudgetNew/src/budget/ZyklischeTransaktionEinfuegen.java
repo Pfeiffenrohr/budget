@@ -168,7 +168,7 @@ import javax.servlet.http.HttpSession;
 				hash_trans.put("user","Wiederholung");
 				db.setKorId(korid.toString(),hash_trans.get("id").toString());
 				
-				while (cal_begin.compareTo(cal_end)<0 && ende<20)
+				while (cal_begin.compareTo(cal_end)<0 && ende<500)
 				{
 					//System.out.println(formatter.format(cal_begin.getTime()));
 					//System.out.println("wiederholung =" + wiederholung);

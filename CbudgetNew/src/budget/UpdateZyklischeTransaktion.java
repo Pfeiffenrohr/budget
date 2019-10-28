@@ -48,7 +48,7 @@ public class UpdateZyklischeTransaktion {
 		}
 		db.updatesetting("checkdatum",formatter.format(cal.getTime()));
 		cal_end=Calendar.getInstance();
-		cal_end.add(Calendar.YEAR,1);
+		cal_end.add(Calendar.YEAR,30);
 		for (int i=0; i<vec.size();i++)
 		{
 		hash=(Hashtable)vec.elementAt(i);
