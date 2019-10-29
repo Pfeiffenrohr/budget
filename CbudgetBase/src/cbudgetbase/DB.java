@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=true;
+    protected boolean debug=false;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -186,6 +186,21 @@ public class DB {
 				+ name + "',description = '"
 				+beschreibung+"',hidden = '"  
 				+ versteckt + "', mode = '"+mode +"' where id='" + id+ "'";
+			if (debug) System.out.println(str);
+			PreparedStatement stmt;
+			stmt = con.prepareStatement(str);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Konnte Update-Anweisung nicht ausführen" + e);
+		    return false;
+		}
+		return true;
+	}
+	
+	public boolean updateWildcard(String str) {
+		try {
+		
+		
 			if (debug) System.out.println(str);
 			PreparedStatement stmt;
 			stmt = con.prepareStatement(str);
@@ -1097,7 +1112,7 @@ public class DB {
 				hash.put("name", (String) res.getString("name"));
 				hash.put("noend", (String) res.getString("noend"));
 				hash.put("delta", new Integer (res.getInt("delta")));
-				vec.addElement(hash);
+				vec.addElement(hash); 
 				
 			}
 		} catch (SQLException e) {
