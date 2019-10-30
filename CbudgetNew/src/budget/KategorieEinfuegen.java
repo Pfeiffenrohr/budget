@@ -58,6 +58,7 @@ import javax.servlet.http.HttpSession;
 				String yearlimit = request.getParameter("yearlimit");
 				String mode=request.getParameter("art");
 				String active=request.getParameter("active");
+				String forecast=request.getParameter("forecast");
 				
 				Hashtable hash= new Hashtable();
 				hash.put("name",name);
@@ -65,6 +66,7 @@ import javax.servlet.http.HttpSession;
 				hash.put("description",beschreibung);
 				hash.put("mode",mode);
 				hash.put("active",active);
+				hash.put("forecast",forecast);
 				//hash.put("active",active);
 				
 				if (!checkfloat (monthlimit))

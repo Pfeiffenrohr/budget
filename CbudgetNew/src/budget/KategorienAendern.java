@@ -100,14 +100,69 @@ import javax.servlet.http.HttpSession;
 				out.println("<p>");
 				out.println("<p>Järliche Obergrenze:<br><input name=\"yearlimit\" type=\"text\"  value=\""+ ((Hashtable)vec.elementAt(element)).get("yearlimit") + "\"size=\"40\" maxlength=\"50\"></p>");
 				out.println("<p>");
+				if (((Hashtable)vec.elementAt(element)).get("mode").equals("ausgabe"))
+				{
 				out.println("<input type=\"radio\" name=\"art\" value=\"ausgabe\" checked> Ausgabe <br>");
+				}
+				else
+				{	
+				out.println("<input type=\"radio\" name=\"art\" value=\"ausgabe\"> Ausgabe <br>");	
+				}
+				if (((Hashtable)vec.elementAt(element)).get("mode").equals("einnahme"))
+				{
+				out.println("<input type=\"radio\" name=\"art\" value=\"einnahme\" checked> Einnahme <br>");
+				}
+				else
+				{
 				out.println("<input type=\"radio\" name=\"art\" value=\"einnahme\"> Einnahme <br>");
-				out.println("<input type=\"radio\" name=\"art\" value=\"buchung\"> Buchung <br>");
+				}
+				if (((Hashtable)vec.elementAt(element)).get("mode").equals("buchung"))
+				{
+				out.println("<input type=\"radio\" name=\"art\" value=\"buchung\" checked> Buchung <br>");
+				}
+				else
+				{
+					out.println("<input type=\"radio\" name=\"art\" value=\"buchung\"> Buchung <br>");
+				}
 				
 				out.println("<p>Kategotrie ist Aktiv: <br>");
+				if (((Integer)((Hashtable)vec.elementAt(element)).get("active")).intValue()==1)
+				{
 				out.println("<input type=\"radio\" name=\"active\" value=\"1\"checked> Aktiv <br>");
-				out.println("<input type=\"radio\" name=\"active\" value=\"0\"> Inaktiv <br>");
+				}
+				else
+				{
+					out.println("<input type=\"radio\" name=\"active\" value=\"1\"> Aktiv <br>");
+				}
+				if (((Integer)((Hashtable)vec.elementAt(element)).get("active")).intValue()==0)
+				{
+				out.println("<input type=\"radio\" name=\"active\" value=\"0\"checked> Inaktiv <br>");
+				}
+				else
+				{
+				out.println("<input type=\"radio\" name=\"active\" value=\"0\"> Inaktiv <br>");	
+				}
 				
+				
+				out.println("<p>Für die Kategorie soll es einen Forecast geben: <br>");
+				
+				if (((Integer)((Hashtable)vec.elementAt(element)).get("forecast")).intValue()==1)
+				{
+				out.println("<input type=\"radio\" name=\"forecast\" value=\"1\"checked> Ja <br>");
+				}
+				else
+				{
+				out.println("<input type=\"radio\" name=\"forecast\" value=\"1\"> Ja <br>");	
+				}
+				if (((Integer)((Hashtable)vec.elementAt(element)).get("forecast")).intValue()==0)
+				{
+				out.println("<input type=\"radio\" name=\"forecast\" value=\"0\"checked> Nein <br>");
+				}
+				else
+				{
+				out.println("<input type=\"radio\" name=\"forecast\" value=\"0\"> Nein <br>");
+				}
+				out.println("<p>Kategorie löschen: <br>");
 				out.println("<input type=\"checkbox\" name=\"loeschen\" value=\"ja\"> Kategorie komplett löschen <br>");
 				out.println("<input type=\"submit\" value=\" Absenden \">");
 				out.println("</form>");
