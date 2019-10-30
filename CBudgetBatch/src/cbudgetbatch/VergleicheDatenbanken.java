@@ -31,8 +31,8 @@ public class VergleicheDatenbanken {
         	if (found.size() == 0)
         	{
         		System.out.println(hash);
-        		//dbclone.updateWildcard("update reccuring set enddatum='"+hash.get("datum")+"' where kor_id = "+ hash.get("kor_id"));
-        		//dbclone.deleteTransaktion((int)hash.get("id"));
+        		dbclone.updateWildcard("update reccuring set enddatum='"+hash.get("datum")+"' where kor_id = "+ hash.get("kor_id"));
+        		dbclone.deleteTransaktion((int)hash.get("id"));
         	}
         			
         			

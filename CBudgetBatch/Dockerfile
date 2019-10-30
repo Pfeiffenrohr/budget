@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y dos2unix
 
 RUN mkdir /var/lib/cbudgetbatch
 WORKDIR /var/lib/cbudgetbatch/
-ADD target/CBudgetBatch-1.0.jar /var/lib/cbudgetbatch/server.jar
+ADD target/CBudgetBatch-3.0.0.jar /var/lib/cbudgetbatch/server.jar
 ADD scripts/budget_server.sh /var/lib/cbudgetbatch/budget_server.sh
 RUN chmod 777 /var/lib/cbudgetbatch/budget_server.sh
 RUN dos2unix /var/lib/cbudgetbatch/budget_server.sh
@@ -31,6 +31,10 @@ RUN dos2unix /var/lib/cbudgetbatch/wrapper.sh
 ADD scripts/plan_cache_trigger.sh /var/lib/cbudgetbatch/plan_cache_trigger.sh
 RUN chmod 777 /var/lib/cbudgetbatch/plan_cache_trigger.sh
 RUN dos2unix /var/lib/cbudgetbatch/plan_cache_trigger.sh
+
+ADD scripts/forecast.sh /var/lib/cbudgetbatch/forecast.sh
+RUN chmod 777 /var/lib/cbudgetbatch/forecst.sh
+RUN dos2unix /var/lib/cbudgetbatch/forecast.sh
 
 COPY lib/*.jar /var/lib/cbudgetbatch/
 COPY target/lib/*.jar /var/lib/cbudgetbatch/

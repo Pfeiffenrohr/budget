@@ -31,6 +31,7 @@ public class Forecast {
             }
 	      Forecast forecast = new Forecast();
 	      forecast.getAllKategoriesWithForecast(db);
+	      db.closeConnection();
 	    }
 	 private void getAllKategoriesWithForecast(DBBatch db)
 	 {
@@ -54,7 +55,7 @@ public class Forecast {
 				 db.deleteTransaktionWithWhere(where );
 				 if (kategorie.get("forecast").equals(0))
 				 {
-					 System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht berechnet werden");
+					// System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht berechnet werden");
 					 continue;
 				 }
 				 where ="kategorie = "+kategorie.get("id") + " and konto_id = "+konto.get("id") ;
