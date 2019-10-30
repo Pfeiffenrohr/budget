@@ -1402,6 +1402,29 @@ public class DB {
 		return true;
 	}
 	
+	
+	 
+	 public boolean deleteTransaktionWithWhere(String where) {
+			try {
+
+				PreparedStatement stmt;
+				// ResultSet res = null;
+				//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
+				String stm_str="";
+				stm_str="delete from transaktionen where" + where ;
+				if (debug) System.out.println(stm_str);
+				stmt = con.prepareStatement(stm_str);
+				// if (debug) System.out.println("update data_"+jahr+" set temp_out="+temp+
+				// " where datum="+jahr+monat+tag+
+				// " and zeit > \"18:15:00\" and zeit < \"18:45:00\" ");
+				stmt.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("Konnte Delete-Anweisung nicht ausführen" + e);
+				 return false;
+			}
+			return true;
+		}
+	
 	public boolean deleteTransaktionExcept(Integer kor_id,String datum) {
 		try {
 
