@@ -33,7 +33,7 @@ RUN chmod 777 /var/lib/cbudgetbatch/plan_cache_trigger.sh
 RUN dos2unix /var/lib/cbudgetbatch/plan_cache_trigger.sh
 
 ADD scripts/forecast.sh /var/lib/cbudgetbatch/forecast.sh
-RUN chmod 777 /var/lib/cbudgetbatch/forecst.sh
+RUN chmod 777 /var/lib/cbudgetbatch/forecast.sh
 RUN dos2unix /var/lib/cbudgetbatch/forecast.sh
 
 COPY lib/*.jar /var/lib/cbudgetbatch/
