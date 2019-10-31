@@ -44,7 +44,7 @@ public class UpdateZyklischeTransaktion {
 		}
 		db.updatesetting("checkdatum", formatter.format(cal.getTime()));
 		
-
+		Calendar cal_now = cal = Calendar.getInstance();
 		for (int i = 0; i < vec.size(); i++) {
 			hash = (Hashtable) vec.elementAt(i);
 			cal_end = Calendar.getInstance();
@@ -73,10 +73,14 @@ public class UpdateZyklischeTransaktion {
 			// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 			{
 				// Einfuegen
-				if (hash.get("name").equals("Kantine"))
+				
+				//Wenn Eintrag in der Vergangenheit liegt, dann ist nicht zu tun
+				if (cal.before(cal_now))
 				{
-					System.out.println("Durchlaufe Schleife für Kantine");
+					//System.out.println("Eintrag in der Vergangenheit. Nichts zu tun");
 				}
+				else
+				{
 				// zuerst schauen, ob der Eintrag schon da ist
 				trans.put("datum", (String) formatter.format(cal.getTime()));
 				trans.put("user", "Wiederholung");
@@ -111,7 +115,7 @@ public class UpdateZyklischeTransaktion {
 						meldung = true;
 					}
 				}
-
+				}
 				int int_delta = (Integer) hash.get("delta");
 				if (((String) hash.get("wiederholung")).equals("monatlich")) {
 					cal.add(Calendar.MONTH, int_delta);
