@@ -159,7 +159,7 @@ public class BerechnePlanungBatch {
 			System.out.println("berechneTriggerPlan");
 		}
 		DBBatch db = new DBBatch();
-		System.out.println("Open Connection");
+		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
@@ -168,12 +168,12 @@ public class BerechnePlanungBatch {
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
         Calendar cal_end= Calendar.getInstance();
-        System.out.println("Close Connection");
+        //System.out.println("Open Connection");
         db.closeConnection();
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
-        	System.out.println("Open Connection");
+        	//System.out.println("Open Connection");
         	db.dataBaseConnect(user, pass, datenbank);
         	for (int j=0;j<allplan.size();j++)
         	{
@@ -206,7 +206,7 @@ public class BerechnePlanungBatch {
         		}
         	}
         db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
-        System.out.println("Close Connection");
+        //System.out.println("Open Connection");
         db.closeConnection();
         }
         System.out.println(plan_todo);
@@ -220,7 +220,7 @@ public class BerechnePlanungBatch {
 			System.out.println("berechneAllePlan");
 		}
 		DBBatch db = new DBBatch();
-		System.out.println("Open Connection");
+		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
         Vector vec = db.getAllPlanungen();
         Calendar cal_akt= Calendar.getInstance();
@@ -228,16 +228,16 @@ public class BerechnePlanungBatch {
 		SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
 		String akt_datum=formatter.format(cal_akt.getTime());
 		db.closeConnection();
-		System.out.println("Close Connection");
+		//System.out.println("Open Connection");
         for (int i=0; i<vec.size();i++)
         {
         	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	System.out.println("Open Connection");
+        	//System.out.println("Open Connection");
         	db.dataBaseConnect(user, pass, datenbank);
         	if (! hash.containsKey((String)((Integer)hash_plan.get("plan_id")).toString()))
         	{
         		System.out.println("Plan braucht nicht berechnet werden");
-        		System.out.println("Close Connection");
+        		//System.out.println("Open Connection");
             	db.closeConnection();
         		continue;
         	}
@@ -330,7 +330,7 @@ public class BerechnePlanungBatch {
     			
 				
         			}
-        	System.out.println("Close Connection");
+        	//System.out.println("Open Connection");
         	db.closeConnection();
         }
 	}
@@ -350,7 +350,7 @@ public class BerechnePlanungBatch {
         for (int i=0; i<vec.size();i++)
         {
         	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	System.out.println("Open Connection");
+        	//System.out.println("Open Connection");
         	 db.dataBaseConnect(user, pass, datenbank);
         	if (((String)hash_plan.get("batch")).equals("ja"))
         			{
@@ -416,7 +416,7 @@ public class BerechnePlanungBatch {
 				
         			}
         	db.closeConnection();
-        	System.out.println("Open Connection");
+        	//System.out.println("Open Connection");
         }
 	}
 	private void berechneNeuPlan()
@@ -426,10 +426,10 @@ public class BerechnePlanungBatch {
 			System.out.println("berechneNeuPlan");
 		}
 		DBBatch db = new DBBatch();
-		System.out.println("Open Connection");
+		//System.out.println("Open Connection");
    	    db.dataBaseConnect(user, pass, datenbank);   	    
         Vector vec = db.getAllPlanungen();
-        System.out.println("Close Connection");
+        //System.out.println("Open Connection");
     	db.closeConnection();
         Calendar cal_akt= Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -438,7 +438,7 @@ public class BerechnePlanungBatch {
         for (int i=0; i<vec.size();i++)
         {
         	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	System.out.println("Open Connection");
+        	//System.out.println("Open Connection");
         	 db.dataBaseConnect(user, pass, datenbank);
         	if (((String)hash_plan.get("batch")).equals("ja"))
         			{
@@ -501,7 +501,7 @@ public class BerechnePlanungBatch {
     			}
     			else
     			{
-    				System.out.println("Close Connection");
+    				//System.out.println("Open Connection");
     	        	db.closeConnection();
     				continue;
     			}
@@ -524,7 +524,7 @@ public class BerechnePlanungBatch {
     			}
     			else
     			{
-    				System.out.println("Close Connection");
+    				//System.out.println("Open Connection");
     	        	db.closeConnection();
     				continue;
     			}
@@ -548,7 +548,7 @@ public class BerechnePlanungBatch {
     			
 				
         			}
-        	System.out.println("Close Connection");
+        	//System.out.println("Open Connection");
         	db.closeConnection();
         }
 	}
