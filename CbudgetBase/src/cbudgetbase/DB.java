@@ -617,7 +617,7 @@ public class DB {
 				{
 					getKategorienAlleRecursiv(((String)allKats.elementAt(i)),vec);
 				}
-				str_stm="select id,name,parent,description,limit_month,limit_year,mode,active from kategorien where name = '"+kategorie+"'";
+				str_stm="select id,name,parent,description,limit_month,limit_year,mode,active,forecast from kategorien where name = '"+kategorie+"'";
 				if (debug) System.out.println(str_stm);
 				stmt = con
 				.prepareStatement(str_stm);
