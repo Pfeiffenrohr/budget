@@ -8,13 +8,6 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
-# Start the second process
-/var/lib/cbudgetbatch/plan_cache_trigger.sh -D &
-status=$?
-if [ $status -ne 0 ]; then
-  echo "Failed to start my_second_process: $status"
-  exit $status
-fi
 
  # Start the 3rd process
 /var/lib/cbudgetbatch/forecast.sh -D &
@@ -33,13 +26,11 @@ fi
 while sleep 60; do
   ps aux |grep budget_server |grep -q -v grep
   PROCESS_1_STATUS=$?
-  ps aux |grep plan_cache_trigger |grep -q -v grep
-  PROCESS_2_STATUS=$?
   ps aux |grep forecast |grep -q -v grep
   PROCESS_3_STATUS=$?
   # If the greps above find anything, they exit with 0 status
   # If they are not both 0, then something is wrong
-  if [ $PROCESS_1_STATUS -ne 0 -o $PROCESS_2_STATUS -ne 0 ]; then
+  if [ $PROCESS_1_STATUS -ne 0 ]; then
     echo "One of the processes has already exited."
     exit 1
   fi
