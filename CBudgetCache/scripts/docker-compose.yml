@@ -1,0 +1,9 @@
+cbudgetcache:  
+  image: pfeiffenrohr/cbudgetcache:latest
+  ports:
+    - "7777:7777"
+  restart: always
+  environment:
+      connectstring: jdbc:postgresql://192.168.2.29/
+      forecastComputeIntervall: 10000
+      cacheComputeIntervall: 300

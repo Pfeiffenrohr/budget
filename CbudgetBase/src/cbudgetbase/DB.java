@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=false;
+    protected boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
