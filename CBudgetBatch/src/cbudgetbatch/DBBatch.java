@@ -253,5 +253,22 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
+	public boolean insertJobs(Hashtable hash) {
+		try {
+
+			PreparedStatement stmt;
+			String stm= "insert into tmpPlanningJobs values(default,'" 
+				+ hash.get("plan_id") + "','"
+			 + hash.get("kategorie") + ")";
+			if (debug) System.out.println(stm);
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
+			 return false;
+		}
+		 return true;
+
+	}
 	
 }

@@ -179,7 +179,7 @@ public class BerechnePlanungBatch {
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
         	//System.out.println("Open Connection");
-        	 System.out.println("Anzahl der Pläne = "+allplan.size());
+        	 //System.out.println("Anzahl der Pläne = "+allplan.size());
         	for (int j=0;j<allplan.size();j++)
         	{
         		
@@ -459,6 +459,10 @@ public class BerechnePlanungBatch {
 		Calendar cal_tmp = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Hashtable hash_datum= db.getPlanAktuellDateTime(plan_id,kategorie_id);
+		if (hash_datum == null)
+		{
+			return true;
+		}
 		//System.out.println("Hash = "+ hash_datum);
 		String datum=hash_datum.get("datum").toString();
 		System.out.println("Datum = "+datum );
