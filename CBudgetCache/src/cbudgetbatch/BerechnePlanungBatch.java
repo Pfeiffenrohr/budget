@@ -15,6 +15,7 @@ public class BerechnePlanungBatch {
 	static String pass;
 	static String datenbank;
 	boolean debug=false;
+	Calendar cal_now;
 	
 	
 	
@@ -38,13 +39,13 @@ public class BerechnePlanungBatch {
 			//liegt ds jetzige Datum zwischenStart und Endzeit?
 			if (cal_akt.before(cal_begin))
 			{
-				System.out.println("Datum ausserhalb des Zeitraums");
+				//System.out.println("Datum ausserhalb des Zeitraums");
 				return;
 			}
 			
 			if (cal_akt.after(cal_end))
 			{
-				System.out.println("Ende des Planungszeitraums erreicht!");
+				//System.out.println("Ende des Planungszeitraums erreicht!");
 				//cal_akt=(Calendar)cal_end.clone();
 			}
 			String rule_id=((Integer)hash_plan.get("rule_id")).toString();
@@ -158,6 +159,7 @@ public class BerechnePlanungBatch {
 		{
 			System.out.println("berechneTriggerPlan");
 		}
+		cal_now= Calendar.getInstance();
 		DBBatch db = new DBBatch();
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
@@ -169,12 +171,15 @@ public class BerechnePlanungBatch {
         Calendar cal_start= Calendar.getInstance();
         Calendar cal_end= Calendar.getInstance();
         //System.out.println("Open Connection");
-        db.closeConnection();
+        //db.closeConnection();
+        db.dataBaseConnect(user, pass, datenbank);
+        System.out.println("Ermittle alle zu berechnenden Pläne ....");
+        System.out.println("Anzahl der zu berechnenden updates = "+tmp.size() );
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
         	//System.out.println("Open Connection");
-        	db.dataBaseConnect(user, pass, datenbank);
+        	 System.out.println("Anzahl der Pläne = "+allplan.size());
         	for (int j=0;j<allplan.size();j++)
         	{
         		
@@ -182,6 +187,7 @@ public class BerechnePlanungBatch {
         		cal_end.setTime((Date)((Hashtable)allplan.elementAt(j)).get("enddatum"));
         		if (cal.before(cal_end) && cal.after(cal_start))
         		{
+        			 //System.out.println("Plan muss berechnet werden");
         			//Planung ist im Zeitraum und muß berechnet werden
         			Vector vec=null;
         			if (plan_todo.containsKey(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString()))
@@ -203,14 +209,18 @@ public class BerechnePlanungBatch {
         			//Hier noch die Elternkategorien berechnen
         			parents(kat,db,vec,(Integer)((Hashtable)tmp.elementAt(i)).get("kategorie"));
         			plan_todo.put(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString(),vec);
+        		    //System.out.println("Berechnung Ende");
         		}
         	}
         db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
         //System.out.println("Open Connection");
-        db.closeConnection();
+        
         }
-        System.out.println(plan_todo);
+        System.out.println(plan_todo.size()+" Pläne gefunden, die berechnet werden müssen ..");
+        System.out.println("Starte mit den Berechnen der Pläne ....");
+        //System.out.println(plan_todo);
         berechneAllePlan(plan_todo);
+        db.closeConnection();
 	}
 	
 	private void berechneAllePlan(Hashtable hash)
@@ -227,18 +237,21 @@ public class BerechnePlanungBatch {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
 		String akt_datum=formatter.format(cal_akt.getTime());
-		db.closeConnection();
+		
+		
 		//System.out.println("Open Connection");
+
         for (int i=0; i<vec.size();i++)
         {
+        	//Loccke hier den Plan
         	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
         	//System.out.println("Open Connection");
-        	db.dataBaseConnect(user, pass, datenbank);
+        	//db.dataBaseConnect(user, pass, datenbank);
         	if (! hash.containsKey((String)((Integer)hash_plan.get("plan_id")).toString()))
         	{
         		System.out.println("Plan braucht nicht berechnet werden");
         		//System.out.println("Open Connection");
-            	db.closeConnection();
+            	//db.closeConnection();
         		continue;
         	}
         	Vector zuBerechnen=(Vector)hash.get((String)((Integer)hash_plan.get("plan_id")).toString());
@@ -256,15 +269,43 @@ public class BerechnePlanungBatch {
         				System.out.println("Überspringe "+kategorie_id);
         				continue;
         			}
+        			
+        				if (db.getPlanAktuellIsInWork(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        				{
+        					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Wird gerade bearbeitet. "+kategorie_id);
+            				continue;	
+        				}
+        				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        					
+        				{
+        					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie "+kategorie_id);
+        							continue;
+        				}
+        				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        					
+        				{
+        					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie "+kategorie_id);
+        							continue;
+        				}
+        					
+        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        			{
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
+        			else
+        			{
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
+        			
         			berechnePlan(db,hash_plan,kategorie_id.toString());
         			cal_akt= Calendar.getInstance();
         			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
         			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         			else
         			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         		}
         		
@@ -277,20 +318,72 @@ public class BerechnePlanungBatch {
         				System.out.println("Überspringe "+kategorie_id);
         				continue;
         			}
+
+    				if (db.getPlanAktuellIsInWork(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Wird gerade bearbeitet. "+kategorie_id);
+        				continue;	
+    				}
+    				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+    					
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie "+kategorie_id);
+    							continue;
+    				}
+    				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+    					
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie "+kategorie_id);
+    							continue;
+    				}
+        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        			{
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
+        			else
+        			{
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
         			berechnePlan(db,hash_plan,kategorie_id.toString());
         			cal_akt= Calendar.getInstance();
         			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
         			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         			else
         			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         		}
     			if ( zuBerechnen.contains(-1))
     			{
     				System.out.println("Berechne alle Ausgaben "+ "-1");
+
+    				if (db.getPlanAktuellIsInWork(((Integer)hash_plan.get("plan_id")).toString(),-1))
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Wird gerade bearbeitet. Alle Ausgaben");
+        				continue;	
+    				}
+    				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),-1))
+    					
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie -1");
+    							continue;
+    				}
+    				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),-1))
+    					
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie -1");
+    							continue;
+    				}
+    				if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
+        			{
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,1);
+        			}
+        			else
+        			{
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,1);
+        			}
     				berechnePlan(db,hash_plan,"-1");
     				
     			
@@ -298,28 +391,53 @@ public class BerechnePlanungBatch {
     			cal_akt= Calendar.getInstance();
     			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
     			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
+    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,0);
     			}
     			else
     			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
+    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,0);
     			}
     			}
     			//berechnePlan(db,hash_plan,"-2");
     			if ( zuBerechnen.contains(-2))
     			{
     				System.out.println("Berechne alle Einnahmen "+ "-2");
+    				if (db.getPlanAktuellIsInWork(((Integer)hash_plan.get("plan_id")).toString(),-2))
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Wird gerade bearbeitet. Alle Einnahen");
+        				continue;	
+    				}
+    				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),-2))
+    					
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie -2");
+    							continue;
+    				}
+    				if (checkTime(db,((Integer)hash_plan.get("plan_id")).toString(),-2))
+    					
+    				{
+    					System.out.println( ((Integer)hash_plan.get("plan_id")).toString()+" Ist schon Updated mit Kategorie -2");
+    							continue;
+    				}
+    				if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
+        			{
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,1);
+        			}
+        			else
+        			{
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,1);
+        			}
     				berechnePlan(db,hash_plan,"-2");
     				
     			
     			cal_akt= Calendar.getInstance();
     			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
     			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
+    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,0);
     			}
     			else
     			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
+    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,0);
     			}
     			}
 				
@@ -331,9 +449,42 @@ public class BerechnePlanungBatch {
 				
         			}
         	//System.out.println("Open Connection");
-        	db.closeConnection();
+        	
         }
+        db.closeConnection();
 	}
+	
+	private boolean checkTime(DBBatch db,String plan_id,Integer kategorie_id)
+	{
+		Calendar cal_tmp = Calendar.getInstance();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Hashtable hash_datum= db.getPlanAktuellDateTime(plan_id,kategorie_id);
+		//System.out.println("Hash = "+ hash_datum);
+		String datum=hash_datum.get("datum").toString();
+		System.out.println("Datum = "+datum );
+		String zeit=hash_datum.get("zeit").toString();
+		SimpleDateFormat form_datum = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//SimpleDateFormat form_zeit = new SimpleDateFormat("HH:mm:ss");
+		try {
+
+			cal_tmp.setTime(form_datum.parse(datum +" "+zeit));
+			//cal_tmp.setTime(form_zeit.parse(zeit));
+			System.out.println("cal bei start =  = " + formatter.format(cal_now.getTime()));
+			System.out.println("cal aus plan_aktuell = " + formatter.format(cal_tmp.getTime()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if (cal_now.before(cal_tmp))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	private void berechneAllePlan()
 	{
 		if (debug)
@@ -359,15 +510,23 @@ public class BerechnePlanungBatch {
         		for (int j=0;j<kat_aus.size();j++)
         		{
         			Integer kategorie_id=(Integer)((Hashtable)kat_aus.elementAt(j)).get("id");
+        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        			{
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
+        			else
+        			{
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
         			berechnePlan(db,hash_plan,kategorie_id.toString());
         			cal_akt= Calendar.getInstance();
         			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
         			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         			else
         			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         		}
         		
@@ -375,36 +534,61 @@ public class BerechnePlanungBatch {
     			for (int j=0;j<kat_ein.size();j++)
         		{
         			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
+        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
+        			{
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
+        			else
+        			{
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,1);
+        			}
         			berechnePlan(db,hash_plan,kategorie_id.toString());
         			cal_akt= Calendar.getInstance();
         			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
         			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         			else
         			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
+        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id,0);
         			}
         		}
+    			cal_akt= Calendar.getInstance();
+    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
+    			{
+    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,1);
+    			}
+    			else
+    			{
+    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,1);
+    			}
     			berechnePlan(db,hash_plan,"-1");
     			cal_akt= Calendar.getInstance();
     			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
     			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
+    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,0);
     			}
     			else
     			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
+    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1,0);
+    			}
+    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
+    			{
+    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,1);
+    			}
+    			else
+    			{
+    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,1);
     			}
     			berechnePlan(db,hash_plan,"-2");
     			cal_akt= Calendar.getInstance();
     			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
     			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
+    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,0);
     			}
     			else
     			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
+    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2,0);
     			}
         
 				
@@ -419,139 +603,7 @@ public class BerechnePlanungBatch {
         	//System.out.println("Open Connection");
         }
 	}
-	private void berechneNeuPlan()
-	{
-		if (debug)
-		{
-			System.out.println("berechneNeuPlan");
-		}
-		DBBatch db = new DBBatch();
-		//System.out.println("Open Connection");
-   	    db.dataBaseConnect(user, pass, datenbank);   	    
-        Vector vec = db.getAllPlanungen();
-        //System.out.println("Open Connection");
-    	db.closeConnection();
-        Calendar cal_akt= Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-		String akt_datum=formatter.format(cal_akt.getTime());
-        for (int i=0; i<vec.size();i++)
-        {
-        	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	//System.out.println("Open Connection");
-        	 db.dataBaseConnect(user, pass, datenbank);
-        	if (((String)hash_plan.get("batch")).equals("ja"))
-        			{
-        		
-        		Vector kat_aus=db.getAllKategorien("ausgabe");
-        		for (int j=0;j<kat_aus.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_aus.elementAt(j)).get("id");
-        			Hashtable hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id.toString());
-        			if (hash.get("datum")==null)
-        			{
-        			System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-        			berechnePlan(db,hash_plan,kategorie_id.toString());
-        			}
-        			else
-        			{
-        				continue;
-        			}
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-        		
-    			Vector kat_ein=db.getAllKategorien("einnahme");
-    			for (int j=0;j<kat_ein.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
-        			Hashtable hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id.toString());
-        			if (hash.get("datum")==null)
-        			{
-        				System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-        				berechnePlan(db,hash_plan,kategorie_id.toString());
-        			}
-        			else
-        			{
-        				continue;
-        			}
-        			
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-    			Hashtable hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),"-1");
-    			if (hash.get("datum")==null)
-    			{
-    				System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-    				berechnePlan(db,hash_plan,"-1");
-    			}
-    			else
-    			{
-    				//System.out.println("Open Connection");
-    	        	db.closeConnection();
-    				continue;
-    			}
-    			
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			
-    			hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),"-2");
-    			if (hash.get("datum")==null)
-    			{
-    				System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-    				berechnePlan(db,hash_plan,"-2");
-    			}
-    			else
-    			{
-    				//System.out.println("Open Connection");
-    	        	db.closeConnection();
-    				continue;
-    			}
-    			
-    			
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-        
-				
-				
-				//*****************************************************
-				
-    			
-    			
-				
-        			}
-        	//System.out.println("Open Connection");
-        	db.closeConnection();
-        }
-	}
+
 	
 	private void parents (Vector kat,DB db,Vector vec,Integer kat_id)
 	{
@@ -694,9 +746,6 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
        {
         batch.berechneTriggerPlan();
        }
-       if (mode.equals("neu"))
-       {
-        batch.berechneNeuPlan();
-       }
+      
     }
 }
