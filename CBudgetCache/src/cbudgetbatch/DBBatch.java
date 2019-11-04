@@ -219,6 +219,8 @@ public class DBBatch extends DB {
 	
 	public Hashtable getPlanAktuellDateTime(String plan_id ,Integer kategorie) {
 		Hashtable hash = new Hashtable();
+		//hash.put("datum", (Date) res.getDate("datum"));
+		
 		try {
 			
 			PreparedStatement stmt;
@@ -310,5 +312,37 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
-	
+	public Hashtable getJob() {
+		Hashtable hash = new Hashtable();
+		try {
+			
+			PreparedStatement stmt;
+			ResultSet res = null;
+			ResultSet delres = null;
+			stmt = con
+					.prepareStatement("select id,plan_id,kategorie from tmpplanningjobs order by id limit 1");
+			res = stmt.executeQuery();
+			while (res.next()) {
+				Vector vec = new Vector();
+				Integer kategorie = (Integer) res.getInt("kategorie");
+				String plan_id=  (String) res.getString("plan_id");
+				vec.addElement(kategorie);				
+				hash.put(plan_id,vec);	
+				PreparedStatement stmtdel= con.prepareStatement("delete from tmpplanningjobs where plan_id ='"
+						     + plan_id + "' and kategorie = "+kategorie );
+				
+				System.out.println("delete from tmpplanningjobs where plan_id ='"
+					     + plan_id + "' and kategorie = "+kategorie);
+				stmtdel.execute();
+			}
+			
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return hash;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		
+		return hash;
+	}
 }

@@ -253,13 +253,14 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
-	public boolean insertJobs(Hashtable hash) {
+	public boolean insertJobs(String plan_id, Integer kategorie) {
 		try {
 
 			PreparedStatement stmt;
-			String stm= "insert into tmpPlanningJobs values(default,'" 
-				+ hash.get("plan_id") + "','"
-			 + hash.get("kategorie") + ")";
+			String stm= "insert into tmpplanningjobs values(default,'" 
+				+ plan_id + "',"
+			 + kategorie + ")";
+			debug=true;
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -270,5 +271,6 @@ public class DBBatch extends DB {
 		 return true;
 
 	}
+	
 	
 }

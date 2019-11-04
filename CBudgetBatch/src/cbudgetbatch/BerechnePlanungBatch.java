@@ -3,6 +3,7 @@ package cbudgetbatch;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Vector;
 import java.util.Hashtable;
 
@@ -205,9 +206,19 @@ public class BerechnePlanungBatch {
         			plan_todo.put(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString(),vec);
         		}
         	}
-        	
-        	db.insertJobs(plan_todo);
-        db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
+        Enumeration<String> keys = plan_todo.keys();
+        while(keys.hasMoreElements()){
+            String key = keys.nextElement();
+            Vector vec = (Vector)plan_todo.get(key);
+            for (int j=0; j< vec.size(); j++)
+            {
+            	 db.insertJobs(key,(Integer)vec.elementAt(j));
+              // System.out.println("Value of "+key+" is: "+hm.get(key));
+            }
+            db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
+        }
+       
+      
         //System.out.println("Open Connection");
         db.closeConnection();
         }
