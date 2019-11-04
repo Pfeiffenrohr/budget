@@ -16,7 +16,7 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
- Start the 3rd process
+ //Start the 3rd process
 /var/lib/cbudgetbatch/forecast.sh -D &
 status=$?
 if [ $status -ne 0 ]; then
