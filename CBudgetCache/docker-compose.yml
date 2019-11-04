@@ -4,4 +4,4 @@ cbudgetcache:
   environment:
       connectstring: jdbc:postgresql://192.168.2.29/
       forecastComputeIntervall: 10000
-      cacheComputeIntervall: 300
+      cacheComputeIntervall: 30
