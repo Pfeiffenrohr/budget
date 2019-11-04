@@ -3,6 +3,7 @@ package cbudgetbatch;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Vector;
 import java.util.Hashtable;
 
@@ -167,14 +168,11 @@ public class BerechnePlanungBatch {
         Hashtable plan_todo = new Hashtable();
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
-        Calendar cal_end= Calendar.getInstance();
-        //System.out.println("Open Connection");
-        db.closeConnection();
+        Calendar cal_end= Calendar.getInstance();     
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
         	//System.out.println("Open Connection");
-        	db.dataBaseConnect(user, pass, datenbank);
         	for (int j=0;j<allplan.size();j++)
         	{
         		
@@ -205,354 +203,27 @@ public class BerechnePlanungBatch {
         			plan_todo.put(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString(),vec);
         		}
         	}
-        db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
-        //System.out.println("Open Connection");
-        db.closeConnection();
-        }
-        System.out.println(plan_todo);
-        berechneAllePlan(plan_todo);
-	}
-	
-	private void berechneAllePlan(Hashtable hash)
-	{
-		if (debug)
-		{
-			System.out.println("berechneAllePlan");
-		}
-		DBBatch db = new DBBatch();
-		//System.out.println("Open Connection");
-    	db.dataBaseConnect(user, pass, datenbank);
-        Vector vec = db.getAllPlanungen();
-        Calendar cal_akt= Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-		String akt_datum=formatter.format(cal_akt.getTime());
-		db.closeConnection();
-		//System.out.println("Open Connection");
-        for (int i=0; i<vec.size();i++)
-        {
-        	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	//System.out.println("Open Connection");
-        	db.dataBaseConnect(user, pass, datenbank);
-        	if (! hash.containsKey((String)((Integer)hash_plan.get("plan_id")).toString()))
-        	{
-        		System.out.println("Plan braucht nicht berechnet werden");
-        		//System.out.println("Open Connection");
-            	db.closeConnection();
-        		continue;
-        	}
-        	Vector zuBerechnen=(Vector)hash.get((String)((Integer)hash_plan.get("plan_id")).toString());
-        	if (((String)hash_plan.get("batch")).equals("ja"))
-        			{
-        		
-        		Vector kat_aus=db.getAllKategorien("ausgabe");
-        		for (int j=0;j<kat_aus.size();j++)
-        		{
-        			
-        			Integer kategorie_id=(Integer)((Hashtable)kat_aus.elementAt(j)).get("id");
-        			//System.out.println(kat_aus);
-        			if (! zuBerechnen.contains(kategorie_id))
-        			{
-        				System.out.println("Überspringe "+kategorie_id);
-        				continue;
-        			}
-        			berechnePlan(db,hash_plan,kategorie_id.toString());
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-        		
-    			Vector kat_ein=db.getAllKategorien("einnahme");
-    			for (int j=0;j<kat_ein.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
-        			if (! zuBerechnen.contains(kategorie_id))
-        			{
-        				System.out.println("Überspringe "+kategorie_id);
-        				continue;
-        			}
-        			berechnePlan(db,hash_plan,kategorie_id.toString());
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-    			if ( zuBerechnen.contains(-1))
-    			{
-    				System.out.println("Berechne alle Ausgaben "+ "-1");
-    				berechnePlan(db,hash_plan,"-1");
-    				
-    			
-    			
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			}
-    			//berechnePlan(db,hash_plan,"-2");
-    			if ( zuBerechnen.contains(-2))
-    			{
-    				System.out.println("Berechne alle Einnahmen "+ "-2");
-    				berechnePlan(db,hash_plan,"-2");
-    				
-    			
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-    			}
-				
-				
-				//*****************************************************
-				
-    			
-    			
-				
-        			}
-        	//System.out.println("Open Connection");
-        	db.closeConnection();
-        }
-	}
-	private void berechneAllePlan()
-	{
-		if (debug)
-		{
-			System.out.println("berechneAllePlan()");
-		}
-		DBBatch db = new DBBatch();
        
-        Vector vec = db.getAllPlanungen();
-        Calendar cal_akt= Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-		String akt_datum=formatter.format(cal_akt.getTime());
-        for (int i=0; i<vec.size();i++)
-        {
-        	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	//System.out.println("Open Connection");
-        	 db.dataBaseConnect(user, pass, datenbank);
-        	if (((String)hash_plan.get("batch")).equals("ja"))
-        			{
-        		
-        		Vector kat_aus=db.getAllKategorien("ausgabe");
-        		for (int j=0;j<kat_aus.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_aus.elementAt(j)).get("id");
-        			berechnePlan(db,hash_plan,kategorie_id.toString());
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-        		
-    			Vector kat_ein=db.getAllKategorien("einnahme");
-    			for (int j=0;j<kat_ein.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
-        			berechnePlan(db,hash_plan,kategorie_id.toString());
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-    			berechnePlan(db,hash_plan,"-1");
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			berechnePlan(db,hash_plan,"-2");
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-        
-				
-				
-				//*****************************************************
-				
-    			
-    			
-				
-        			}
-        	db.closeConnection();
-        	//System.out.println("Open Connection");
+            db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
         }
-	}
-	private void berechneNeuPlan()
-	{
-		if (debug)
-		{
-			System.out.println("berechneNeuPlan");
-		}
-		DBBatch db = new DBBatch();
-		//System.out.println("Open Connection");
-   	    db.dataBaseConnect(user, pass, datenbank);   	    
-        Vector vec = db.getAllPlanungen();
+       
+        Enumeration<String> keys = plan_todo.keys();
+        while(keys.hasMoreElements()){
+            String key = keys.nextElement();
+            Vector vec = (Vector)plan_todo.get(key);
+            for (int j=0; j< vec.size(); j++)
+            {
+            	 db.insertJobs(key,(Integer)vec.elementAt(j));
+              // System.out.println("Value of "+key+" is: "+hm.get(key));
+            }
         //System.out.println("Open Connection");
-    	db.closeConnection();
-        Calendar cal_akt= Calendar.getInstance();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
-		String akt_datum=formatter.format(cal_akt.getTime());
-        for (int i=0; i<vec.size();i++)
-        {
-        	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	//System.out.println("Open Connection");
-        	 db.dataBaseConnect(user, pass, datenbank);
-        	if (((String)hash_plan.get("batch")).equals("ja"))
-        			{
-        		
-        		Vector kat_aus=db.getAllKategorien("ausgabe");
-        		for (int j=0;j<kat_aus.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_aus.elementAt(j)).get("id");
-        			Hashtable hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id.toString());
-        			if (hash.get("datum")==null)
-        			{
-        			System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-        			berechnePlan(db,hash_plan,kategorie_id.toString());
-        			}
-        			else
-        			{
-        				continue;
-        			}
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-        		
-    			Vector kat_ein=db.getAllKategorien("einnahme");
-    			for (int j=0;j<kat_ein.size();j++)
-        		{
-        			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
-        			Hashtable hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id.toString());
-        			if (hash.get("datum")==null)
-        			{
-        				System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-        				berechnePlan(db,hash_plan,kategorie_id.toString());
-        			}
-        			else
-        			{
-        				continue;
-        			}
-        			
-        			cal_akt= Calendar.getInstance();
-        			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),kategorie_id))
-        			{
-        				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        			else
-        			{
-        			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),kategorie_id);
-        			}
-        		}
-    			Hashtable hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),"-1");
-    			if (hash.get("datum")==null)
-    			{
-    				System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-    				berechnePlan(db,hash_plan,"-1");
-    			}
-    			else
-    			{
-    				//System.out.println("Open Connection");
-    	        	db.closeConnection();
-    				continue;
-    			}
-    			
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-1))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-1);
-    			}
-    			
-    			hash=db.getAllPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),"-2");
-    			if (hash.get("datum")==null)
-    			{
-    				System.out.println("Berechne Plan "+((String)hash_plan.get("name")));	
-    				berechnePlan(db,hash_plan,"-2");
-    			}
-    			else
-    			{
-    				//System.out.println("Open Connection");
-    	        	db.closeConnection();
-    				continue;
-    			}
-    			
-    			
-    			cal_akt= Calendar.getInstance();
-    			if (db.getPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(),-2))
-    			{
-    				db.updatePlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-    			else
-    			{
-    			db.insertPlanAktuell(((Integer)hash_plan.get("plan_id")).toString(), formatter.format(cal_akt.getTime()), formatTime.format(cal_akt.getTime()),-2);
-    			}
-        
-				
-				
-				//*****************************************************
-				
-    			
-    			
-				
-        			}
-        	//System.out.println("Open Connection");
-        	db.closeConnection();
+      
         }
+        db.closeConnection();
+        System.out.println(plan_todo);
+        //berechneAllePlan(plan_todo);
 	}
-	
+
 	private void parents (Vector kat,DB db,Vector vec,Integer kat_id)
 	{
 		if (debug)
@@ -686,17 +357,11 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
 		datenbank = args [2];
 		String mode =args [3];
        BerechnePlanungBatch batch = new BerechnePlanungBatch();
-       if (mode.equals("all"))
-       {
-       batch.berechneAllePlan();
-       }
+      
        if (mode.equals("trigger"))
        {
         batch.berechneTriggerPlan();
        }
-       if (mode.equals("neu"))
-       {
-        batch.berechneNeuPlan();
-       }
+      
     }
 }
