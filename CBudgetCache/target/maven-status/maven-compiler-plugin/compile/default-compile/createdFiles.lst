@@ -1,0 +1,5 @@
+META-INF/maven/CBudgetCache/CBudgetCache/pom.properties
+META-INF/maven/CBudgetCache/CBudgetCache/pom.xml
+cbudgetbatch/BerechnePlanungBatch.class
+cbudgetbatch/DBBatch.class
+META-INF/MANIFEST.MF
