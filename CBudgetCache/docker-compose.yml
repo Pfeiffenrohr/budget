@@ -1,5 +1,5 @@
-cbudgetbatch:  
-  image: pfeiffenrohr/cbudgetbatch:latest
+cbudgetcache:  
+  image: pfeiffenrohr/cbudgetcache:latest
   ports:
     - "7777:7777"
   restart: always
