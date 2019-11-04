@@ -142,6 +142,36 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
+	public boolean getPlanAktuellIsInWork(String plan_id ,Integer kategorie) {
+		//Hashtable hash = new Hashtable();
+		try {
+			
+			PreparedStatement stmt;
+			ResultSet res = null;
+			Integer isInwork=0;
+			stmt = con
+					.prepareStatement("select inwork from plan_aktuell where plan_id="+plan_id+" and kategorie="+kategorie);
+			res = stmt.executeQuery();
+			while (res.next()) {
+			 isInwork =new Integer(res.getInt("inwork"));
+			}
+		
+		
+		if (isInwork==1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+			
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
+			return false;
+		}
+	}
+	
 	public boolean getPlanAktuell(String plan_id ,Integer kategorie) {
 		Hashtable hash = new Hashtable();
 		try {
@@ -166,7 +196,7 @@ public class DBBatch extends DB {
 	}
 	
 	
-	public boolean updatePlanAktuell(String plan_id, String datum, String zeit,Integer kategorie)
+	public boolean updatePlanAktuell(String plan_id, String datum, String zeit,Integer kategorie,Integer inwork)
 	{
 		try {
 
@@ -174,6 +204,7 @@ public class DBBatch extends DB {
 			String stm= "update plan_aktuell set " +
 			"plan_id = "+ plan_id + "," +
 			"datum='"+datum+"',"+
+			"inwork="+ inwork+","+
 			"zeit = '"+zeit+"' where plan_id = "+plan_id+" and kategorie="+kategorie;
 			//if (debug) 
 			System.out.println(stm);
@@ -185,7 +216,32 @@ public class DBBatch extends DB {
 		}
 		 return true;
 	}
-	public boolean insertPlanAktuell(String plan_id, String datum, String zeit,Integer kategorie)
+	
+	public Hashtable getPlanAktuellDateTime(String plan_id ,Integer kategorie) {
+		Hashtable hash = new Hashtable();
+		try {
+			
+			PreparedStatement stmt;
+			ResultSet res = null;
+			stmt = con
+					.prepareStatement("select datum,zeit from plan_aktuell where plan_id="+plan_id+" and kategorie="+kategorie);
+			res = stmt.executeQuery();
+			
+			while (res.next()) {
+				hash.put("datum", (Date) res.getDate("datum"));	
+				hash.put("zeit", (String) res.getString("zeit"));	
+				}
+			
+		return hash;	
+			
+			
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
+			return hash;
+		}
+	}
+	
+	public boolean insertPlanAktuell(String plan_id, String datum, String zeit,Integer kategorie,Integer inwork)
 	{
 		try {
 
@@ -194,7 +250,8 @@ public class DBBatch extends DB {
 				+ plan_id + ",'"
 				+ datum + "','"
 			    + zeit + "',"
-			    + kategorie +")";
+			    + kategorie +","
+			    + inwork + ")";
 			//if (debug) 
 				System.out.println(stm);
 			stmt = con.prepareStatement(stm);
