@@ -168,14 +168,11 @@ public class BerechnePlanungBatch {
         Hashtable plan_todo = new Hashtable();
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
-        Calendar cal_end= Calendar.getInstance();
-        //System.out.println("Open Connection");
-        db.closeConnection();
+        Calendar cal_end= Calendar.getInstance();     
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
         	//System.out.println("Open Connection");
-        	db.dataBaseConnect(user, pass, datenbank);
         	for (int j=0;j<allplan.size();j++)
         	{
         		
@@ -206,6 +203,10 @@ public class BerechnePlanungBatch {
         			plan_todo.put(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString(),vec);
         		}
         	}
+       
+            db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
+        }
+       
         Enumeration<String> keys = plan_todo.keys();
         while(keys.hasMoreElements()){
             String key = keys.nextElement();
@@ -215,13 +216,10 @@ public class BerechnePlanungBatch {
             	 db.insertJobs(key,(Integer)vec.elementAt(j));
               // System.out.println("Value of "+key+" is: "+hm.get(key));
             }
-            db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
-        }
-       
-      
         //System.out.println("Open Connection");
-        db.closeConnection();
+      
         }
+        db.closeConnection();
         System.out.println(plan_todo);
         //berechneAllePlan(plan_todo);
 	}

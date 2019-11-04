@@ -402,7 +402,7 @@ public class BerechnePlanungBatch {
 		SimpleDateFormat form_datum = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		//SimpleDateFormat form_zeit = new SimpleDateFormat("HH:mm:ss");
 		try {
-
+  
 			cal_tmp.setTime(form_datum.parse(datum +" "+zeit));
 			//cal_tmp.setTime(form_zeit.parse(zeit));
 			System.out.println("cal bei start =  = " + formatter.format(cal_now.getTime()));

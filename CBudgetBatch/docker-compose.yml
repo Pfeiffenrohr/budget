@@ -6,4 +6,4 @@ cbudgetbatch:
   environment:
       connectstring: jdbc:postgresql://192.168.2.28/
       forecastComputeIntervall: 30000
-      cacheComputeIntervall: 300
+      cacheComputeIntervall: 30
