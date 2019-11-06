@@ -155,10 +155,10 @@ public class BerechnePlanungBatch {
 	}
 	private void berechneTriggerPlan()
 	{
-		if (debug)
-		{
-			System.out.println("berechneTriggerPlan");
-		}
+
+		
+			System.out.println("berechneTriggerPlan ..");
+		
 		DBBatch db = new DBBatch();
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
@@ -168,7 +168,8 @@ public class BerechnePlanungBatch {
         Hashtable plan_todo = new Hashtable();
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
-        Calendar cal_end= Calendar.getInstance();     
+        Calendar cal_end= Calendar.getInstance(); 
+        System.out.println("Gefunden "+ tmp.size()+" Einträge");
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));

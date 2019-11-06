@@ -1,5 +1,4 @@
 #!/bin/bash
-exit 0
 cd /var/lib/cbudgetbatch
 while [ 1 -eq 1 ]
 do
