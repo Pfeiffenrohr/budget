@@ -170,7 +170,10 @@ public class BerechnePlanungBatch {
 		String akt_datum=formatter.format(cal_akt.getTime());
 		Hashtable hash= db.getJob();
 		
-		System.out.println(hash);
+		
+		
+		//System.out.println(hash);
+		//System.out.println(vec);
 
         for (int i=0; i<vec.size();i++)
         {
@@ -393,7 +396,7 @@ public class BerechnePlanungBatch {
 		Hashtable hash_datum= db.getPlanAktuellDateTime(plan_id,kategorie_id);
 		if (hash_datum == null || hash_datum.isEmpty())
 		{
-			return true;
+			return false;
 		} 
 		System.out.println("Hash = "+ hash_datum);
 		String datum=hash_datum.get("datum").toString();
