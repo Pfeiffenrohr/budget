@@ -183,7 +183,7 @@ import javax.servlet.http.HttpSession;
 								.get("name")));
 				}
 				//Alle Ausgben eintragen
-				if (db.updatePlanung_daten((Integer) hash.get("plan_id"),99998,summe.toString(),"relativ" )) {
+				if (db.updatePlanung_daten((Integer) hash.get("plan_id"),-1,summe.toString(),"relativ" )) {
 					out.println("Alle Ausgben erfolgreich erstellt");
 					out.println("<p>");
 				} else {
@@ -214,7 +214,7 @@ import javax.servlet.http.HttpSession;
 								.get("name")));
 				}
 				//Alle Einnahmen eintragen
-				if (db.updatePlanung_daten((Integer) hash.get("plan_id"),99999,summe.toString(),"relativ" )) {
+				if (db.updatePlanung_daten((Integer) hash.get("plan_id"),-1,summe.toString(),"relativ" )) {
 					out.println("Alle Einnahmen erfolgreich erstellt");
 					out.println("<p>");
 				} else {
