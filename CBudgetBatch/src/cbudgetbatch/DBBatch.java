@@ -253,10 +253,38 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
+	public boolean checkPlanningJob(String plan_id,Integer kategorie)
+	{
+	try {
+
+		PreparedStatement stmt;
+		ResultSet res = null;
+		String str_stm="select id from tmpplanningjobs where plan_id='"+plan_id+"' and kategorie = "+kategorie;
+		//System.out.println(str_stm);
+		stmt = con.prepareStatement(str_stm);
+		res = stmt.executeQuery();
+		if (res.next()) 
+		{
+			return true;
+		}
+	} catch (SQLException e) {
+		System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+		return false;
+	}
+	System.out.println("Select-Anweisung ausgeführt");
+	// return summe/(float)getAnz(tag,monat,year);
+	return false;
+}
+	
 	public boolean insertJobs(String plan_id, Integer kategorie) {
 		try {
 
 			PreparedStatement stmt;
+			if (checkPlanningJob(plan_id,kategorie))
+			{
+				System.out.println("Job ist schon eingetragen");
+				return true;
+			}
 			String stm= "insert into tmpplanningjobs values(default,'" 
 				+ plan_id + "',"
 			 + kategorie + ")";
