@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=false;
+    protected boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -1876,6 +1876,51 @@ public class DB {
 		}
 		return true;
 	}
+	public boolean checkPlanningJob(String plan_id,Integer kategorie)
+	{
+	try {
+
+		PreparedStatement stmt;
+		ResultSet res = null;
+		String str_stm="select id from tmpplanningjobs where plan_id='"+plan_id+"' and kategorie = "+kategorie;
+		//System.out.println(str_stm);
+		stmt = con.prepareStatement(str_stm);
+		res = stmt.executeQuery();
+		if (res.next()) 
+		{
+			return true;
+		}
+	} catch (SQLException e) {
+		System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+		return false;
+	}
+	System.out.println("Select-Anweisung ausgeführt");
+	// return summe/(float)getAnz(tag,monat,year);
+	return false;
+}
+	public boolean insertJobs(String plan_id, Integer kategorie) {
+		try {
+
+			PreparedStatement stmt;
+			if (checkPlanningJob(plan_id,kategorie))
+			{
+				System.out.println("Job ist schon eingetragen");
+				return true;
+			}
+			String stm= "insert into tmpplanningjobs values(default,'" 
+				+ plan_id + "',"
+			 + kategorie + ")";
+			debug=true;
+			if (debug) System.out.println(stm);
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
+			 return false;
+		}
+		 return true;
+
+	}
 	
 	public boolean insertPlanung_daten(Integer plan_id,Integer kategorie,String wert,String absolute) {
 		try {
@@ -1890,12 +1935,7 @@ public class DB {
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 			//Der Plan muss dann auch neu berechnet werden
-			stm= "insert into tmpplanningjobs values(default,'" 
-					+ plan_id+ "',"
-					+ kategorie+")";
-			if (debug) System.out.println(stm);
-			stmt = con.prepareStatement(stm);
-			stmt.executeUpdate();
+			insertJobs(plan_id.toString(),kategorie);
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
 			 return false;
@@ -1925,14 +1965,8 @@ public class DB {
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 			}
-			stmt.executeUpdate();
-			//Der Plan muss dann auch neu berechnet werden
-			stm= "insert into tmpplanningjobs values(default,'" 
-					+ plan_id+ "',"
-					+ kategorie+")";
-			if (debug) System.out.println(stm);
-			stmt = con.prepareStatement(stm);
-			stmt.executeUpdate();
+			
+			insertJobs(plan_id.toString(),kategorie);
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
 			 return false;
