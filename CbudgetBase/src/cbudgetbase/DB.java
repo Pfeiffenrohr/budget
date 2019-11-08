@@ -13,7 +13,7 @@ public class DB {
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
-	 */
+	 */ 
 
 	/*public boolean dataBaseConnect() {
 		if (debug) if (debug) System.out.println("Verbinde mich zur Datenbank");
