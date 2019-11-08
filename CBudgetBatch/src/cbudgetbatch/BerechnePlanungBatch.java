@@ -3,6 +3,7 @@ package cbudgetbatch;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Vector;
 import java.util.Hashtable;
 
@@ -154,10 +155,10 @@ public class BerechnePlanungBatch {
 	}
 	private void berechneTriggerPlan()
 	{
-		if (debug)
-		{
-			System.out.println("berechneTriggerPlan");
-		}
+
+		
+			System.out.println("berechneTriggerPlan ..");
+		
 		DBBatch db = new DBBatch();
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
@@ -167,14 +168,12 @@ public class BerechnePlanungBatch {
         Hashtable plan_todo = new Hashtable();
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
-        Calendar cal_end= Calendar.getInstance();
-        //System.out.println("Open Connection");
-        db.closeConnection();
+        Calendar cal_end= Calendar.getInstance(); 
+        System.out.println("Gefunden "+ tmp.size()+" Einträge");
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
         	//System.out.println("Open Connection");
-        	db.dataBaseConnect(user, pass, datenbank);
         	for (int j=0;j<allplan.size();j++)
         	{
         		
@@ -205,12 +204,23 @@ public class BerechnePlanungBatch {
         			plan_todo.put(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString(),vec);
         		}
         	}
-        	
-        	db.insertJobs(plan_todo);
-        db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
-        //System.out.println("Open Connection");
-        db.closeConnection();
+       
+            db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
         }
+       
+        Enumeration<String> keys = plan_todo.keys();
+        while(keys.hasMoreElements()){
+            String key = keys.nextElement();
+            Vector vec = (Vector)plan_todo.get(key);
+            for (int j=0; j< vec.size(); j++)
+            {
+            	 db.insertJobs(key,(Integer)vec.elementAt(j));
+              // System.out.println("Value of "+key+" is: "+hm.get(key));
+            }
+        //System.out.println("Open Connection");
+      
+        }
+        db.closeConnection();
         System.out.println(plan_todo);
         //berechneAllePlan(plan_todo);
 	}

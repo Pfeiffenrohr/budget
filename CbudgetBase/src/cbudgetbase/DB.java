@@ -9,11 +9,11 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=true;
+    protected boolean debug=false;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
-	 */
+	 */ 
 
 	/*public boolean dataBaseConnect() {
 		if (debug) if (debug) System.out.println("Verbinde mich zur Datenbank");
@@ -1889,7 +1889,13 @@ public class DB {
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
-			
+			//Der Plan muss dann auch neu berechnet werden
+			stm= "insert into tmpplanningjobs values(default,'" 
+					+ plan_id+ "',"
+					+ kategorie+")";
+			if (debug) System.out.println(stm);
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
 			 return false;
@@ -1919,6 +1925,14 @@ public class DB {
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 			}
+			stmt.executeUpdate();
+			//Der Plan muss dann auch neu berechnet werden
+			stm= "insert into tmpplanningjobs values(default,'" 
+					+ plan_id+ "',"
+					+ kategorie+")";
+			if (debug) System.out.println(stm);
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
 			 return false;
