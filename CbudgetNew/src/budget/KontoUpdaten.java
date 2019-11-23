@@ -1,6 +1,9 @@
 package budget;
 
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Hashtable;
 import cbudgetbase.DB;
 
@@ -52,6 +55,42 @@ import javax.servlet.http.HttpSession;
 				String name = request.getParameter("Name");
 				String beschreibung = request.getParameter("Beschreibung");
 				String versteckt = request.getParameter("versteckt");
+				String aktStand = request.getParameter("newValue");
+				
+				if (! aktStand.equals(""))
+				{
+					try {
+					//Hier sie Differenz ausrechnen und als Ertrag eintragen
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+					Calendar cal= Calendar.getInstance();
+					Double akt = db.getAktuellerKontostand(name, formatter.format(cal.getTime()), "");
+					Double neu = new Double(aktStand);
+					Double diff = neu - akt;
+					DecimalFormat f = new DecimalFormat("#0.00");
+					System.out.println("diff "+f.format(diff));
+					//Integer konto_id = db.getKontoId(name);
+					Hashtable trans = new Hashtable();
+					hash.put("name","Ertrag");
+					hash.put("konto",name);
+					hash.put("wert",new Double(f.format(diff).replace(',','.')));
+					hash.put("datum",formatter.format(cal.getTime()));
+					hash.put("partner","");
+					hash.put("beschreibung","");
+					hash.put("partner","");
+					hash.put("kategorie","Zinsen Dividenden");
+					hash.put("kor_id",0);
+					hash.put("cycle",0);
+					hash.put("planed","n");
+				
+					db.insertTransaktion(hash, 0);
+					}
+					catch (NumberFormatException e) {
+						out.println("<font color=\"red\">!!!Betrag hat nicht das richtige Format!!!</font>");
+						out.println("<html>");
+						out.println("<body>");
+						return;
+					}
+				}
 				
 				if (versteckt==null)
 				{

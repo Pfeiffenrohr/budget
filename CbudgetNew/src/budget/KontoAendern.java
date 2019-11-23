@@ -106,6 +106,7 @@ import javax.servlet.http.HttpSession;
 				out.println("<p>");
 				
 				out.println("<input type=\"checkbox\" name=\"loeschen\" value=\"ja\"> Konto komplett löschen <br>");
+				out.println("<p>Aktueller Stand:<br><input name=\"newValue\" type=\"text\" size=\"40\" maxlength=\"50\"></p>");
 				out.println("<input type=\"submit\" value=\" Absenden \">");
 				out.println("</form>");
 
