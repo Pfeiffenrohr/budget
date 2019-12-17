@@ -71,7 +71,7 @@ public class Forecast {
 					calstart.add(Calendar.MONTH, 1);
 					calstart.add(Calendar.DATE, 6);
 					 while (calstart.before(cal_end)) 
-							//TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
+						
 						{
 						 Hashtable trans = new Hashtable();
 						    

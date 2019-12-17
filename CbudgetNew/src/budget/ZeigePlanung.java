@@ -128,11 +128,24 @@ import javax.servlet.http.HttpSession;
 					Double wert_relativ;
 					Double summe;
 					Double prozent;
+					Hashtable hash = new Hashtable();
 					for (int i=0; i<kat_aus.size();i++)
 					{
 						String kategorie=(String)((Hashtable)kat_aus.elementAt(i)).get("name");
+						hash=db.foundCache((Integer)((Hashtable)kat_aus.elementAt(i)).get("id"),new Integer(plan_id),akt_datum);
+						if (hash!=null)
+						{
+							System.out.println("Found in Cache");
+							wert_relativ=(Double)hash.get("wert_relativ");
+							summe=(Double)hash.get("summe");
+						}
+						else
+						{
 						 wert_relativ=db.getKategorienAlleRecursivPlanung(kategorie,new Integer(plan_id),faktor);
 						 summe=db.getKategorienAlleRecursivSumme(kategorie,formatter.format(hash_plan.get("startdatum")),akt_datum,rule);
+						}
+						System.out.println("Hash = "+hash);
+						 //TODO: Hier aus dem Cache holen
 					    prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
@@ -154,9 +167,19 @@ import javax.servlet.http.HttpSession;
 						}
 					}
 					//alle Ausgaben
+					hash=db.foundCache(-1,new Integer(plan_id),akt_datum);
+					if (hash!=null)
+					{
+						System.out.println("Found in Cache");
+						wert_relativ=(Double)hash.get("wert_relativ");
+						summe=(Double)hash.get("summe");
+					}
+					else
+					{
 					wert_relativ=db.getPlanungAllWhere(new Integer(plan_id),faktor,buildWhere(hf,db,"ausgabe",plan_id,""));
 					summe=db.getKategorienAlleSummeWhere(formatter.format(hash_plan.get("startdatum")),akt_datum,buildWhere(hf,db,"ausgabe",plan_id,rule));
-					 prozent=0.0;
+					} 
+					prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
 							prozent=0.0;
@@ -196,8 +219,19 @@ import javax.servlet.http.HttpSession;
 					for (int i=0; i<kat_ein.size();i++)
 					{
 						String kategorie=(String)((Hashtable)kat_ein.elementAt(i)).get("name");
+						hash=db.foundCache((Integer)((Hashtable)kat_ein.elementAt(i)).get("id"),new Integer(plan_id),akt_datum);
+						if (hash!=null)
+						{
+							System.out.println("Found in Cache");
+							wert_relativ=(Double)hash.get("wert_relativ");
+							summe=(Double)hash.get("summe");
+						}
+						else
+						{
 					    wert_relativ=db.getKategorienAlleRecursivPlanung(kategorie,new Integer(plan_id),faktor);
 						summe=db.getKategorienAlleRecursivSumme(kategorie,formatter.format(hash_plan.get("startdatum")),akt_datum,rule);
+						}
+						//TODO: Hier aus dem Cache holen
 						prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
@@ -219,9 +253,19 @@ import javax.servlet.http.HttpSession;
 					}
 					
 					//alle Einnahmen
+					hash=db.foundCache(-2,new Integer(plan_id),akt_datum);
+					if (hash!=null)
+					{
+						System.out.println("Found in Cache");
+						wert_relativ=(Double)hash.get("wert_relativ");
+						summe=(Double)hash.get("summe");
+					}
+					else
+					{
 					wert_relativ=db.getPlanungAllWhere(new Integer(plan_id),faktor,buildWhere(hf,db,"einnahme",plan_id,""));
 					summe=db.getKategorienAlleSummeWhere(formatter.format(hash_plan.get("startdatum")),akt_datum,buildWhere(hf,db,"einnahme",plan_id,rule));
-					 prozent=0.0;
+					} 
+					prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
 							prozent=0.0;
@@ -248,6 +292,7 @@ import javax.servlet.http.HttpSession;
 					out.println("</body>");
 					out.println("</html>");
 					out.close();
+					
 				}catch (Throwable theException) {
 						theException.printStackTrace();
 					}

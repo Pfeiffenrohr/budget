@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    protected boolean debug=false;
+    protected boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -2186,7 +2186,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,plan_id,kategorie_id,datum,wert from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" order by datum");
+					.prepareStatement("select id,plan_id,kategorie_id,datum,wert,summe,wert_relativ from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" order by datum");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -2195,6 +2195,8 @@ public class DB {
 				hash.put("kategorie", new Integer(res.getInt("kategorie_id")));
 				hash.put("datum", (Date) res.getDate("datum"));
 				hash.put("wert", (Double) res.getDouble("wert"));
+				hash.put("summe", (Double) res.getDouble("summe"));
+				hash.put("wert_relativ", (Double) res.getDouble("wert_relativ"));
 				
 				vec.addElement(hash);
 			}
@@ -2207,6 +2209,43 @@ public class DB {
 		return vec;
 	}
 
+	public Hashtable foundCache(Integer kategorie_id,Integer plan_id,String datum)
+	{
+		Hashtable hash = new Hashtable();
+	try {
+		
+		PreparedStatement stmt;
+		ResultSet res = null;
+		stmt = con
+				.prepareStatement("select summe,wert_relativ from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" and datum ='"+datum+"'");
+		if (debug)
+		{
+		System.out.println("select summe,wert_relativ from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" and datum = '"+datum+"'");	
+		}
+		res = stmt.executeQuery();
+		if (! res.isBeforeFirst())
+		{
+			return null;
+		}
+		while (res.next()) {
+			
+			hash.put("summe", (Double) res.getDouble("summe"));
+			hash.put("wert_relativ", (Double) res.getDouble("wert_relativ"));
+			
+			
+		}
+	} catch (SQLException e) {
+		System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+		return null;
+	}
+	if (debug) System.out.println("Select-Anweisung ausgeführt");
+	// return summe/(float)getAnz(tag,monat,year);
+	System.out.println("Hash in DB =" +hash);
+	return hash;
+}
+	
+	
+	
 	public Hashtable getAllPlanAktuell(String plan_id,String kategorie) {
 		Hashtable hash = new Hashtable();
 		try {
