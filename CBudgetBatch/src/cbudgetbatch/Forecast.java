@@ -57,7 +57,7 @@ public class Forecast {
 					// System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht berechnet werden");
 					 continue;
 				 }
-				 where ="kategorie = "+kategorie.get("id") + " and konto_id = "+konto.get("id") ;
+				 where ="kategorie = "+kategorie.get("id") + " and konto_id = "+konto.get("id") +"and cycle = 0";
 				 Double wert= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calnow.getTime()),where );
 				 if (wert != 0.0)
 				 {
