@@ -171,7 +171,7 @@ public class PlanungEinfuegen extends javax.servlet.http.HttpServlet {
 
 			}
 			//Alle Ausgben eintragen
-			if (db.insertPlanung_daten((Integer) hash.get("plan_id"),-1,summe.toString(),"relativ" )) {
+			if (db.insertPlanung_daten((Integer) hash.get("plan_id"),99998,summe.toString(),"relativ" )) {
 				out.println("Alle Ausgben erfolgreich erstellt");
 				out.println("<p>");
 			} else {
@@ -205,7 +205,7 @@ public class PlanungEinfuegen extends javax.servlet.http.HttpServlet {
 								.get("name")));
 			}
 			//Alle Einnahmen eintragen
-			if (db.insertPlanung_daten((Integer) hash.get("plan_id"),-2,summe.toString() ,"relativ")) {
+			if (db.insertPlanung_daten((Integer) hash.get("plan_id"),99999,summe.toString() ,"relativ")) {
 				out.println("Alle Ausgben erfolgreich erstellt");
 				out.println("<p>");
 			} else {
