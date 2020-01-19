@@ -62,7 +62,7 @@ public class Forecast {
 				 if (wert != 0.0)
 				 {
 					 
-					Double wertMonth=(wert/36)/30;
+					Double wertMonth=wert/36;
 					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
 					//System.out.println(kategorie.get("name")+ " "+ konto.get("name")  +" "+ wertMonth);
 					Calendar cal_end= Calendar.getInstance();
@@ -90,7 +90,7 @@ public class Forecast {
 							trans.put("planed", "j");
 							//System.out.println(trans);
 							db.insertTransaktionZycl(trans);
-							calstart.add(Calendar.DATE,1);
+							calstart.add(Calendar.MONTH,1);
 							
 								
 						}
