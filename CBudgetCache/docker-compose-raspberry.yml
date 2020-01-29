@@ -1,0 +1,7 @@
+cbudgetcache:  
+  image: pfeiffenrohr/cbudgetcache:raspberry
+  restart: always
+  environment:
+      connectstring: jdbc:postgresql://192.168.2.29/
+      forecastComputeIntervall: 10000
+      cacheComputeIntervall: 30
