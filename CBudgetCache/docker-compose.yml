@@ -5,4 +5,4 @@ cbudgetcache:
       connectstring: jdbc:postgresql://192.168.2.28/
       forecastComputeIntervall: 10000
       cacheComputeIntervall: 30
-      ComputeOnlyNight: True
+      ComputeOnlyNight: 1
