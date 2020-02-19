@@ -3,6 +3,7 @@
 	<name>CbudgetNew</name>
 	<comment></comment>
 	<projects>
+		<project>bmw</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
