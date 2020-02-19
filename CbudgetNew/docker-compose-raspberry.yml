@@ -1,0 +1,23 @@
+myapp-web:  
+  image: pfeiffenrohr/cbudgetnew:raspberry
+  container_name: budget_web
+  ports:
+    - "8081:8080"
+  restart: always   
+  links:
+    - myapp-db
+ 
+myapp-db:   
+    container_name: "myapp-db"  
+    image: "postgres:9"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always   
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: budget
+      POSTGRES_PASSWORD: budget
+      POSTGRES_DB: budget
