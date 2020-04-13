@@ -1,0 +1,9 @@
+cbudgetbatch:  
+  image: pfeiffenrohr/cbudgetbatch:raspberry
+  ports:
+    - "7777:7777"
+  restart: always
+  environment:
+      connectstring: jdbc:postgresql://192.168.2.110/
+      forecastComputeIntervall: 3600
+      cacheComputeIntervall: 30
