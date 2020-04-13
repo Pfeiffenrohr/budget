@@ -52,7 +52,7 @@ import javax.servlet.http.HttpSession;
 					out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Verbindlichkeit\"><label for=\"mc\"> Verbindlichkeit</label><br>");
 					out.println("</fieldset>");
 					out.println("<p>");
-					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes konto <br>");
+					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes Konto <br>");
 					out.println("<input type=\"submit\" value=\" Absenden \">");
 					out.println("</form>");
 					out.println("</body>");

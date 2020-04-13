@@ -86,6 +86,17 @@ import javax.servlet.http.HttpSession;
 							
 						}
 					settings.put("transaktionEnddatum",enddatum);
+					String exact = request.getParameter("exact");
+					String exactSelected="";
+					if (exact == null)
+					{
+						//System.out.println("SetExact Nein");
+						exact="nein";
+					}
+					else
+					{
+						exactSelected = "checked";
+					}
 					db.updatesetting("transaktionEnddatum",enddatum);
 					String kategorie=request.getParameter("kategorie");
 					//System.err.println("Kategorie "+kategorie);
@@ -213,6 +224,8 @@ import javax.servlet.http.HttpSession;
 					//String checked="";
 					out.println("<p>Name: <br><input name=\"name\" type=\"text\" size=\"40\" value=\""+name+"\"maxlength=\"50\"></p>");
 					out.println("<p>");
+					out.println("<input type=\"checkbox\" name=\"exact\" value=\"yes\" "+exactSelected+"> Exakte Übereinstimmung <br>");
+					out.println("<p>");
 					Vector kategorien=db.getAllActiveKategorien();
 					out.println("Kategorie: <select name=\"kategorie\" size=\"7\">");
 					//out.println("<option>   </option>");
@@ -292,7 +305,15 @@ import javax.servlet.http.HttpSession;
 							{
 								where=where +" and ";
 							}
-							where=where+" name ilike '%"+name+"%' ";
+							if ( exact.equals("yes"))
+									{
+									where=where+" name like '"+name+"' ";
+									}
+							else
+								{
+								//System.out.println("Exact = "+exact);
+								where=where+" name ilike '%"+name+"%' ";
+								}
 							first=false;
 						}
 						if (!konto.equals(""))

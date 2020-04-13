@@ -85,12 +85,12 @@ import javax.servlet.http.HttpSession;
 				if (((String)kontosatz.get("versteckt")).trim().equals("ja"))
 				{
 					//System.out.println(" ver = ja");
-				out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\" checked> Verstecktes konto <br>");
+				out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\" checked> Verstecktes Konto <br>");
 				}
 				else
 				{
 					//System.out.println(" ver = nein");
-					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes konto <br>");
+					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes Konto <br>");
 				}
 				out.println("<fieldset>");
 				String mode;
