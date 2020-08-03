@@ -358,7 +358,7 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
 		datenbank = args [2];
 		String mode =args [3];
        BerechnePlanungBatch batch = new BerechnePlanungBatch();
-      
+       
        if (mode.equals("trigger"))
        {
         batch.berechneTriggerPlan();

@@ -61,6 +61,11 @@ public class DBBatch extends DB {
 		return false;
 	}
 
+	private boolean cleanAllOldEntres()
+	{
+		
+	}
+	
 	public boolean checkKonto(String konto)
 	{
 	try {
