@@ -28,7 +28,7 @@ public class BerechnePlanungBatch {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal= Calendar.getInstance();
 		Calendar cal_akt= Calendar.getInstance();		
-		for (int i = 1 ; i < allPlan.size(); i++)
+		for (int i = 0 ; i < allPlan.size(); i++)
 		{
 			Hashtable hash_plan = (Hashtable)allPlan.get(i);
 			if ((Integer)hash_plan.get("inwork")==0)
