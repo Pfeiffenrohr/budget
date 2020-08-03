@@ -61,10 +61,7 @@ public class DBBatch extends DB {
 		return false;
 	}
 
-	private boolean cleanAllOldEntres()
-	{
-		
-	}
+	
 	
 	public boolean checkKonto(String konto)
 	{
@@ -207,6 +204,55 @@ public class DBBatch extends DB {
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
 			 return false;
+		}
+		 return true;
+	}
+	
+	public Vector getAllCachePlanAktuell()
+	{		
+			Vector vec = new Vector();
+			try {
+
+				PreparedStatement stmt;
+				ResultSet res = null;
+				stmt = con
+						.prepareStatement("select id,datum,zeit,kategorie,inwork from plan_aktuell order by id");
+				res = stmt.executeQuery();
+				while (res.next()) {
+					Hashtable hash = new Hashtable();
+					hash.put("id", new Integer(res.getInt("id")));
+					hash.put("datum", (Date) res.getDate("datum"));	
+					hash.put("zeit", (String) res.getString("zeit"));	
+					hash.put("kategorie", new Integer(res.getInt("kategorie")));
+					hash.put("inwork", new Integer(res.getInt("inwork")));
+					
+					vec.addElement(hash);
+				}
+			} catch (SQLException e) {
+				System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+				return vec;
+			}
+			if (debug) System.out.println("Select-Anweisung ausgeführt");
+			// return summe/(float)getAnz(tag,monat,year);
+			return vec;
+
+	}
+	
+	public boolean updateInwork(Integer id)
+	{
+		try {
+
+			PreparedStatement stmt;
+			String stm= "update plan_aktuell set " +
+			"inwork=0 "+
+			" where id = "+id;
+			//if (debug) 
+			System.out.println(stm);
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Konnte Insert-Anweisung nicht ausfÃ¼hren" + e);
+			return false;
 		}
 		 return true;
 	}
