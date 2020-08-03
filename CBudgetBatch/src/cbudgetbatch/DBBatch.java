@@ -236,7 +236,7 @@ public class DBBatch extends DB {
 
 	}
 	
-	public boolean updateInwork(String id)
+	public boolean updateInwork(Integer id)
 	{
 		try {
 

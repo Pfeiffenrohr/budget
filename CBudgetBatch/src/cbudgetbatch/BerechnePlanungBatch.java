@@ -47,7 +47,7 @@ public class BerechnePlanungBatch {
 			if (diffDays > intervall )
 			{
 				//Delete inwork
-			dbbatch.updateInwork((String) hash_plan.get("id"));
+			dbbatch.updateInwork((Integer) hash_plan.get("id"));
 			}
 			
 		}
