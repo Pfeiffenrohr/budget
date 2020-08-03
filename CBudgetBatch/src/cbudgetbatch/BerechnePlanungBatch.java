@@ -17,7 +17,44 @@ public class BerechnePlanungBatch {
 	static String datenbank;
 	boolean debug=false;
 	
-	
+	/**
+	 * Schmeisst die alten Cache Jobs raus, die Alt sind und nicht mehr gebraucht werden.
+	 */
+	private void cleanOldCacheEntries(DBBatch dbbatch)
+	{
+		long intervall = 3; //Anzahl der Tage nachdem gelöscht wird.
+		
+		Vector allPlan = dbbatch.getAllCachePlanAktuell();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal= Calendar.getInstance();
+		Calendar cal_akt= Calendar.getInstance();		
+		for (int i = 1 ; i < allPlan.size(); i++)
+		{
+			Hashtable hash_plan = (Hashtable)allPlan.get(i);
+			if ((Integer)hash_plan.get("inwork")==0)
+			{
+				continue;
+			}
+			Date startDate = cal.getTime();
+			Date endDate = cal_akt.getTime();
+			
+			cal.setTime((Date)hash_plan.get("datum"));
+			long startTime = startDate.getTime();
+			long endTime = endDate.getTime();
+			long diffTime = endTime - startTime;
+			long diffDays = diffTime / (1000 * 60 * 60 * 24);
+			
+			if (diffDays > intervall )
+			{
+				//Delete inwork
+			dbbatch.updateInwork((Integer) hash_plan.get("id"));
+			}
+			
+		}
+		
+		
+		
+	}
 	
 	private void berechnePlan(DBBatch db,Hashtable hash_plan,String kategorie_id)
 	{
@@ -162,6 +199,7 @@ public class BerechnePlanungBatch {
 		DBBatch db = new DBBatch();
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
+    	cleanOldCacheEntries(db);
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
         //Alle Kategorien ermitteln,für die Planungen berechnet werden müssen
