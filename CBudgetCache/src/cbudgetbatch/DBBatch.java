@@ -142,6 +142,8 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
+	
+	
 	public boolean getPlanAktuellIsInWork(String plan_id ,Integer kategorie) {
 		//Hashtable hash = new Hashtable();
 		try {

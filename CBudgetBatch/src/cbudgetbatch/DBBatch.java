@@ -243,7 +243,7 @@ public class DBBatch extends DB {
 			PreparedStatement stmt;
 			String stm= "update plan_aktuell set " +
 			"inwork=0 "+
-			 "' where id = "+id;
+			" where id = "+id;
 			//if (debug) 
 			System.out.println(stm);
 			stmt = con.prepareStatement(stm);
