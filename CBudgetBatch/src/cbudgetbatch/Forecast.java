@@ -35,10 +35,18 @@ public class Forecast {
 	 private void getAllKategoriesWithForecast(DBBatch db)
 	 {
 		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		 Calendar calbegin=Calendar.getInstance();
+		 Calendar cal3back=Calendar.getInstance();
+		//Drei Jahre zurück rechnen
+		 cal3back.add(Calendar.YEAR, -3);
+		 Calendar cal2back=Calendar.getInstance();
+		//Zwei Jahre zurück rechnen
+		 cal2back.add(Calendar.YEAR, -2);
+		 Calendar cal1back=Calendar.getInstance();
+		//Ein Jahr zurück rechnen
+		 cal1back.add(Calendar.YEAR, -1);
+		 //Heute
 		 Calendar calnow=Calendar.getInstance();
-		 //Drei Jahre zurück rechnen
-		 calbegin.add(Calendar.YEAR, -3);
+		
 		 //Erst mal alle Kategorien holen.		 
 		 Vector kategories =db.getAllKategorien();
 		 //Dann alle Konten
@@ -58,11 +66,32 @@ public class Forecast {
 					 continue;
 				 }
 				 where ="kategorie = "+kategorie.get("id") + " and konto_id = "+konto.get("id") +"and cycle = 0";
-				 Double wert= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calnow.getTime()),where );
-				 if (wert != 0.0)
+				
+				 Double wert1= db.getKategorienAlleSummeWhere(formatter.format(cal3back.getTime()),formatter.format(cal2back.getTime()),where );
+				 Double wert2= db.getKategorienAlleSummeWhere(formatter.format(cal2back.getTime()),formatter.format(cal1back.getTime()),where );
+				 Double wert3= db.getKategorienAlleSummeWhere(formatter.format(cal1back.getTime()),formatter.format(calnow.getTime()),where );
+				//TODO: Hier ein bischen "KI"
+				 Double wertMonth;
+				 if (wert3 < 0.01)
+				 {
+			       //Wenn im letzten jahr nichts Ausgegeben wurde ist die Wahrscheilichkeit groß, dass jetzt auch nichts mehr
+				   //ausgegeben wird
+					 wertMonth=0.0;
+				 }
+				 else
+				 {
+					 if (wert1 < 0.01 && wert2 < 0.01)
+					 { 
+						 
+						 wertMonth=wert3 * 3;
+					 }
+				 }
+				 wertMonth=(wert1+wert2+wert3)/36;
+				 
+				 if (wertMonth > 0.0)
 				 {
 					 
-					Double wertMonth=wert/36;
+					
 					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
 					//System.out.println(kategorie.get("name")+ " "+ konto.get("name")  +" "+ wertMonth);
 					Calendar cal_end= Calendar.getInstance();
