@@ -1,0 +1,100 @@
+package cbudgetbatch;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Hashtable;
+import java.util.Vector;
+
+public class GetKIData {
+	
+	static String user;
+	static String pass;
+	static String datenbank;
+	 DBBatch db = new DBBatch();
+	
+	 public static void main(String[] args) {
+	    	
+	    	if (args.length != 3)
+	    	{
+	    		System.out.println("usage: budget_server <user> <password> <datenbank>");
+	    		System.exit(1);
+	    	}
+	    	user = args[0];
+			pass = args[1];
+			datenbank = args [2];
+	        //Server example = new Server();
+	        DBBatch db = new DBBatch();
+         if (! db.dataBaseConnect(user, pass, datenbank))
+         {
+         	System.err.println("Konnte mich nicht mit der Datenbank verbinden");
+         	System.exit(1);
+         }
+         GetKIData kidata = new GetKIData();
+         kidata.getData(db);
+	      //Forecast forecast = new Forecast();
+	      //forecast.getAllKategoriesWithForecast(db);
+	      db.closeConnection();
+	    }
+	 
+	 private void getData(DBBatch db)
+	 {
+		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		
+	
+		
+		 Calendar calstart=Calendar.getInstance();
+		//Drei Jahre zurück rechnen
+		 calstart.add(Calendar.YEAR, -3);
+		 Calendar cal1back=Calendar.getInstance();
+		
+		 //Ein Jahr zurück rechnen
+		 cal1back.add(Calendar.YEAR, -1);
+		 //Heute
+		 Calendar calnow=Calendar.getInstance();
+		
+		 //Erst mal alle Kategorien holen.		 
+		 Vector kategories =db.getAllKategorien();
+		 //Dann alle Konten
+		 Vector konten = db.getAllKonto();
+		 
+		 for ( int i=0; i< kategories.size();i++)
+		 {
+			 //System.out.println("I = " +i);
+			 for (int j=0; j < konten.size(); j++)
+			 {
+				 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
+				 Hashtable konto = (Hashtable) konten.elementAt(j);
+				 String where ="kategorie = "+kategorie.get("id") + " and konto_id = "+konto.get("id") +"and cycle = 0";
+				// Calendar calbegin=Calendar.getInstance();
+				 Calendar calzaehler=(Calendar)calstart.clone();
+				 
+				 while (calzaehler.before(calnow)) 
+				 {
+					 
+					 //Hole erst mal alle Daten dazu aus der Datenbank
+				     //Fangen wir an die letzten fünf Monate 
+					 Calendar calbegin= (Calendar) calzaehler.clone();
+					 Calendar calend= (Calendar) calzaehler.clone();
+					 calbegin.add(Calendar.MONTH, -4);
+					 calend.add(Calendar.MONTH, -1);
+					 for (int k=1; k< 5; k++)
+					 {
+						
+							
+					 Double wert1= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
+					 if (wert1 > 0.001)
+					 	{
+						 System.out.println(wert1);
+					 	}
+					 calbegin.add(Calendar.MONTH, 1);
+					 calend.add(Calendar.MONTH, 1);
+					 }
+					 
+					 calzaehler.add(Calendar.MONTH, 1);
+				 }
+			 }
+				 
+		 }
+	 
+	 }
+}
