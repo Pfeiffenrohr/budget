@@ -47,16 +47,13 @@ public class GetKIData {
 		 calstart.add(Calendar.YEAR, -3);
 		 Calendar cal1back=Calendar.getInstance();
 		
-		 //Ein Jahr zurück rechnen
-		 cal1back.add(Calendar.YEAR, -1);
-		 //Heute
 		 Calendar calnow=Calendar.getInstance();
 		
 		 //Erst mal alle Kategorien holen.		 
 		 Vector kategories =db.getAllKategorien();
 		 //Dann alle Konten
 		 Vector konten = db.getAllKonto();
-		 
+		 //boolean breakNextRun = false;
 		 for ( int i=0; i< kategories.size();i++)
 		 {
 			 //System.out.println("I = " +i);
@@ -77,17 +74,45 @@ public class GetKIData {
 					 Calendar calend= (Calendar) calzaehler.clone();
 					 calbegin.add(Calendar.MONTH, -4);
 					 calend.add(Calendar.MONTH, -1);
-					 for (int k=1; k< 5; k++)
+					 Double sum =0.0;
+					 Double wert1 = 0.0;
+					 Boolean found = false;
+					 //if (breakNextRun)
+						// db.debug=true;
+					 for (int k=0; k< 5; k++)
 					 {
 						
-							
-					 Double wert1= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
-					 if (wert1 > 0.001)
-					 	{
-						 System.out.println(wert1);
-					 	}
+						 
+					 wert1= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
+					 sum+=wert1;
+					 wert1 = wert1/3;
+					if ( wert1 > 0.01 || found)
+					{
+						 
+						found=true;
+						 System.out.print(wert1+" ");
+					} 	
 					 calbegin.add(Calendar.MONTH, 1);
 					 calend.add(Calendar.MONTH, 1);
+					 }
+					//Hole nun den aktuellen Monat
+					calbegin=(Calendar)calend.clone();
+					calbegin.add(Calendar.MONTH, -1);
+					// db.debug =true;
+					 if ( found)
+					 {
+						// db.debug =true;
+					 }
+					 wert1= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
+					 //db.debug =false;
+					 if ( found)
+					 {
+					
+					 System.out.print("     " +wert1);
+					 System.out.println();
+					 //if (breakNextRun)
+					//	 System.exit(0);
+					 //breakNextRun=true;
 					 }
 					 
 					 calzaehler.add(Calendar.MONTH, 1);
