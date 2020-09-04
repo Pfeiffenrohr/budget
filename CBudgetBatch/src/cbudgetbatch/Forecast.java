@@ -50,6 +50,7 @@ public class Forecast {
 		 //Erst mal alle Kategorien holen.		 
 		 Vector kategories =db.getAllKategorien();
 		 //Dann alle Konten
+		 //
 		 Vector konten = db.getAllKonto();
 		 //Dann von allen Kategorien den Durchschnitt der letzten drei Jahre holen und den Durchschnitt pro Monat ausrechnen.
 		 for ( int i=0; i< kategories.size();i++)
