@@ -44,10 +44,11 @@ public class GetKIData {
 		
 		 Calendar calstart=Calendar.getInstance();
 		//Drei Jahre zurück rechnen
-		 calstart.add(Calendar.YEAR, -3);
+		 calstart.add(Calendar.YEAR, -4);
 		 Calendar cal1back=Calendar.getInstance();
 		
 		 Calendar calnow=Calendar.getInstance();
+		 calnow.add(Calendar.MONTH, -14);
 		
 		 //Erst mal alle Kategorien holen.		 
 		 Vector kategories =db.getAllKategorien();
