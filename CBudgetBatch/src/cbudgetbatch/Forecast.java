@@ -80,7 +80,7 @@ public class Forecast {
 				 }
 				 else
 				 {
-					 if (wert1 < 0.01 && wert2 < 0.01)
+					 if (wert1 < 0.01 && wert2  < 0.01)
 					 { 
 						 //Wenn zwei Jahre nochts ausgegeben wurde, und jetzt was. Dann hat wahrscheinlich  die Ausgabe jetzt
 						 //gestartet und darum berechne so wie im 3. Jahr
