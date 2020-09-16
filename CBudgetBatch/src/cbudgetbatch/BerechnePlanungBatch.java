@@ -52,7 +52,8 @@ public class BerechnePlanungBatch {
 			
 		}
 		
-		
+		//Säubert alle alten Transaktion_historie Einträge, die keineRefernnz mehr haben
+	 dbbatch.deleteOldtransHistorie();
 		
 	}
 	
