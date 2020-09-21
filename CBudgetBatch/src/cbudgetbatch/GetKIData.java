@@ -76,7 +76,7 @@ public class GetKIData {
 					 calbegin.add(Calendar.MONTH, -4);
 					 calend.add(Calendar.MONTH, -1);
 					 Double sum =0.0;
-					 Double wert1 = 0.0;
+					 Double wert = 0.0;
 					 Boolean found = false;
 					 //if (breakNextRun)
 						// db.debug=true;
@@ -84,14 +84,14 @@ public class GetKIData {
 					 {
 						
 						 
-					 wert1= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
-					 sum+=wert1;
-					 wert1 = wert1/3;
-					if ( wert1 > 0.01 || found)
+					 wert= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
+					 sum+=wert;
+					 wert = wert/3;
+					if ( wert > 0.01 || found)
 					{
 						 
 						found=true;
-						 System.out.print(wert1+" ");
+						 System.out.print(wert+" ");
 					} 	
 					 calbegin.add(Calendar.MONTH, 1);
 					 calend.add(Calendar.MONTH, 1);
@@ -104,12 +104,12 @@ public class GetKIData {
 					 {
 						// db.debug =true;
 					 }
-					 wert1= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
+					 wert= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calend.getTime()),where );
 					 //db.debug =false;
 					 if ( found)
 					 {
 					
-					 System.out.print("     " +wert1);
+					 System.out.print("     " +wert);
 					 System.out.println();
 					 //if (breakNextRun)
 					//	 System.exit(0);
