@@ -1,6 +1,7 @@
 package budget;
 
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.Hashtable;
 import java.util.Vector;
 import cbudgetbase.DB;
@@ -37,6 +38,7 @@ import javax.servlet.http.HttpSession;
 				PrintWriter out = response.getWriter();
 				HttpSession session = request.getSession(true);
 				HeaderFooter hf = new HeaderFooter();
+				DecimalFormat format = new DecimalFormat("###.##");
 				
 				//Konten einlesen
 
@@ -94,8 +96,8 @@ import javax.servlet.http.HttpSession;
 			     out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+new Integer(i).toString()+"\"></td>");
 				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("name")+"</td>");
 				
-				out.println("<td>"+db.getPlanung_daten_wert((Integer)((Hashtable)vec.elementAt(i)).get("plan_id"),99998)+"</td>");
-				out.println("<td>"+db.getPlanung_daten_wert((Integer)((Hashtable)vec.elementAt(i)).get("plan_id"),99999)+"</td>");
+				out.println("<td>"+format.format((Double)db.getPlanung_daten_wert((Integer)((Hashtable)vec.elementAt(i)).get("plan_id"),99998))+"</td>");
+				out.println("<td>"+format.format((Double)db.getPlanung_daten_wert((Integer)((Hashtable)vec.elementAt(i)).get("plan_id"),99999))+"</td>");
 				out.println("<td><a href='zeigePlanung?zeit=tag&plan="+((Integer)((Hashtable)vec.elementAt(i)).get("plan_id"))+"'>anzeigen</a></td>");
 				out.println("<td><a href='zeigePlanung?zeit=monat&plan="+((Integer)((Hashtable)vec.elementAt(i)).get("plan_id"))+"'>anzeigen</a></td>");
 				//out.println("<td><font color=\"green\">1896.56</font></td>");
