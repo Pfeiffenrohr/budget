@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Vector;
 import cbudgetbase.DB;
 
@@ -14,6 +15,12 @@ public class DBBatch extends DB {
 	public boolean dataBaseConnect(String user, String passwort, String connectstring) {
 		if (debug) if (debug) System.out.println("Verbinde mich zur Datenbank");
 		try {
+			String url = connectstring +"?"+
+					"ssl=true&"+
+					"sslfactory=org.postgresql.ssl.NonValidatingFactory";
+			Properties props = new Properties();
+			props.setProperty("user",user);
+			props.setProperty("password",passwort);
 			try {
 				Class.forName("org.postgresql.Driver").newInstance(); // DB-
 																		// Treiber
@@ -25,8 +32,8 @@ public class DBBatch extends DB {
 			}
 
 			//String url = "jdbc:postgresql://192.168.2.28/"+datenbank;
-			String url = connectstring;
-			con = DriverManager.getConnection(url, user, passwort); // Verbindung
+			//String url = connectstring;
+			  con = DriverManager.getConnection(url, props); // Verbindung
 																		// herstellen
 			if (debug) System.out.println("Verbindung erstellt");
 		} catch (Exception e) {
