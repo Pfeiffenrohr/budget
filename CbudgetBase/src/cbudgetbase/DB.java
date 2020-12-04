@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    public boolean debug=false;
+    public boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -672,7 +672,7 @@ public class DB {
 				{
 					sum=sum+getKategorienAlleRecursivSumme(((String)allKats.elementAt(i)),startdatum,enddatum,rule);
 				}
-				str_stm="select sum(wert) as summe from transaktionen where kategorie = (select id from kategorien where name ='"+kategorie+"') and datum >=   to_date('"+startdatum+"', 'YYYY-MM-DD')"+" and datum <=  to_date('"+enddatum+"', 'YYYY-MM-DD')"+rule;
+				str_stm="select sum(wert) as summe from transaktionen where kategorie = (select id from kategorien where name ='"+kategorie+"') and datum >=   '"+startdatum+"' and datum <=  '"+enddatum+"' "+rule;
 				
 				if (debug) System.out.println(str_stm);
 				stmt = con
@@ -695,7 +695,7 @@ public class DB {
 		try {
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm="select sum(wert) as summe from transaktionen where datum >=   to_date('"+startdatum+"', 'YYYY-MM-DD')"+" and datum <=   to_date('"+enddatum+"', 'YYYY-MM-DD')"+" and "+where;
+			String str_stm="select sum(wert) as summe from transaktionen where datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum+"'"+" and "+where;
 			if (debug)System.out.println(str_stm);
 			stmt = con
 			.prepareStatement(str_stm);
@@ -719,7 +719,7 @@ public class DB {
 			ResultSet res = null;
 			String str_stm="select sum(trans.wert) as summe from transaktionen trans  "
 					+ "join konten kont on kont.id = trans.konto_id and "
-					+ "kont.mode = '"+mode+"' where trans.datum <= to_date('"+convDatum(startdatum)+"', 'YYYY-MM-DD')" + rule ;
+					+ "kont.mode = '"+mode+"' where trans.datum <= '"+convDatum(startdatum)+"' " + rule ;
 			if (debug)System.out.println(str_stm);
 			stmt = con
 			.prepareStatement(str_stm);
@@ -812,7 +812,7 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm=("select trans.datum as datum, trans.wert as wert, (select mode from konten where id=trans.konto_id) AS mode from transaktionen trans where datum > to_date('"+convDatum(startdate)+"', 'YYYY-MM-DD') and datum <= to_date('"+convDatum(enddate)+"', 'YYYY-MM-DD')"+ rule +" order by datum");
+			String str_stm=("select trans.datum as datum, trans.wert as wert, (select mode from konten where id=trans.konto_id) AS mode from transaktionen trans where datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"'"+ rule +" order by datum");
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
@@ -952,7 +952,7 @@ public class DB {
 			else
 			{
 				stm= "update reccuring set " +
-						"enddatum= to_date('" + (String)hash.get("end_datum") +"','YYYY-MM-DD')"+
+						"enddatum= '" + (String)hash.get("end_datum") +"'"+
 						",type = '"+ hash.get("wiederholung") + 
 						"',name = '"+ hash.get("name") +
 						"',noend = '"+ hash.get("noend") +
@@ -1007,7 +1007,7 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm=("select id, name, konto_id, wert, datum, partner, beschreibung, kategorie, kor_id, cycle,planed from transaktionen  where kor_id = "+kor_id+" and datum <= to_date('"+convDatum(datum)+"', 'yyyy-MM-DD')"+" order by datum desc limit 1");
+			String str_stm=("select id, name, konto_id, wert, datum, partner, beschreibung, kategorie, kor_id, cycle,planed from transaktionen  where kor_id = "+kor_id+" and datum <= '"+convDatum(datum)+"' order by datum desc limit 1");
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
@@ -1081,11 +1081,11 @@ public class DB {
 			String stm_str ="";
 			if (schonEingetragen)
 			{
-			stm_str="select count(*) as anz from transaktionen  where kor_id = "+kor_id+" and datum <= to_date('"+convDatum(datum)+"','YYYY-MM-DD')";
+			stm_str="select count(*) as anz from transaktionen  where kor_id = "+kor_id+" and datum <= '"+convDatum(datum)+"'";
 			}
 			else
 			{
-				stm_str="select count(*) as anz from transaktionen  where kor_id = "+kor_id+" and datum > to_date('"+convDatum(datum)+"','YYYY-MM-DD')";
+				stm_str="select count(*) as anz from transaktionen  where kor_id = "+kor_id+" and datum > '"+convDatum(datum)+"'";
 				}	
 			if (debug) System.out.println(stm_str);
 			stmt = con
@@ -1228,7 +1228,7 @@ public class DB {
 			String str_stm="select id from transaktionen where " +
 					" name = '"+ trans.get("name")+"' and " +
 					" konto_id = "+ trans.get("konto") + " and "+
-					" datum = to_date('" + convDatum(((String)(trans.get("datum")))) + "','YYYY-MM-DD') and "+
+					" datum = '" + convDatum(((String)(trans.get("datum")))) + "' and "+
 					" kategorie = "+ trans.get("kategorie")+ " and "+
 					" kor_id =  "+ trans.get("kor_id");
 			if (debug) System.out.println(str_stm);
@@ -1316,8 +1316,8 @@ public class DB {
 					"kor_id = "+ hash.get("neue_kor_id") +"," +
 					"cycle = "+ hash.get("cycle")+"," +
 					"planed = '"+ hash.get("planed")+ 
-					"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum >= to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
-			whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum >=to_date('"+convDatum(datum) +"', 'YYYY-MM-DD')";
+					"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum >= '"+convDatum(datum)+"'";
+			whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum >='"+convDatum(datum) +"'";
 			}
 			if (groesser==0)//einzeln
 			{
@@ -1331,8 +1331,8 @@ public class DB {
 				"kor_id = "+ hash.get("neue_kor_id") +"," +
 				"cycle = "+ hash.get("cycle")+"," +
 				"planed = '"+ hash.get("planed")+
-				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum = to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
-				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum =to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
+				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum = '"+convDatum(datum)+"'";
+				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum ='"+convDatum(datum)+"'";
 			}
 			if (groesser==2)//zuvor vorher false
 			{
@@ -1346,8 +1346,8 @@ public class DB {
 				"kor_id = "+ hash.get("neue_kor_id") +"," +
 				"cycle = "+ hash.get("cycle")+"," +
 				"planed = '"+ hash.get("planed")+
-				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum <=to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
-				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum <=to_date('"+convDatum(datum)+"', 'YYYY-MM-DD')";
+				"' where kor_id = " + hash.get("kor_id")+ " and konto_id="+ konto_id +" and datum <= '"+convDatum(datum)+"'";
+				whereHist="where kor_id = " + hash.get("neue_kor_id")+ " and konto_id="+ konto_id +" and datum <= '"+convDatum(datum)+"'";
 			}	
 			if (debug) System.out.println(str);
 			PreparedStatement stmt;
@@ -1374,11 +1374,11 @@ public class DB {
 			}
 			if (anwenden.equals("folgend"))
 			{
-				stm_str="delete from transaktionen where id=" + id +" and datum >=to_date('"+datum+"', 'YYYY-MM-DD')";
+				stm_str="delete from transaktionen where id=" + id +" and datum >= '"+datum+"'";
 			}
 			if (anwenden.equals("zuvor"))
 			{
-				stm_str="delete from transaktionen where id=" + id +" and datum <=to_date('"+datum+"', 'YYYY-MM-DD')";
+				stm_str="delete from transaktionen where id=" + id +" and datum <='"+datum+"'";
 			}
 			if (debug) System.out.println(stm_str);
 			stmt = con.prepareStatement(stm_str);
@@ -1444,7 +1444,7 @@ public class DB {
 			// ResultSet res = null;
 			//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
 			String stm_str="";
-			stm_str="delete from transaktionen where kor_id = " + kor_id +" AND datum !=to_date('"+datum+"', 'YYYY-MM-DD')";
+			stm_str="delete from transaktionen where kor_id = " + kor_id +" AND datum != '"+datum+"'";
 			if (debug) System.out.println(stm_str);
 			stmt = con.prepareStatement(stm_str);
 			// if (debug) System.out.println("update data_"+jahr+" set temp_out="+temp+
@@ -1471,15 +1471,15 @@ public class DB {
 			}
 			if (anwenden.equals("folgend"))
 			{
-				stm_str="delete from transaktionen where kor_id=" + kor_id +" and datum >=to_date('"+datum+"', 'YYYY-MM-DD')";
+				stm_str="delete from transaktionen where kor_id=" + kor_id +" and datum >= '"+datum+"'";
 			}
 			if (anwenden.equals("zuvor"))
 			{
-				stm_str="delete from transaktionen where kor_id=" + kor_id +" and datum <=to_date('"+datum+"', 'YYYY-MM-DD')";
+				stm_str="delete from transaktionen where kor_id=" + kor_id +" and datum <= '"+datum+"'";
 			}
 			if (anwenden.equals("einzeln"))
 			{
-				stm_str="delete from transaktionen where kor_id=" + kor_id +" and datum =to_date('"+datum+"', 'YYYY-MM-DD')";
+				stm_str="delete from transaktionen where kor_id=" + kor_id +" and datum = '"+datum+"'";
 			}
 			if (debug) System.out.println(stm_str);
 			stmt = con.prepareStatement(stm_str);
@@ -1521,7 +1521,7 @@ public class DB {
 				single_konto="konto_id=(select id from konten where kontoname='"+konto+"')and ";
 			}
 			
-			str_stm=("select sum(wert) as summe from transaktionen where "+single_konto+" datum <= to_date('"+convDatum(datum)+"','YYYY-MM-DD')"+where);
+			str_stm=("select sum(wert) as summe from transaktionen where "+single_konto+" datum <= '"+convDatum(datum)+"' "+where);
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
@@ -1727,7 +1727,7 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm="select kategorie,sum(wert) as summe from transaktionen where datum >=to_date('"+startdatum+"', 'YYYY-MM-DD')"+"  and datum <=to_date('"+enddatum+"', 'YYYY-MM-DD')"+wherestring+"  group by kategorie";
+			String str_stm="select kategorie,sum(wert) as summe from transaktionen where datum >= '"+startdatum+"' +  and datum <= '"+enddatum+"' "+wherestring+"  group by kategorie";
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
@@ -2318,7 +2318,7 @@ public class DB {
 			boolean found=false;
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm="select id, name, konto_id, wert, datum, beschreibung, partner, kategorie, kor_id, cycle,planed from transaktionen where datum < to_date('"+convDatum(datum)+"','YYYY-MM-DD') and planed='j' order by datum";
+			String str_stm="select id, name, konto_id, wert, datum, beschreibung, partner, kategorie, kor_id, cycle,planed from transaktionen where datum < '"+convDatum(datum)+"' and planed='j' order by datum";
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
@@ -2353,7 +2353,7 @@ public class DB {
 				// ResultSet res = null;
 				//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
 				String stm_str="";			
-					stm_str="delete from transaktionen where datum < to_date('"+convDatum(datum)+"','YYYY-MM-DD') and planed='j' ";
+					stm_str="delete from transaktionen where datum < (' "+convDatum(datum)+"' and planed='j' ";
 				if (debug) System.out.println(stm_str);
 				stmt = con.prepareStatement(stm_str);
 				// if (debug) System.out.println("update data_"+jahr+" set temp_out="+temp+
