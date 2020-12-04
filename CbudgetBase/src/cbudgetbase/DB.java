@@ -68,7 +68,7 @@ public class DB {
 			if (debug) System.out.println("Try to connect with "+connectString);											// herstellen
 			
 				 //con = DriverManager.getConnection("jdbc:postgresql://192.168.2.28:5432/budget", "budget", "budget");
-			  con = DriverManager.getConnection(url, props);
+			  con = DriverManager.getConnection(url, props); 
 			//DriverManager.getConnection("jdbc:postgresql://localhost:5432/budget?user=budget&password=");
 				
 			if (debug) System.out.println("Verbindung erstellt");
