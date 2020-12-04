@@ -4,6 +4,6 @@ cbudgetbatch:
     - "7777:7777"
   restart: always
   environment:
-      connectstring: jdbc:postgresql://192.168.2.29:26257/
+      connectstring: jdbc:postgresql://192.168.2.29:26257
       forecastComputeIntervall: 345600
       cacheComputeIntervall: 30
