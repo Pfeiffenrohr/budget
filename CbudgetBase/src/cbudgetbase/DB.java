@@ -45,7 +45,7 @@ public class DB {
 
 
 	public boolean dataBaseConnect(String username,String password, String connectString) {
-	 if (debug) System.out.println("Verbinde mich zur Datenbank");
+	 if (debug) System.out.println("Verbinde  mich zur Datenbank");
 		try {
 			try {
 				//Class.forName("org.gjt.mm.mysql.Driver").newInstance(); // DB-
