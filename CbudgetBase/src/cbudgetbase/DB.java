@@ -45,14 +45,8 @@ public class DB {
 
 
 	public boolean dataBaseConnect(String username,String password, String connectString) {
-	 if (debug) System.out.println("Verbinde mich zur Datenbank");
+	 if (debug) System.out.println("Verbinde  mich zur Datenbank");
 		try {
-			String url = connectString +"?"+
-					"ssl=true&"+
-					"sslfactory=org.postgresql.ssl.NonValidatingFactory";
-			Properties props = new Properties();
-			props.setProperty("user",username);
-			props.setProperty("password",password);
 			try {
 				//Class.forName("org.gjt.mm.mysql.Driver").newInstance(); // DB-
 																		// Treiber
@@ -64,11 +58,12 @@ public class DB {
 						.println("Konnte MySQL Datenbank-Treiber nicht laden!");
 				return false;
 			}
-			
+			//String url = "jdbc:mysql://192.168.2.8/budget_test";
+			//con = DriverManager.getConnection(connectString, username, password); // Verbindung
 			if (debug) System.out.println("Try to connect with "+connectString);											// herstellen
 			
 				 //con = DriverManager.getConnection("jdbc:postgresql://192.168.2.28:5432/budget", "budget", "budget");
-			  con = DriverManager.getConnection(url, props);
+				con = DriverManager.getConnection(connectString, username, password);
 			//DriverManager.getConnection("jdbc:postgresql://localhost:5432/budget?user=budget&password=");
 				
 			if (debug) System.out.println("Verbindung erstellt");
