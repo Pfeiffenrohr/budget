@@ -2,7 +2,7 @@ cbudgetcache:
   image: pfeiffenrohr/cbudgetcache:latest
   restart: always
   environment:
-      connectstring: jdbc:postgresql://192.168.2.29/
+      connectstring: jdbc:postgresql://192.168.2.29:5432/
       forecastComputeIntervall: 345600
       cacheComputeIntervall: 30
       ComputeOnlyNight: night
