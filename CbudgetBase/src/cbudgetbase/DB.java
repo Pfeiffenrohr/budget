@@ -2718,6 +2718,56 @@ public class DB {
 			return erg;
 		}
 		
+		public Hashtable getBon() {
+			try {
+
+				PreparedStatement stmt;
+				ResultSet res = null;
+				stmt = con
+						.prepareStatement("select id,company, internalname, rawname, rawname_mutant from bon where internalname='unknown' limit 1");
+				res = stmt.executeQuery();
+				if (debug) System.out.println("select id,company, internalname, rawname, rawname_mutant from bon where internalname='unknown' limit 1");
+				while (res.next()) {
+					Hashtable hash = new Hashtable();
+					hash.put("id", new Integer(res.getInt("id")));
+					hash.put("company", (String) res.getString("company"));
+					hash.put("internalname", (String) res.getString("internalname"));
+					hash.put("rawname", (String) res.getString("rawname"));
+					hash.put("rawname_mutant", (String) res.getString("rawname_mutant"));
+					return (hash);
+				}
+			} catch (SQLException e) {
+				System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+				return null;
+			}
+			if (debug) System.out.println("Select-Anweisung ausgeführt");
+			// return summe/(float)getAnz(tag,monat,year);
+			return null;
+		}
+		
+		public boolean updateBon(Hashtable hash) {
+			try {
+				String id= ((Integer)hash.get("id")).toString();
+				String internalname= (String)hash.get("internalname");
+				String rawname= (String)hash.get("rawname");
+				String rawname_mutant =(String)hash.get("rawname_mutant");
+				String str= "update bon set " +
+						"internalname = '"+internalname+"',"+
+						"rawname = '"+rawname+"',"+
+						"rawname_mutant = '"+rawname_mutant+"' where id = '"+id+"'";
+						
+					
+				if (debug) System.out.println(str);
+				PreparedStatement stmt;
+				stmt = con.prepareStatement(str);
+				stmt.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("Konnte Update-Anweisung nicht ausführen" + e);
+			    return false;
+			}
+			return true;
+		}
+		
 		private String convDatum(String dat)
 		{
 			

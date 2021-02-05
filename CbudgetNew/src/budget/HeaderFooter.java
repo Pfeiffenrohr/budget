@@ -19,7 +19,7 @@ public class HeaderFooter {
 		out.println("<a href='planungsverwaltung'>Planung</a>");
 		out.println("<a href='auswertung?mode=none'>Statistische Auswertung</a>");
 		out.println("<a href='einstellungen'>Einstellungen</a>");
-		out.println("<a href='frugal'>Frugal</a>");
+		out.println("<a href='boneinfuegen'>Bonverwaltung</a>");
 		out.println("<a href='abmelden'>Abmelden</a>");
 	}
 	public void writeStatisticHeader(PrintWriter out)

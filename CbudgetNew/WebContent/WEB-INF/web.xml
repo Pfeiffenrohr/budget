@@ -160,6 +160,14 @@
     <servlet-name>einstellungen</servlet-name>
     <servlet-class>budget.Einstellungen</servlet-class>
   </servlet>
+   <servlet>
+    <servlet-name>boneinfuegen</servlet-name>
+    <servlet-class>budget.BonEinfuegen</servlet-class>
+  </servlet> 
+   <servlet>
+    <servlet-name>bonupdate</servlet-name>
+    <servlet-class>budget.BonUpdate</servlet-class>
+  </servlet> 
   <servlet-mapping>
     <servlet-name>startseite</servlet-name>
     <url-pattern>/startseite</url-pattern>
@@ -320,6 +328,14 @@
     <servlet-name>einstellungen</servlet-name>
     <url-pattern>/einstellungen</url-pattern>
   </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>boneinfuegen</servlet-name>
+    <url-pattern>/boneinfuegen</url-pattern>
+  </servlet-mapping>
+     <servlet-mapping>
+    <servlet-name>bonupdate</servlet-name>
+    <url-pattern>/bonupdate</url-pattern>
+  </servlet-mapping>
   <context-param>
     <param-name>DBusername</param-name>
     <param-value>budget</param-value>
@@ -330,6 +346,6 @@
   </context-param>
   <context-param>
     <param-name>DBconnectstring</param-name>
-    <param-value>jdbc:postgresql://myapp-db:5432/budget</param-value>
+    <param-value>jdbc:postgresql://192.168.2.29:5432/budget</param-value>
   </context-param> 
 </web-app> 
