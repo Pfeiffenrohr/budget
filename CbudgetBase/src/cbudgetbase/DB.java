@@ -2700,7 +2700,7 @@ public class DB {
 				PreparedStatement stmt;
 				ResultSet res = null;
 				
-				String str="select count(*) as anz from bons where internalname='unknown'";
+				String str="select count(*) as anz from bon where internalname='unknown'";
 				if (debug) System.out.println(str);
 				stmt = con
 						.prepareStatement(str);
