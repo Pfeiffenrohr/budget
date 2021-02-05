@@ -2691,6 +2691,33 @@ public class DB {
 			// return summe/(float)getAnz(tag,monat,year);
 			return vec;
 		}
+		
+		
+		public int getUnknownBons() {
+			int  erg =0;
+			try {
+
+				PreparedStatement stmt;
+				ResultSet res = null;
+				
+				String str="select count(*) as anz from bons where internalname='unknown'";
+				if (debug) System.out.println(str);
+				stmt = con
+						.prepareStatement(str);
+				res = stmt.executeQuery();
+				while (res.next()) {
+					erg= new Integer (res.getInt("anz")).intValue();
+					
+				}
+			} catch (SQLException e) {
+				System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+				return 0;
+			}
+			if (debug) System.out.println("Select-Anweisung ausgeführt");
+			// return summe/(float)getAnz(tag,monat,year);
+			return erg;
+		}
+		
 		private String convDatum(String dat)
 		{
 			
