@@ -44,43 +44,36 @@ public class DB {
 	}*/
 
 
-	public boolean dataBaseConnect(String username,String password, String connectString) {
-		 if (debug) System.out.println("Verbinde mich zur Datenbank");
-			try {
-				String url = connectString +"?"+
-						"ssl=true&"+
-						"sslfactory=org.postgresql.ssl.NonValidatingFactory";
-				Properties props = new Properties();
-				props.setProperty("user",username);
-				props.setProperty("password",password);
-				try {
-					//Class.forName("org.gjt.mm.mysql.Driver").newInstance(); // DB-
-																			// Treiber
-																	// laden
-					Class.forName("org.postgresql.Driver").newInstance();
-																			
-				} catch (Exception E) {
-					System.err
-							.println("Konnte MySQL Datenbank-Treiber nicht laden!");
-					return false;
-				}
-				
-				if (debug) System.out.println("Try to connect with "+connectString);											// herstellen
-				
-					 //con = DriverManager.getConnection("jdbc:postgresql://192.168.2.28:5432/budget", "budget", "budget");
-				  con = DriverManager.getConnection(url, props);
-				//DriverManager.getConnection("jdbc:postgresql://localhost:5432/budget?user=budget&password=");
-					
-				if (debug) System.out.println("Verbindung erstellt");
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.err.println("Treiber fuer postgres nicht gefunden");
-				return false;
-			}
-			return true;
-		}
-		
-	
+    public boolean dataBaseConnect(String username,String password, String connectString) {
+   	 if (debug) System.out.println("Verbinde mich zur Datenbank");
+   		try {
+   			try {
+   				//Class.forName("org.gjt.mm.mysql.Driver").newInstance(); // DB-
+   																		// Treiber
+   																// laden
+   				Class.forName("org.postgresql.Driver").newInstance();
+   																		
+   			} catch (Exception E) {
+   				System.err
+   						.println("Konnte MySQL Datenbank-Treiber nicht laden!");
+   				return false;
+   			}
+   			//String url = "jdbc:mysql://192.168.2.8/budget_test";
+   			//con = DriverManager.getConnection(connectString, username, password); // Verbindung
+   			if (debug) System.out.println("Try to connect with "+connectString);											// herstellen
+   			
+   				 //con = DriverManager.getConnection("jdbc:postgresql://192.168.2.28:5432/budget", "budget", "budget");
+   				con = DriverManager.getConnection(connectString, username, password);
+   			//DriverManager.getConnection("jdbc:postgresql://localhost:5432/budget?user=budget&password=");
+   				
+   			if (debug) System.out.println("Verbindung erstellt");
+   		} catch (Exception e) {
+   			e.printStackTrace();
+   			System.err.println("Treiber fuer postgres nicht gefunden");
+   			return false;
+   		}
+   		return true;
+   	}
 	/**
 	 * Schlie홺 die Verbindung zum Server. Das Objekt ist danach unbrauchbar.
 	 */
@@ -2698,6 +2691,83 @@ public class DB {
 			// return summe/(float)getAnz(tag,monat,year);
 			return vec;
 		}
+		
+		
+		public int getUnknownBons() {
+			int  erg =0;
+			try {
+
+				PreparedStatement stmt;
+				ResultSet res = null;
+				
+				String str="select count(*) as anz from bon where internalname='unknown'";
+				if (debug) System.out.println(str);
+				stmt = con
+						.prepareStatement(str);
+				res = stmt.executeQuery();
+				while (res.next()) {
+					erg= new Integer (res.getInt("anz")).intValue();
+					
+				}
+			} catch (SQLException e) {
+				System.err.println("Konnte Select-Anweisung nicht ausf체hren" + e);
+				return 0;
+			}
+			if (debug) System.out.println("Select-Anweisung ausgef체hrt");
+			// return summe/(float)getAnz(tag,monat,year);
+			return erg;
+		}
+		
+		public Hashtable getBon() {
+			try {
+
+				PreparedStatement stmt;
+				ResultSet res = null;
+				stmt = con
+						.prepareStatement("select id,company, internalname, rawname, rawname_mutant from bon where internalname='unknown' limit 1");
+				res = stmt.executeQuery();
+				if (debug) System.out.println("select id,company, internalname, rawname, rawname_mutant from bon where internalname='unknown' limit 1");
+				while (res.next()) {
+					Hashtable hash = new Hashtable();
+					hash.put("id", new Integer(res.getInt("id")));
+					hash.put("company", (String) res.getString("company"));
+					hash.put("internalname", (String) res.getString("internalname"));
+					hash.put("rawname", (String) res.getString("rawname"));
+					hash.put("rawname_mutant", (String) res.getString("rawname_mutant"));
+					return (hash);
+				}
+			} catch (SQLException e) {
+				System.err.println("Konnte Select-Anweisung nicht ausf체hren" + e);
+				return null;
+			}
+			if (debug) System.out.println("Select-Anweisung ausgef체hrt");
+			// return summe/(float)getAnz(tag,monat,year);
+			return null;
+		}
+		
+		public boolean updateBon(Hashtable hash) {
+			try {
+				String id= ((Integer)hash.get("id")).toString();
+				String internalname= (String)hash.get("internalname");
+				String rawname= (String)hash.get("rawname");
+				String rawname_mutant =(String)hash.get("rawname_mutant");
+				String str= "update bon set " +
+						"internalname = '"+internalname+"',"+
+						"rawname = '"+rawname+"',"+
+						"rawname_mutant = '"+rawname_mutant+"' where id = '"+id+"'";
+						
+					
+				if (debug) System.out.println(str);
+				PreparedStatement stmt;
+				stmt = con.prepareStatement(str);
+				stmt.executeUpdate();
+			} catch (SQLException e) {
+				System.err.println("Konnte Update-Anweisung nicht ausf체hren" + e);
+			    return false;
+			}
+			return true;
+		}
+		
 		private String convDatum(String dat)
 		{
 			
