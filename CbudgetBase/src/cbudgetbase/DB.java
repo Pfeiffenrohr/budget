@@ -1721,7 +1721,7 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
-			String str_stm="select kategorie,sum(wert) as summe from transaktionen where datum >= '"+startdatum+"' +  and datum <= '"+enddatum+"' "+wherestring+"  group by kategorie";
+			String str_stm="select kategorie,sum(wert) as summe from transaktionen where datum >= '"+startdatum+"' and datum <= '"+enddatum+"' "+wherestring+"  group by kategorie";
 			if (debug) System.out.println(str_stm);
 			stmt = con
 					.prepareStatement(str_stm);
