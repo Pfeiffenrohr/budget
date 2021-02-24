@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Start the first process
-/var/lib/cbudgetbatch/budget_server.sh -D &
+/var/lib/cbudgetbatch/budgetserver.sh -D &
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start my_first_process: $status"
@@ -31,7 +31,7 @@ fi
 # Otherwise it loops forever, waking up every 60 seconds
 
 while sleep 60; do
-  ps aux |grep budget_server |grep -q -v grep
+  ps aux |grep budgetserver |grep -q -v grep
   PROCESS_1_STATUS=$?
   ps aux |grep plan_cache_trigger |grep -q -v grep
   PROCESS_2_STATUS=$?
