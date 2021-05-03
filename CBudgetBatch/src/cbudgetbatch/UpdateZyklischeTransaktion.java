@@ -29,10 +29,7 @@ public class UpdateZyklischeTransaktion {
 		}
 
 		cal_end.add(Calendar.MONTH, 1);
-		if (cal_end.after(cal)) {
-			//System.out.println("Keine prüfung notwendig");
-			return meldung;
-		}
+		
 		db.updatesetting("checkdatum", formatter.format(cal.getTime()));
 		
 		Calendar cal_now = cal = Calendar.getInstance();
