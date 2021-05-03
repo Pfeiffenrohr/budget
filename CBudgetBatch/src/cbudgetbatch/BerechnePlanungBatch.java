@@ -201,6 +201,8 @@ public class BerechnePlanungBatch {
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
     	cleanOldCacheEntries(db);
+    	UpdateZyklischeTransaktion uzt = new UpdateZyklischeTransaktion();
+    	uzt.update(db);
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
         //Alle Kategorien ermitteln,für die Planungen berechnet werden müssen
@@ -402,6 +404,8 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
        {
         batch.berechneTriggerPlan();
        }
+       
+ 
       
     }
 }
