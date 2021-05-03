@@ -18,7 +18,9 @@ public class UpdateZyklischeTransaktion {
 		Calendar cal = Calendar.getInstance();
 		Calendar cal_end = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat formatterLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Vector planed = new Vector();
+		System.out.println("Starte Update Zyklischer Transaktioneen ... "+formatterLog.format(cal.getTime()));
 		if (db.getPlanedTransaktionen(formatter.format(cal.getTime()), planed)) {
 		
 			meldung = true;
