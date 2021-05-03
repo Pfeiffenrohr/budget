@@ -20,7 +20,7 @@ public class UpdateZyklischeTransaktion {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat formatterLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Vector planed = new Vector();
-		System.out.println("Starte Update Zyklischer Transaktioneen ... "+formatterLog.format(cal.getTime()));
+		System.out.println(formatterLog.format(cal.getTime())+"Starte Update Zyklischer Transaktioneen ... ");
 		if (db.getPlanedTransaktionen(formatter.format(cal.getTime()), planed)) {
 		
 			meldung = true;

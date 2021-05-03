@@ -25,7 +25,7 @@ public class BerechnePlanungBatch {
 		long intervall = 3; //Anzahl der Tage nachdem gelöscht wird.
 		Calendar cal= Calendar.getInstance();
 		SimpleDateFormat formatterLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println("Starte cleanOldCacheEntries ... "+formatterLog.format(cal.getTime()));
+		System.out.println(formatterLog.format(cal.getTime())+"Starte cleanOldCacheEntries ... ");
 		Vector allPlan = dbbatch.getAllCachePlanAktuell();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		
