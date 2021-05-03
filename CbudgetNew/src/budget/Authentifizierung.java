@@ -72,24 +72,11 @@ import javax.servlet.ServletContext;
 				session.setAttribute("auth", "ok");
 				UpdateZyklischeTransaktion uz = new UpdateZyklischeTransaktion();
 				out.println("<html>");
-				out.println("<body>");
-				if (uz.update(db,out,settings))
-				{
-					
-					out.println("<form action=kontouebersicht method=post>");
-					
-					out.println("<input type=\"submit\" value=\" Weiter.. \">");
-					out.println("</form>");
-				}
-				else
-				{
+				out.println("<body>");				
 				rd = getServletContext().getRequestDispatcher("/kontouebersicht");
 				rd.forward(request, response);
 				return;
-				}
-				out.println("</body>");
-				out.println("</html>");
-				}
+					}
 			else
 			{
 				RequestDispatcher rd;
