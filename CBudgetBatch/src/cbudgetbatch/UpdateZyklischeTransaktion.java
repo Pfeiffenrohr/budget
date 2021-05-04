@@ -7,9 +7,8 @@ import java.util.Vector;
 import java.util.Hashtable;
 import cbudgetbase.DB;
 
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+
 public class UpdateZyklischeTransaktion {
 
 	public boolean update(DB db) {
@@ -23,7 +22,6 @@ public class UpdateZyklischeTransaktion {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat formatterLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Vector planed = new Vector();
-		//log.info("Transforming HyphenProduct ");
 		System.out.println(formatterLog.format(cal.getTime())+"Starte Update Zyklischer Transaktioneen ... ");
 		if (db.getPlanedTransaktionen(formatter.format(cal.getTime()), planed)) {
 		
