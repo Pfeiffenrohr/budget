@@ -23,12 +23,10 @@ public class BerechnePlanungBatch {
 	private void cleanOldCacheEntries(DBBatch dbbatch)
 	{
 		long intervall = 3; //Anzahl der Tage nachdem gelöscht wird.
-		Calendar cal= Calendar.getInstance();
-		SimpleDateFormat formatterLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		System.out.println(formatterLog.format(cal.getTime())+"Starte cleanOldCacheEntries ... ");
+		
 		Vector allPlan = dbbatch.getAllCachePlanAktuell();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		
+		Calendar cal= Calendar.getInstance();
 		Calendar cal_akt= Calendar.getInstance();		
 		for (int i = 0 ; i < allPlan.size(); i++)
 		{
@@ -200,12 +198,11 @@ public class BerechnePlanungBatch {
 			System.out.println("berechneTriggerPlan ..");
 		
 		DBBatch db = new DBBatch();
-		UpdateZyklischeTransaktion uzt = new UpdateZyklischeTransaktion();
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
-    	uzt.update(db);
     	cleanOldCacheEntries(db);
-    	
+    	UpdateZyklischeTransaktion uzt = new UpdateZyklischeTransaktion();
+    	uzt.update(db);
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
         //Alle Kategorien ermitteln,für die Planungen berechnet werden müssen
@@ -407,6 +404,8 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
        {
         batch.berechneTriggerPlan();
        }
+       
+ 
       
     }
 }

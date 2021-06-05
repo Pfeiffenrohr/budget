@@ -7,8 +7,6 @@ import java.util.Vector;
 import java.util.Hashtable;
 import cbudgetbase.DB;
 
-
-
 public class UpdateZyklischeTransaktion {
 
 	public boolean update(DB db) {
@@ -20,18 +18,18 @@ public class UpdateZyklischeTransaktion {
 		Calendar cal = Calendar.getInstance();
 		Calendar cal_end = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		SimpleDateFormat formatterLog = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Vector planed = new Vector();
-		System.out.println(formatterLog.format(cal.getTime())+"Starte Update Zyklischer Transaktioneen ... ");
 		if (db.getPlanedTransaktionen(formatter.format(cal.getTime()), planed)) {
-		
+			
 			meldung = true;
 			db.deletePlanedTransaktionen(formatter.format(cal.getTime()));
 
 		}
-
 		cal_end.add(Calendar.MONTH, 1);
-		
+		if (cal_end.after(cal)) {
+			//System.out.println("Keine prüfung notwendig");
+			return meldung;
+		}
 		db.updatesetting("checkdatum", formatter.format(cal.getTime()));
 		
 		Calendar cal_now = cal = Calendar.getInstance();
@@ -74,13 +72,7 @@ public class UpdateZyklischeTransaktion {
 				// zuerst schauen, ob der Eintrag schon da ist
 				trans.put("datum", (String) formatter.format(cal.getTime()));
 				trans.put("user", "Wiederholung");
-				if (db.getCycleTransaktion(trans)) {
-					//System.out.println("Eintrag bereits vorhanden");
-				} else {
-
-					db.insertTransaktionZycl(trans);
-					meldung = true;
-				}
+			
 				// Schaue,ob es einen Gegenbuchung gibt;
 				if (((Integer) trans.get("cycle")) == 2)
 
@@ -93,6 +85,7 @@ public class UpdateZyklischeTransaktion {
 						//System.out.println("Eintrag bereits vorhanden");
 					} else {
 						db.insertTransaktionZycl(kor_konto);
+						
 						meldung = true;
 					}
 				}

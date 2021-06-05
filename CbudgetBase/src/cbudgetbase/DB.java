@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    public boolean debug=false;
+    public boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -2347,7 +2347,7 @@ public class DB {
 				// ResultSet res = null;
 				//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
 				String stm_str="";			
-					stm_str="delete from transaktionen where datum < (' "+convDatum(datum)+"' and planed='j' )";
+					stm_str="delete from transaktionen where datum < ' "+convDatum(datum)+"' and planed='j' ";
 				if (debug) System.out.println(stm_str);
 				stmt = con.prepareStatement(stm_str);
 				// if (debug) System.out.println("update data_"+jahr+" set temp_out="+temp+
