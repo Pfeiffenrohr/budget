@@ -20,8 +20,6 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.chart.plot.XYPlot;
-//import org.jfree.chart.plot.flow.FlowColors;
-//import org.jfree.chart.plot.flow.FlowPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.ui.RectangleInsets;
@@ -30,7 +28,6 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.data.category.*;
 import org.jfree.chart.plot.*;
 import org.jfree.data.category.CategoryDataset;
-//import org.jfree.data.flow.FlowDataset;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -229,14 +226,7 @@ public class GenerateChart extends HttpServlet {
 
   }
 	 
-	/* private static JFreeChart createChart(FlowDataset dataset) {
-	        FlowPlot plot = new FlowPlot(dataset);
-	        plot.setBackgroundPaint(Color.BLACK);
-	        plot.setDefaultNodeLabelPaint(Color.WHITE);
-	        plot.setNodeColorSwatch(FlowColors.getSAPMultiColor());
-	        JFreeChart chart = new JFreeChart("Migration Patterns", plot);
-	        return chart;
-	    }  */
+
 	 
 	 private static JFreeChart createPlanChart(XYDataset dataset, String kategorieName) {
 			JFreeChart chart = ChartFactory.createTimeSeriesChart(
