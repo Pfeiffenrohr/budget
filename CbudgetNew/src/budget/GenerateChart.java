@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYDataset;
@@ -20,6 +20,8 @@ import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.chart.plot.XYPlot;
+//import org.jfree.chart.plot.flow.FlowColors;
+//import org.jfree.chart.plot.flow.FlowPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.ui.RectangleInsets;
@@ -28,6 +30,7 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.data.category.*;
 import org.jfree.chart.plot.*;
 import org.jfree.data.category.CategoryDataset;
+//import org.jfree.data.flow.FlowDataset;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -68,7 +71,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		if (mode.equals("plan")) {
@@ -80,7 +83,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		if (mode.equals("kat")) {
@@ -92,7 +95,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		if (mode.equals("art")) {
@@ -104,7 +107,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		
@@ -128,7 +131,7 @@ public class GenerateChart extends HttpServlet {
 		  p.setRangeGridlinePaint(Color.red); 
 		  int width = 700;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}		
     	catch (Exception ex) {System.err.println("Exception "+ex); }
 	}
@@ -136,7 +139,7 @@ public class GenerateChart extends HttpServlet {
 	}
 	private static XYDataset createDataset(Vector vec) {
 
-        TimeSeries s1 = new TimeSeries("Kontodaten", Day.class);
+        TimeSeries s1 = new TimeSeries("Kontodaten");
         //TimeSeries s2 = new TimeSeries("Kontodate", Day.class);
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
@@ -159,10 +162,10 @@ public class GenerateChart extends HttpServlet {
 	
 	private static XYDataset createDatasetKontoart(Vector vec) {
 
-        TimeSeries s1 = new TimeSeries("Geldkonto", Day.class);
-        TimeSeries s2 = new TimeSeries("Geldanlage", Day.class);
-        TimeSeries s3 = new TimeSeries("Sachanlage", Day.class);
-        TimeSeries s4 = new TimeSeries("Verbindlichkeit", Day.class);
+        TimeSeries s1 = new TimeSeries("Geldkonto");
+        TimeSeries s2 = new TimeSeries("Geldanlage");
+        TimeSeries s3 = new TimeSeries("Sachanlage");
+        TimeSeries s4 = new TimeSeries("Verbindlichkeit");
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
@@ -225,6 +228,15 @@ public class GenerateChart extends HttpServlet {
       return chart;
 
   }
+	 
+	/* private static JFreeChart createChart(FlowDataset dataset) {
+	        FlowPlot plot = new FlowPlot(dataset);
+	        plot.setBackgroundPaint(Color.BLACK);
+	        plot.setDefaultNodeLabelPaint(Color.WHITE);
+	        plot.setNodeColorSwatch(FlowColors.getSAPMultiColor());
+	        JFreeChart chart = new JFreeChart("Migration Patterns", plot);
+	        return chart;
+	    }  */
 	 
 	 private static JFreeChart createPlanChart(XYDataset dataset, String kategorieName) {
 			JFreeChart chart = ChartFactory.createTimeSeriesChart(

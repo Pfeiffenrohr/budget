@@ -23,13 +23,23 @@
         <scope>system</scope>
         <systemPath>${basedir}/lib/jcommon-1.0.23.jar</systemPath>
     </dependency>
-     <dependency>
-        <groupId>jfreechart</groupId>
-        <artifactId>jfreechart</artifactId>
-        <version>1.0</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/lib/jfreechart-1.0.19.jar</systemPath>
-    </dependency>
+    <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.2</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart-fx</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreesvg</artifactId>
+            <version>3.4</version>
+        </dependency>
      <dependency>
      	<groupId>CbudgetBase</groupId>
      	<artifactId>CbudgetBase</artifactId>

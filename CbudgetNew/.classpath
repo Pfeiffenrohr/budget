@@ -9,7 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/bmw"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/jcommon-1.0.23.jar"/>
-	<classpathentry kind="lib" path="lib/jfreechart-1.0.19.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/bmw.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/postgresql-42.2.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">

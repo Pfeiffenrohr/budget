@@ -64,6 +64,7 @@ import javax.servlet.http.HttpSession;
 				out.println("<html>");
 				out.println("<body bgcolor=\"#EEFFBB\">");
 				out.println("<h1>Hi! Wilkommen zur Kontoübersicht</h1>");
+				
 				if (db.getUnknownBons() > 0) {
 					out.println("Achtung!! Du hast noch unknown Bons");	
 					}
