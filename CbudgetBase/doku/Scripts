@@ -1,0 +1,6 @@
+ create table plan_cache_initial( id SERIAL PRIMARY KEY,
+plan_id integer,
+kategorie_id integer,
+datum date,
+wert double precision)
+;

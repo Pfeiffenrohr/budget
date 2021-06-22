@@ -2184,8 +2184,9 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
+			System.out.println("select id,plan_id,kategorie_id,datum,wert,initial from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" order by datum");
 			stmt = con
-					.prepareStatement("select id,plan_id,kategorie_id,datum,wert from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" order by datum");
+					.prepareStatement("select id,plan_id,kategorie_id,datum,wert,initial from plan_cache where plan_id="+plan_id+" and kategorie_id="+kategorie_id+" order by datum");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -2194,6 +2195,7 @@ public class DB {
 				hash.put("kategorie", new Integer(res.getInt("kategorie_id")));
 				hash.put("datum", (Date) res.getDate("datum"));
 				hash.put("wert", (Double) res.getDouble("wert"));
+				hash.put("initial", (Double) res.getDouble("initial"));
 				
 				vec.addElement(hash);
 			}
