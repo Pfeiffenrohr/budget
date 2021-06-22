@@ -210,7 +210,10 @@ public class BerechnePlanungBatch {
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
         Calendar cal_end= Calendar.getInstance(); 
-        System.out.println("Gefunden "+ tmp.size()+" Einträge");
+        if (tmp.size() > 0)
+        	{
+        	System.out.println("Gefunden "+ tmp.size()+" Einträge");
+        	}
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
@@ -262,7 +265,7 @@ public class BerechnePlanungBatch {
       
         }
         db.closeConnection();
-        System.out.println(plan_todo);
+        //System.out.println(plan_todo);
         //berechneAllePlan(plan_todo);
 	}
 

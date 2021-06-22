@@ -136,14 +136,15 @@ public class GenerateChart extends HttpServlet {
 	}
 	private static XYDataset createDataset(Vector vec) {
 
-        TimeSeries s1 = new TimeSeries("Kontodaten", Day.class);
-        //TimeSeries s2 = new TimeSeries("Kontodate", Day.class);
+        TimeSeries s1 = new TimeSeries("Wert in Prozent", Day.class);
+        TimeSeries initial = new TimeSeries("Initialwert", Day.class);
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
         	try{
         	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
         	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
+        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
         	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
         	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("wert") );
         	//System.err.println("fertig Eintrag "+i);
@@ -152,8 +153,9 @@ public class GenerateChart extends HttpServlet {
         	}
         	
         }
+        
         dataset.addSeries(s1);
-        //dataset.addSeries(s2);
+        dataset.addSeries(initial);
         return dataset;
 	}
 	

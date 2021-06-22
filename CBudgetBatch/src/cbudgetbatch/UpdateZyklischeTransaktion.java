@@ -18,6 +18,7 @@ public class UpdateZyklischeTransaktion {
 		Calendar cal = Calendar.getInstance();
 		Calendar cal_end = Calendar.getInstance();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		 long start = System.currentTimeMillis();
 		Vector planed = new Vector();
 		if (db.getPlanedTransaktionen(formatter.format(cal.getTime()), planed)) {
 			
@@ -25,11 +26,20 @@ public class UpdateZyklischeTransaktion {
 			db.deletePlanedTransaktionen(formatter.format(cal.getTime()));
 
 		}
+
+		try {
+			Hashtable settings = db.getSettings();
+			cal_end.setTime(formatter.parse(((String) settings.get("checkdatum"))));
+		} catch (Exception ex) {
+			System.err.println("Falsches Datumsformat in der Datenbank");
+			// System.out.println((String)settings.get("checkdatum"));
+		}
 		cal_end.add(Calendar.MONTH, 1);
 		if (cal_end.after(cal)) {
 			//System.out.println("Keine prüfung notwendig");
 			return meldung;
 		}
+		System.out.println("Berechne Zyklische Updates ...");
 		db.updatesetting("checkdatum", formatter.format(cal.getTime()));
 		
 		Calendar cal_now = cal = Calendar.getInstance();
@@ -38,9 +48,8 @@ public class UpdateZyklischeTransaktion {
 			cal_end = Calendar.getInstance();
 			 //System.out.println(hash);
 			if (((String) hash.get("noend")).equals("ja")) {
-				
 				cal_end.add(Calendar.YEAR, 30);
-				System.out.println("noend found "+ hash.get("name")+" "+ formatter.format(cal_end.getTime()));
+				//System.out.println("noend found "+ hash.get("name")+" "+ formatter.format(cal_end.getTime()));
 
 			} else {
 
@@ -50,13 +59,12 @@ public class UpdateZyklischeTransaktion {
 			cal = Calendar.getInstance();
 			trans = db.getLastCycleTransaktion(formatter.format(cal.getTime()), (Integer) hash.get("korid"));
 			// System.out.println( "Last = "+trans);
-			if (trans.get("id") == null) {System.out.println("trans nicht gefunden "+hash.get("korid")+" "+formatter.format(cal.getTime()));
-			
-				
+			if (trans.get("id") == null) {
+				//System.out.println("trans nicht gefunden "+hash.get("korid")+" "+formatter.format(cal.getTime()));				
 				continue;
 			}
 			 cal.setTime((java.util.Date)trans.get("datum"));
-			 System.out.println("cal = "+ hash.get("name")+" "+ formatter.format(cal.getTime()));
+			 //System.out.println("cal = "+ hash.get("name")+" "+ formatter.format(cal.getTime()));
 			while (cal.before(cal_end))
 			// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 			{
@@ -72,7 +80,14 @@ public class UpdateZyklischeTransaktion {
 				// zuerst schauen, ob der Eintrag schon da ist
 				trans.put("datum", (String) formatter.format(cal.getTime()));
 				trans.put("user", "Wiederholung");
-			
+				if (db.getCycleTransaktion(trans)) {
+					//System.out.println("Eintrag bereits vorhanden");
+				} else {
+
+					db.insertTransaktionZycl(trans);
+					
+					meldung = true;
+				}
 				// Schaue,ob es einen Gegenbuchung gibt;
 				if (((Integer) trans.get("cycle")) == 2)
 
@@ -109,7 +124,8 @@ public class UpdateZyklischeTransaktion {
 
 			}
 		}
-
+		long duration = (System.currentTimeMillis() - start)/1000;
+		System.out.println("Dauer des Updates:  " + duration+" Sekunden" );
 		return meldung;
 	}
 
