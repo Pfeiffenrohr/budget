@@ -257,7 +257,7 @@ public class BerechnePlanungBatch {
         			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
         			if (! zuBerechnen.contains(kategorie_id))
         			{
-        				System.out.println("Überspringe "+kategorie_id);
+        				//System.out.println("Überspringe "+kategorie_id);
         				continue;
         			}
 

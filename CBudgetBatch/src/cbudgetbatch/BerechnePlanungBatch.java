@@ -195,7 +195,7 @@ public class BerechnePlanungBatch {
 	{
 
 		
-			System.out.println("berechneTriggerPlan ..");
+			//System.out.println("berechneTriggerPlan ..");
 		
 		DBBatch db = new DBBatch();
 		//System.out.println("Open Connection");

@@ -1903,7 +1903,7 @@ public class DB {
 			PreparedStatement stmt;
 			if (checkPlanningJob(plan_id,kategorie))
 			{
-				System.out.println("Job ist schon eingetragen");
+				//System.out.println("Job ist schon eingetragen");
 				return true;
 			}
 			String stm= "insert into tmpplanningjobs values(default,'" 
