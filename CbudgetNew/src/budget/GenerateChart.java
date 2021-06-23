@@ -242,6 +242,7 @@ public class GenerateChart extends HttpServlet {
 			  chart.setBackgroundPaint(Color.white);
 
 		      XYPlot plot = (XYPlot) chart.getPlot();
+		      plot.setDataset(0, dataset);
 		      plot.setBackgroundPaint(Color.lightGray);
 		      plot.setDomainGridlinePaint(Color.white);
 		      plot.setRangeGridlinePaint(Color.white);
@@ -249,6 +250,8 @@ public class GenerateChart extends HttpServlet {
 		      plot.setDomainCrosshairVisible(true);
 		      plot.setRangeCrosshairVisible(true);
 		      
+		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(0, Color.red);
+		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(1, Color.green);
 		      XYItemRenderer r = plot.getRenderer();
 		      if (r instanceof XYLineAndShapeRenderer) {
 		          XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
