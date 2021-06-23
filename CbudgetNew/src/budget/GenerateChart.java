@@ -145,6 +145,7 @@ public class GenerateChart extends HttpServlet {
         	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
         	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
         	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
+        	System.out.println("Add initial");
         	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
         	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("wert") );
         	//System.err.println("fertig Eintrag "+i);
