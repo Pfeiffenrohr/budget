@@ -35,10 +35,14 @@ public class Forecast {
 	 private void getAllKategoriesWithForecast(DBBatch db)
 	 {
 		 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		 Calendar calbegin=Calendar.getInstance();
+		 Calendar calOneYearBack=Calendar.getInstance();
+		 Calendar calTowYearBack=Calendar.getInstance();
+		 Calendar calThreeYearBack=Calendar.getInstance();
 		 Calendar calnow=Calendar.getInstance();
 		 //Drei Jahre zurück rechnen
-		 calbegin.add(Calendar.YEAR, -3);
+		 calThreeYearBack.add(Calendar.YEAR, -3);
+		 calTowYearBack.add(Calendar.YEAR, -2);
+		 calOneYearBack.add(Calendar.YEAR, -1);
 		 //Erst mal alle Kategorien holen.		 
 		 Vector kategories =db.getAllKategorien();
 		 //Dann alle Konten
@@ -58,10 +62,13 @@ public class Forecast {
 					 continue;
 				 }
 				 where ="kategorie = "+kategorie.get("id") + " and konto_id = "+konto.get("id") +"and cycle = 0";
-				 Double wert= db.getKategorienAlleSummeWhere(formatter.format(calbegin.getTime()),formatter.format(calnow.getTime()),where );
+				 Double wertYear3= db.getKategorienAlleSummeWhere(formatter.format(calThreeYearBack.getTime()),formatter.format(calTowYearBack.getTime()),where );
+				 Double wertYear2= db.getKategorienAlleSummeWhere(formatter.format(calTowYearBack.getTime()),formatter.format(calOneYearBack.getTime()),where );
+				 Double wertYear1= db.getKategorienAlleSummeWhere(formatter.format(calOneYearBack.getTime()),formatter.format(calnow.getTime()),where );
+				 Double wert= (3 * wertYear1 + 2 * wertYear2 + wertYear3) / 6;
 				 if (wert != 0.0)
 				 {
-					 
+					  
 					Double wertMonth=wert/36;
 					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
 					//System.out.println(kategorie.get("name")+ " "+ konto.get("name")  +" "+ wertMonth);

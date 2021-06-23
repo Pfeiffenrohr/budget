@@ -116,7 +116,8 @@ public class DBBatch extends DB {
 				+ hash.get("plan_id") + ","
 				+ hash.get("kategorie_id") + ",'"
 				+ ((String)hash.get("datum")) + "',"
-			    + hash.get("wert") + ")";
+			    + hash.get("wert") + ","
+			    + hash.get("initial") + ")";
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -142,8 +143,48 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
+	public boolean insertPlanCacheInitial(Hashtable hash)
+	{
+		try {
+
+			PreparedStatement stmt;
+			String stm= "insert into plan_cache_initial values(default," 
+				+ hash.get("plan_id") + ","
+				+ hash.get("kategorie_id") + ",'"
+				+ ((String)hash.get("datum")) + "',"
+			    + hash.get("wert") + ")";
+			if (debug) System.out.println(stm);
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Konnte Insert-Anweisung nicht ausfÃ¼hren" + e);
+			 return false;
+		}
+		 return true;
+	}
 	
-	
+	public double getPlanCacheInitial(String planID, String kategorieID,String datum) {
+		 double wert =9999999999.9;
+		try {
+           
+			PreparedStatement stmt;
+			ResultSet res = null;
+			stmt = con
+					.prepareStatement("select wert from plan_cache_initial where plan_id = "+planID+ " and kategorie_id = "+kategorieID +" and datum = '"+datum + "'");
+			//.prepareStatement("select wert,datum from plan_cache_initial where plan_id = "+planID+ " and kategorie_id = "+kategorieID+" and datum = '2021-01-18' limit 1"); 
+			res = stmt.executeQuery();
+		
+			while (res.next()) {
+				wert= (res.getDouble("wert"));			
+			}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
+			return wert;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgefÃ¼hrt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return wert;
+	}
 	public boolean getPlanAktuellIsInWork(String plan_id ,Integer kategorie) {
 		//Hashtable hash = new Hashtable();
 		try {

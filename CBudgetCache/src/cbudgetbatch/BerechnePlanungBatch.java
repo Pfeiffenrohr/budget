@@ -43,11 +43,7 @@ public class BerechnePlanungBatch {
 				return;
 			}
 			
-			if (cal_akt.after(cal_end))
-			{
-				//System.out.println("Ende des Planungszeitraums erreicht!");
-				//cal_akt=(Calendar)cal_end.clone();
-			}
+			
 			String rule_id=((Integer)hash_plan.get("rule_id")).toString();
 			String rule;
 			if (rule_id.equals("-1"))
@@ -132,13 +128,27 @@ public class BerechnePlanungBatch {
 				{
 				 prozent=(summe*100/wert_relativ);
 				}
+			
+				double initial = db.getPlanCacheInitial(plan_id,kategorie_id,formatter.format(cal_akt.getTime()));
 				Hashtable hash=new Hashtable();
-				//hash.put("datum",formatter.format(cal_akt.getTime()));
+				
 				hash.put("datum",cal_akt.getTime());
 				hash.put("datum",formatter.format(cal_akt.getTime()));
 				hash.put("wert",prozent);
 				hash.put("plan_id", plan_id);
 				hash.put("kategorie_id", kategorie_id);
+				
+				if ( initial != 9999999999.9)
+				{
+					hash.put("initial",initial); 
+				}
+				else
+				{
+					hash.put("initial",prozent);
+					db.insertPlanCacheInitial(hash);
+				}
+				//hash.put("datum",formatter.format(cal_akt.getTime()));
+				
 				//daten.add(hash);
 				db.insertPlanCache(hash);
 				cal_akt.add(Calendar.DATE, 1);
@@ -183,7 +193,6 @@ public class BerechnePlanungBatch {
         	//db.dataBaseConnect(user, pass, datenbank);
         	if (! hash.containsKey((String)((Integer)hash_plan.get("plan_id")).toString()))
         	{
-        		System.out.println("Plan braucht nicht berechnet werden");
         		//System.out.println("Open Connection");
             	//db.closeConnection();
         		continue;
@@ -200,7 +209,6 @@ public class BerechnePlanungBatch {
         			//System.out.println(kat_aus);
         			if (! zuBerechnen.contains(kategorie_id))
         			{
-        				System.out.println("Überspringe "+kategorie_id);
         				continue;
         			}
         			
@@ -249,7 +257,7 @@ public class BerechnePlanungBatch {
         			Integer kategorie_id=(Integer)((Hashtable)kat_ein.elementAt(j)).get("id");
         			if (! zuBerechnen.contains(kategorie_id))
         			{
-        				System.out.println("Überspringe "+kategorie_id);
+        				//System.out.println("Überspringe "+kategorie_id);
         				continue;
         			}
 

@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
+import org.jfree.chart.ChartFactory;
+//import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYDataset;
@@ -136,14 +137,16 @@ public class GenerateChart extends HttpServlet {
 	}
 	private static XYDataset createDataset(Vector vec) {
 
-        TimeSeries s1 = new TimeSeries("Kontodaten");
-        //TimeSeries s2 = new TimeSeries("Kontodate", Day.class);
+        TimeSeries s1 = new TimeSeries("Wert in Prozent");
+        TimeSeries initial = new TimeSeries("Initialwert");
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
         	try{
         	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
         	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
+        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
+        	//initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")), i*1.0);
         	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
         	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("wert") );
         	//System.err.println("fertig Eintrag "+i);
@@ -152,8 +155,9 @@ public class GenerateChart extends HttpServlet {
         	}
         	
         }
+        
         dataset.addSeries(s1);
-        //dataset.addSeries(s2);
+        dataset.addSeries(initial);
         return dataset;
 	}
 	
@@ -226,8 +230,6 @@ public class GenerateChart extends HttpServlet {
 
   }
 	 
-
-	 
 	 private static JFreeChart createPlanChart(XYDataset dataset, String kategorieName) {
 			JFreeChart chart = ChartFactory.createTimeSeriesChart(
 		            "Planungsverlauf " + kategorieName,  // title
@@ -238,9 +240,13 @@ public class GenerateChart extends HttpServlet {
 		            true,               // generate tooltips?
 		            false               // generate URLs?
 		        );
+			// XYItemRenderer render = new XYAreaRenderer();
 			  chart.setBackgroundPaint(Color.white);
 
 		      XYPlot plot = (XYPlot) chart.getPlot();
+		      
+		      plot.setDataset(0, dataset);
+		     
 		      plot.setBackgroundPaint(Color.lightGray);
 		      plot.setDomainGridlinePaint(Color.white);
 		      plot.setRangeGridlinePaint(Color.white);
@@ -248,6 +254,8 @@ public class GenerateChart extends HttpServlet {
 		      plot.setDomainCrosshairVisible(true);
 		      plot.setRangeCrosshairVisible(true);
 		      
+		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(0, Color.red);
+		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(1, Color.green);
 		      XYItemRenderer r = plot.getRenderer();
 		      if (r instanceof XYLineAndShapeRenderer) {
 		          XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
