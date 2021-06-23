@@ -239,10 +239,13 @@ public class GenerateChart extends HttpServlet {
 		            true,               // generate tooltips?
 		            false               // generate URLs?
 		        );
+			// XYItemRenderer render = new XYAreaRenderer();
 			  chart.setBackgroundPaint(Color.white);
 
 		      XYPlot plot = (XYPlot) chart.getPlot();
+		      /*
 		      plot.setDataset(0, dataset);
+		      plot.setDataset(1, dataset);
 		      plot.setBackgroundPaint(Color.lightGray);
 		      plot.setDomainGridlinePaint(Color.white);
 		      plot.setRangeGridlinePaint(Color.white);
@@ -252,12 +255,12 @@ public class GenerateChart extends HttpServlet {
 		      
 		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(0, Color.red);
 		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(1, Color.green);
-		      XYItemRenderer r = plot.getRenderer();
+		      //XYItemRenderer r = plot.getRenderer();
 		      if (r instanceof XYLineAndShapeRenderer) {
 		          XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
 		          //renderer.setShapesVisible(true);
 		          //renderer.setShapesFilled(true);
-		      }
+		      }*/
 		      
 		      DateAxis axis = (DateAxis) plot.getDomainAxis();
 		      axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
