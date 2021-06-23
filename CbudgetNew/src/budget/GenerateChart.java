@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+//import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYDataset;
@@ -68,7 +69,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		if (mode.equals("plan")) {
@@ -80,7 +81,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		if (mode.equals("kat")) {
@@ -92,7 +93,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		if (mode.equals("art")) {
@@ -104,7 +105,7 @@ public class GenerateChart extends HttpServlet {
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
 		
@@ -128,7 +129,7 @@ public class GenerateChart extends HttpServlet {
 		  p.setRangeGridlinePaint(Color.red); 
 		  int width = 700;
 			int height = 350;
-			ChartUtilities.writeChartAsPNG(outputStream, chart, width, height);
+			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}		
     	catch (Exception ex) {System.err.println("Exception "+ex); }
 	}
@@ -136,15 +137,15 @@ public class GenerateChart extends HttpServlet {
 	}
 	private static XYDataset createDataset(Vector vec) {
 
-        TimeSeries s1 = new TimeSeries("Wert in Prozent", Day.class);
-        TimeSeries initial = new TimeSeries("Initialwert", Day.class);
+        TimeSeries s1 = new TimeSeries("Wert in Prozent");
+        TimeSeries initial = new TimeSeries("Initialwert");
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
         	try{
         	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-        	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
+        	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
+        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
         	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
         	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("wert") );
         	//System.err.println("fertig Eintrag "+i);
@@ -161,10 +162,10 @@ public class GenerateChart extends HttpServlet {
 	
 	private static XYDataset createDatasetKontoart(Vector vec) {
 
-        TimeSeries s1 = new TimeSeries("Geldkonto", Day.class);
-        TimeSeries s2 = new TimeSeries("Geldanlage", Day.class);
-        TimeSeries s3 = new TimeSeries("Sachanlage", Day.class);
-        TimeSeries s4 = new TimeSeries("Verbindlichkeit", Day.class);
+        TimeSeries s1 = new TimeSeries("Geldkonto");
+        TimeSeries s2 = new TimeSeries("Geldanlage");
+        TimeSeries s3 = new TimeSeries("Sachanlage");
+        TimeSeries s4 = new TimeSeries("Verbindlichkeit");
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
