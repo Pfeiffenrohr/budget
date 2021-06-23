@@ -145,8 +145,8 @@ public class GenerateChart extends HttpServlet {
         	try{
         	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
         	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-        	//initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
-        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")), i*1.0);
+        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
+        	//initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")), i*1.0);
         	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
         	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("wert") );
         	//System.err.println("fertig Eintrag "+i);
@@ -244,9 +244,9 @@ public class GenerateChart extends HttpServlet {
 			  chart.setBackgroundPaint(Color.white);
 
 		      XYPlot plot = (XYPlot) chart.getPlot();
-		      /*
+		      
 		      plot.setDataset(0, dataset);
-		      plot.setDataset(1, dataset);
+		     
 		      plot.setBackgroundPaint(Color.lightGray);
 		      plot.setDomainGridlinePaint(Color.white);
 		      plot.setRangeGridlinePaint(Color.white);
@@ -256,12 +256,12 @@ public class GenerateChart extends HttpServlet {
 		      
 		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(0, Color.red);
 		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(1, Color.green);
-		      //XYItemRenderer r = plot.getRenderer();
+		      XYItemRenderer r = plot.getRenderer();
 		      if (r instanceof XYLineAndShapeRenderer) {
 		          XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
 		          //renderer.setShapesVisible(true);
 		          //renderer.setShapesFilled(true);
-		      }*/
+		      }
 		      
 		      DateAxis axis = (DateAxis) plot.getDomainAxis();
 		      axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
