@@ -138,7 +138,15 @@ public class GenerateChart extends HttpServlet {
 	private static XYDataset createDataset(Vector vec) {
 
         TimeSeries s1 = new TimeSeries("Wert in Prozent");
-        TimeSeries initial = new TimeSeries("Initialwert, angelegt am "+ ((Hashtable)vec.get(0)).get("initialDatum"));
+        String myDatum ="--not calculated--";
+        if (vec.size() >0 )
+        {
+        	if (((Hashtable)vec.get(0)).get("initialDatum") != null)
+               {
+        	      myDatum=((Hashtable)vec.get(0)).get("initialDatum").toString();
+               }
+        }
+        TimeSeries initial = new TimeSeries("Initialwert, angelegt am "+ myDatum);
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {

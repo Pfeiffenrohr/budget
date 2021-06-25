@@ -129,7 +129,7 @@ public class BerechnePlanungBatch {
 				 prozent=(summe*100/wert_relativ);
 				}
 			
-				double initial = db.getPlanCacheInitial(plan_id,kategorie_id,formatter.format(cal_akt.getTime()));
+				Hashtable initial = db.getPlanCacheInitial(plan_id,kategorie_id,formatter.format(cal_akt.getTime()));
 				Hashtable hash=new Hashtable();
 				
 				hash.put("datum",cal_akt.getTime());
@@ -138,9 +138,10 @@ public class BerechnePlanungBatch {
 				hash.put("plan_id", plan_id);
 				hash.put("kategorie_id", kategorie_id);
 				
-				if ( initial != 9999999999.9)
+				if ( (Double)initial.get("wert") != 9999999999.9)
 				{
-					hash.put("initial",initial); 
+					hash.put("initial",initial.get("wert")); 
+					hash.put("initialDatum",initial.get("initialDatum")); 
 				}
 				else
 				{
