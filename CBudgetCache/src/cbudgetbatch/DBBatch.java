@@ -186,7 +186,7 @@ public class DBBatch extends DB {
 				
 			}
 			hash.put("wert",wert);
-			hash.put("initialDatum","RRRR");
+			hash.put("initialDatum",initialDatum);
 		} catch (SQLException e) {
 			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
 			return hash;

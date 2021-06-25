@@ -170,7 +170,7 @@ public class BerechnePlanungBatch {
 	private void berechneAllePlan()
 	{
 	
-		System.out.println("berechneAllePlan");
+		//System.out.println("berechneAllePlan");
 		
 		DBBatch db = new DBBatch();
 		//System.out.println("Open Connection");
