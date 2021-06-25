@@ -145,6 +145,7 @@ public class BerechnePlanungBatch {
 				else
 				{
 					hash.put("initial",prozent);
+					hash.put("initialDatum",akt_datum);
 					db.insertPlanCacheInitial(hash);
 				}
 				//hash.put("datum",formatter.format(cal_akt.getTime()));

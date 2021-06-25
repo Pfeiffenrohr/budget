@@ -117,7 +117,8 @@ public class DBBatch extends DB {
 				+ hash.get("kategorie_id") + ",'"
 				+ ((String)hash.get("datum")) + "',"
 			    + hash.get("wert") + ","
-			    + hash.get("initial") + ")";
+			    + hash.get("initial") + ",'"
+			    +  hash.get("initialDatum") +"')";
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -152,8 +153,10 @@ public class DBBatch extends DB {
 				+ hash.get("plan_id") + ","
 				+ hash.get("kategorie_id") + ",'"
 				+ ((String)hash.get("datum")) + "',"
-			    + hash.get("wert") + ")";
+			    + hash.get("wert") +")";
+			
 			if (debug) System.out.println(stm);
+		
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
