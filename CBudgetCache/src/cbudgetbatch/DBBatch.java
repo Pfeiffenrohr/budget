@@ -117,7 +117,8 @@ public class DBBatch extends DB {
 				+ hash.get("kategorie_id") + ",'"
 				+ ((String)hash.get("datum")) + "',"
 			    + hash.get("wert") + ","
-			    + hash.get("initial") + ")";
+			    + hash.get("initial") + ",'"
+			    +  hash.get("initialDatum") +"')";
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -152,8 +153,11 @@ public class DBBatch extends DB {
 				+ hash.get("plan_id") + ","
 				+ hash.get("kategorie_id") + ",'"
 				+ ((String)hash.get("datum")) + "',"
-			    + hash.get("wert") + ")";
+			    + hash.get("wert") + ",'"
+			    + hash.get("initialDatum") +"')";
+			
 			if (debug) System.out.println(stm);
+		
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -163,27 +167,33 @@ public class DBBatch extends DB {
 		 return true;
 	}
 	
-	public double getPlanCacheInitial(String planID, String kategorieID,String datum) {
-		 double wert =9999999999.9;
+	public Hashtable getPlanCacheInitial(String planID, String kategorieID,String datum) {
+		Hashtable hash = new Hashtable(); 
+		double wert =9999999999.9;
+		Date initialDatum = new Date();
 		try {
            
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select wert from plan_cache_initial where plan_id = "+planID+ " and kategorie_id = "+kategorieID +" and datum = '"+datum + "'");
+					.prepareStatement("select wert,initial_datum from plan_cache_initial where plan_id = "+planID+ " and kategorie_id = "+kategorieID +" and datum = '"+datum + "'");
 			//.prepareStatement("select wert,datum from plan_cache_initial where plan_id = "+planID+ " and kategorie_id = "+kategorieID+" and datum = '2021-01-18' limit 1"); 
 			res = stmt.executeQuery();
 		
 			while (res.next()) {
-				wert= (res.getDouble("wert"));			
+				wert=res.getDouble("wert");
+				initialDatum=  res.getDate("initial_datum");
+				
 			}
+			hash.put("wert",wert);
+			hash.put("initialDatum",initialDatum);
 		} catch (SQLException e) {
 			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
-			return wert;
+			return hash;
 		}
 		if (debug) System.out.println("Select-Anweisung ausgefÃ¼hrt");
 		// return summe/(float)getAnz(tag,monat,year);
-		return wert;
+		return hash;
 	}
 	public boolean getPlanAktuellIsInWork(String plan_id ,Integer kategorie) {
 		//Hashtable hash = new Hashtable();
