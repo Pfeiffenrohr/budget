@@ -48,7 +48,7 @@ import javax.servlet.http.HttpSession;
 				}
 				String akt_konto = (String)session.getAttribute("akt_konto");
 				String name = request.getParameter("Name");
-				String wert = request.getParameter("wert");
+				String wert = request.getParameter("wert").replace(',', '.');
 				String beschreibung = request.getParameter("beschreibung");
 				String datum = request.getParameter("dob");
 				String kategorie =request.getParameter("kategorie");

@@ -49,7 +49,7 @@ public class TransaktionenUpdaten extends javax.servlet.http.HttpServlet {
 			HeaderFooter hf = new HeaderFooter();
 			String loeschen = request.getParameter("loeschen");
 			String name = request.getParameter("Name");
-			String wert = request.getParameter("wert");
+			String wert = request.getParameter("wert").replace(',', '.');
 			String beschreibung = request.getParameter("beschreibung");
 			String datum = request.getParameter("dob");
 			String kategorie =request.getParameter("kategorie");
