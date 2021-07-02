@@ -56,7 +56,11 @@ import javax.servlet.http.HttpSession;
 				String beschreibung = request.getParameter("Beschreibung");
 				String versteckt = request.getParameter("versteckt");
 				String aktStand = request.getParameter("newValue");
-				
+				if (aktStand.contains(",") && aktStand.contains("."))
+				{
+					aktStand=aktStand.replaceAll(".", "");
+				}
+				aktStand=aktStand.replace(',', '.');
 				if (! aktStand.equals(""))
 				{
 					try {
@@ -67,8 +71,6 @@ import javax.servlet.http.HttpSession;
 					Double neu = new Double(aktStand);
 					Double diff = neu - akt;
 					DecimalFormat f = new DecimalFormat("#0.00");
-					System.out.println("diff "+f.format(diff));
-					//Integer konto_id = db.getKontoId(name);
 					Hashtable trans = new Hashtable();
 					hash.put("name","Ertrag");
 					hash.put("konto",name);

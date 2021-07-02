@@ -67,7 +67,6 @@ import javax.servlet.http.HttpSession;
 				int element = new Integer(loeschen).intValue();
 				Hashtable kontosatz= db.getKontoID(loeschen);
 				session.setAttribute("kontensatz", kontosatz);
-				System.out.println("Loesche "+loeschen);
 				out.println("<html>");
 				out.println("<body>");
 
