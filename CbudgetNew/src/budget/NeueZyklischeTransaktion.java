@@ -173,7 +173,6 @@ import javax.servlet.http.HttpSession;
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 				Calendar cal= Calendar.getInstance();
 				cal.setTime(datum);
-				System.out.println(" Cal = " + formatter.format(cal.getTime()));
 				return formatter.format(cal.getTime());
 			}
 	}

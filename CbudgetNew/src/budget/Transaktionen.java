@@ -513,7 +513,6 @@ import javax.servlet.http.HttpSession;
 				SimpleDateFormat formatter = new SimpleDateFormat("E dd.MM.yyyy");
 				Calendar cal= Calendar.getInstance();
 				cal.setTime(datum);
-				System.out.println(" Cal = " + formatter.format(cal.getTime()));
 				return formatter.format(cal.getTime());
 			}
 	}
