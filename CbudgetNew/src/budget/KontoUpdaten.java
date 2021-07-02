@@ -58,9 +58,10 @@ import javax.servlet.http.HttpSession;
 				String aktStand = request.getParameter("newValue");
 				if (aktStand.contains(",") && aktStand.contains("."))
 				{
-					aktStand=aktStand.replaceAll(".", "");
+					aktStand=aktStand.replace(".", "");
 				}
 				aktStand=aktStand.replace(',', '.');
+				System.out.println("AktStand = "+aktStand);
 				if (! aktStand.equals(""))
 				{
 					try {
