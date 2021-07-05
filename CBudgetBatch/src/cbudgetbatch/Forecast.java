@@ -51,14 +51,15 @@ public class Forecast {
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
-				/*if (!((String) kategorie.get("name")).equals("Urlaub")) {
+				/*
+				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
 					continue;
 				}
 
 				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
 					continue;
-				}*/
-
+				}
+					*/
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -90,8 +91,6 @@ public class Forecast {
 
 					sum = sum + montharry[k][0];
 				}
-				// System.out.println("Summe = "+sum );
-
 				Double wertYear2 = db.getKategorienAlleSummeWhere(formatter.format(calTowYearBack.getTime()),
 						formatter.format(calOneYearBack.getTime()), where);
 				calmonth_start = (Calendar) calTowYearBack.clone();
@@ -120,28 +119,25 @@ public class Forecast {
 					calmonth_start.add(Calendar.MONTH, 1);
 					calmonth_end.add(Calendar.MONTH, 1);
 				}
-
+				Double wertUngewichtet = wertYear1 + wertYear2 + wertYear3;
 				Double wert = (3 * wertYear1 + 2 * wertYear2 + wertYear3) / 6;
-				// System.out.println("Wert = " +wert);
 				if (wert > 0.001 || wert < -0.001) {
 					// Rechne Prozentwert aus
 					double[] prozent = new double[12];
 					double gesmantprozent = 0.0;
 					for (int k = 0; k < 12; k++) {
-						double prozentwertwert = (montharry[k][0] + montharry[k][1] + montharry[k][1]) / 6;
-						prozent[k] = prozentwertwert / wert;
-						// System.out.println("Prozent = "+prozent [k] );
+						double prozentwertwert = (montharry[k][0] + montharry[k][1] + montharry[k][2]);					
+						prozent[k] = prozentwertwert / wertUngewichtet;
 						gesmantprozent = gesmantprozent + prozent[k];
 					}
-					// System.out.println("GesamtProzent = "+gesmantprozent);
 					Double wertMonth = wert / 12;
 					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
-					// System.out.println("Year3" + kategorie.get("name")+ " "+ konto.get("name") +"
-					// "+ wertYear3 );
-					// System.out.println("Year2" + kategorie.get("name")+ " "+ konto.get("name") +"
-					// "+ wertYear2);
-					// System.out.println("Year1" + kategorie.get("name")+ " "+ konto.get("name") +"
-					// "+ wertYear1);
+					// System.out.println("Year3" + kategorie.get("name")+ " "+ konto.get("name") +" "+
+					//+ wertYear3 );
+					// System.out.println("Year2" + kategorie.get("name")+ " "+ konto.get("name") +" "+
+					// + wertYear2);
+					// System.out.println("Year1" + kategorie.get("name")+ " "+ konto.get("name") +" "+
+					// + wertYear1);
 
 					// System.out.println(kategorie.get("name")+ " "+ konto.get("name") +" "+
 					// wertMonth);
