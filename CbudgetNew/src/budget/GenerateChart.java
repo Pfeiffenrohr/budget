@@ -40,6 +40,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 public class GenerateChart extends HttpServlet {
@@ -78,9 +79,11 @@ public class GenerateChart extends HttpServlet {
 		if (mode.equals("plan")) {
 			//System.err.println("Create Chart");
 			XYDataset dataset = createDataset(chartVec,true);
+			double aktValue = getAktValue(chartVec);
+			double initialValue = getinitialValue(chartVec);
 			String kategorieName= (String) session.getAttribute("kategorieNamne");
 			//System.err.println("Create Dataset");
-			JFreeChart chart = createPlanChart(dataset,kategorieName);
+			JFreeChart chart = createPlanChart(dataset,kategorieName,aktValue,initialValue);
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
@@ -150,10 +153,12 @@ public class GenerateChart extends HttpServlet {
 		}
 		TimeSeries initial = new TimeSeries("Initialwert, angelegt am " + myDatum);
 		TimeSeriesCollection dataset = new TimeSeriesCollection();
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		for (int i = 0; i < vec.size(); i++) {
 			try {
 				// System.err.println("Eintrag "+(Double)
 				// ((Hashtable)vec.elementAt(i)).get("wert"));
+			
 				s1.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
 						(Double) ((Hashtable) vec.elementAt(i)).get("wert"));
 				if (createInitalValue) {
@@ -184,70 +189,75 @@ public class GenerateChart extends HttpServlet {
         {
         	try{
         	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-        	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Geldkonto"));
-        	s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Geldanlage"));
-        	s3.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Sachanlage"));
-        	s4.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("Verbindlichkeit"));
-        	
-        	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
-        	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("Sachanlage")+" Datum " + ((Hashtable)vec.elementAt(i)).get("datum"));
-        	//System.err.println("fertig Eintrag "+i);
-        	}
-        	catch (Exception ex) {System.err.println("Exception "+ex);
-        	}
-        	
-        }
-        dataset.addSeries(s1);
-        dataset.addSeries(s2);
-        dataset.addSeries(s3);
-        dataset.addSeries(s4);
-        return dataset;
+				s1.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+						(Double) ((Hashtable) vec.elementAt(i)).get("Geldkonto"));
+				s2.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+						(Double) ((Hashtable) vec.elementAt(i)).get("Geldanlage"));
+				s3.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+						(Double) ((Hashtable) vec.elementAt(i)).get("Sachanlage"));
+				s4.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+						(Double) ((Hashtable) vec.elementAt(i)).get("Verbindlichkeit"));
+
+				// s2.addOrUpdate(new
+				// Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double)
+				// ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
+				// System.out.println("Wert = "+(Double)
+				// ((Hashtable)vec.elementAt(i)).get("Sachanlage")+" Datum " +
+				// ((Hashtable)vec.elementAt(i)).get("datum"));
+				// System.err.println("fertig Eintrag "+i);
+			} catch (Exception ex) {
+				System.err.println("Exception " + ex);
+			}
+
+		}
+		dataset.addSeries(s1);
+		dataset.addSeries(s2);
+		dataset.addSeries(s3);
+		dataset.addSeries(s4);
+		return dataset;
 	}
-	
-	
-	
-	
-	 private static JFreeChart createChart(XYDataset dataset) {
-	JFreeChart chart = ChartFactory.createTimeSeriesChart(
-		
-            "Kontoverlauf",  // title
-            "Datum",             // x-axis label
-            "Wert",   // y-axis label
-            dataset,            // data
-            true,               // create legend?
-            true,               // generate tooltips?
-            false               // generate URLs?
-        );
-	  chart.setBackgroundPaint(Color.white);
 
-      XYPlot plot = (XYPlot) chart.getPlot();
-      plot.setBackgroundPaint(Color.lightGray);
-      plot.setDomainGridlinePaint(Color.white);
-      plot.setRangeGridlinePaint(Color.white);
-      //plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
-      plot.setDomainCrosshairVisible(true);
-      plot.setRangeCrosshairVisible(true);
-      Calendar calendar = Calendar.getInstance();
-      double millis = calendar.getTimeInMillis();
-        final Marker today = new ValueMarker(millis);
-        today.setPaint(Color.blue);
-        today.setLabel("Heute");
-        plot.addDomainMarker(today);
-      XYItemRenderer r = plot.getRenderer();
-      if (r instanceof XYLineAndShapeRenderer) {
-          XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
-          //renderer.setShapesVisible(true);
-          //renderer.setShapesFilled(true);
-      }
-      
-      DateAxis axis = (DateAxis) plot.getDomainAxis();
-      axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
-      
-      return chart;
+	private static JFreeChart createChart(XYDataset dataset) {
+		JFreeChart chart = ChartFactory.createTimeSeriesChart(
 
-  }
+				"Kontoverlauf", // title
+				"Datum", // x-axis label
+				"Wert", // y-axis label
+				dataset, // data
+				true, // create legend?
+				true, // generate tooltips?
+				false // generate URLs?
+		);
+		chart.setBackgroundPaint(Color.white);
+
+		XYPlot plot = (XYPlot) chart.getPlot();
+		plot.setBackgroundPaint(Color.lightGray);
+		plot.setDomainGridlinePaint(Color.white);
+		plot.setRangeGridlinePaint(Color.white);
+		// plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+		plot.setDomainCrosshairVisible(true);
+		plot.setRangeCrosshairVisible(true);
+		Calendar calendar = Calendar.getInstance();
+		double millis = calendar.getTimeInMillis();
+		final Marker today = new ValueMarker(millis);
+		today.setPaint(Color.blue);
+		today.setLabel("Heute");
+		plot.addDomainMarker(today);
+		XYItemRenderer r = plot.getRenderer();
+		if (r instanceof XYLineAndShapeRenderer) {
+			XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
+			// renderer.setShapesVisible(true);
+			// renderer.setShapesFilled(true);
+		}
+
+		DateAxis axis = (DateAxis) plot.getDomainAxis();
+		axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+
+		return chart;
+
+	}
 	 
-	 private static JFreeChart createPlanChart(XYDataset dataset, String kategorieName) {
+	 private static JFreeChart createPlanChart(XYDataset dataset, String kategorieName, double aktValue, double initialValue) {
 			JFreeChart chart = ChartFactory.createTimeSeriesChart(
 		            "Planungsverlauf " + kategorieName,  // title
 		            "Datum",             // x-axis label
@@ -279,12 +289,33 @@ public class GenerateChart extends HttpServlet {
 		          //renderer.setShapesVisible(true);
 		          //renderer.setShapesFilled(true);
 		      }
+		      
+		      //
+		      // Marker
+		      //
 		      Calendar calendar = Calendar.getInstance();
 		      double millis = calendar.getTimeInMillis();
 		        final Marker today = new ValueMarker(millis);
 		        today.setPaint(Color.blue);
 		        today.setLabel("Heute");
 		        plot.addDomainMarker(today);
+		        
+		        final Marker start = new ValueMarker(aktValue);
+		        start.setPaint(Color.red);
+		        start.setLabel("Aktueller Wert "+myformat(aktValue));
+		        //start.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
+		        //start.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+		        plot.addRangeMarker(start);
+		        
+		        final Marker initial = new ValueMarker(initialValue);
+		        initial.setPaint(Color.green);
+		        initial.setLabel("Initial Wert "+myformat(initialValue));
+		        //start.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
+		        //start.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+		        plot.addRangeMarker(initial);
+		       //
+		       // Marker end
+		       //
 		       // currentEnd.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
 		        //currentEnd.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		      DateAxis axis = (DateAxis) plot.getDomainAxis();
@@ -365,6 +396,54 @@ public class GenerateChart extends HttpServlet {
 	
 
 }
+	 
+	 private Double getAktValue(Vector chartVec)
+	 {
+		 Calendar cal = Calendar.getInstance();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		 for (int i =0; i < chartVec.size(); i++)
+		 {
+			 try {
+					
+					Day myDay = new Day((Date) ((Hashtable) chartVec.elementAt(i)).get("datum"));
+					Day today = new Day(cal.getTime());
+					if (myDay.equals(today)){
+						return (Double) ((Hashtable) chartVec.elementAt(i)).get("wert");
+					}
+		 }
+			 catch (Exception ex) {
+					System.err.println("Exception " + ex);
+					return 0.0;
+				}
+	
+		 }
+		 return 0.0;
+	 }
+	 
+	 
+	 private Double getinitialValue(Vector chartVec)
+	 {
+		 Calendar cal = Calendar.getInstance();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		 for (int i =0; i < chartVec.size(); i++)
+		 {
+			 try {
+					
+					Day myDay = new Day((Date) ((Hashtable) chartVec.elementAt(i)).get("datum"));
+					Day today = new Day(cal.getTime());
+					if (myDay.equals(today)){
+						return (Double) ((Hashtable) chartVec.elementAt(i)).get("initial");
+					}
+		 }
+			 catch (Exception ex) {
+					System.err.println("Exception " + ex);
+					return 0.0;
+				}
+	
+		 }
+		 return 0.0;
+	 }
+	 
 	 Double setPositiv(Double d)
 	 {
 		 if (d<0)
@@ -375,5 +454,13 @@ public class GenerateChart extends HttpServlet {
 		 {
 			 return d;
 		 }
+		 
+		
+	 }
+	 private static String  myformat(double i)
+	 {
+	 	DecimalFormat f = new DecimalFormat("#0.00");
+	 	double toFormat = ((double)Math.round(i*100))/100;
+	 	return f.format(toFormat);
 	 }
 }
