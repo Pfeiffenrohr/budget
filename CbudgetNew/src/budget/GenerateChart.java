@@ -407,7 +407,6 @@ public class GenerateChart extends HttpServlet {
 					
 					Day myDay = new Day((Date) ((Hashtable) chartVec.elementAt(i)).get("datum"));
 					Day today = new Day(cal.getTime());
-					System.out.println((Date) ((Hashtable) chartVec.elementAt(i)).get("datum"));
 					if (myDay.equals(today)){
 						return (Double) ((Hashtable) chartVec.elementAt(i)).get("wert");
 					}
@@ -418,7 +417,6 @@ public class GenerateChart extends HttpServlet {
 				}
 	
 		 }
-			System.out.println("Not found");
 		 return 0.0;
 	 }
 	 
