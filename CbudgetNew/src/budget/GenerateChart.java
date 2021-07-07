@@ -23,6 +23,8 @@ import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.ui.RectangleAnchor;
+import org.jfree.chart.ui.TextAnchor;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 import org.jfree.chart.axis.DateAxis;
@@ -36,6 +38,7 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.Calendar;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
@@ -62,7 +65,7 @@ public class GenerateChart extends HttpServlet {
 
 		if (mode.equals("verlauf")) {
 			//System.err.println("Create Chart");
-			XYDataset dataset = createDataset(chartVec);
+			XYDataset dataset = createDataset(chartVec,false);
 			//System.err.println("Create Dataset");
 			//System.err.println(chartVec);
 			JFreeChart chart = createChart(dataset);
@@ -74,7 +77,7 @@ public class GenerateChart extends HttpServlet {
 		
 		if (mode.equals("plan")) {
 			//System.err.println("Create Chart");
-			XYDataset dataset = createDataset(chartVec);
+			XYDataset dataset = createDataset(chartVec,true);
 			String kategorieName= (String) session.getAttribute("kategorieNamne");
 			//System.err.println("Create Dataset");
 			JFreeChart chart = createPlanChart(dataset,kategorieName);
@@ -135,40 +138,41 @@ public class GenerateChart extends HttpServlet {
 	}
 		
 	}
-	private static XYDataset createDataset(Vector vec) {
+	private static XYDataset createDataset(Vector vec,boolean createInitalValue) {
 
-        TimeSeries s1 = new TimeSeries("Wert in Prozent");
+        TimeSeries s1 = new TimeSeries("Verlauf");
         String myDatum ="--not calculated--";
         if (vec.size() >0 )
-        {
-        	if (((Hashtable)vec.get(0)).get("initialDatum") != null)
-               {
-        	      myDatum=((Hashtable)vec.get(0)).get("initialDatum").toString();
-               }
-        }
-        TimeSeries initial = new TimeSeries("Initialwert, angelegt am "+ myDatum);
-        TimeSeriesCollection dataset = new TimeSeriesCollection();
-        for (int i=0; i<vec.size();i++)
-        {
-        	try{
-        	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-        	s1.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-        	initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("initial"));
-        	//initial.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")), i*1.0);
-        	//s2.addOrUpdate(new Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double) ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
-        	//System.out.println("Wert = "+(Double) ((Hashtable)vec.elementAt(i)).get("wert") );
-        	//System.err.println("fertig Eintrag "+i);
-        	}
-        	catch (Exception ex) {System.err.println("Exception "+ex);
-        	}
-        	
-        }
-        
-        dataset.addSeries(s1);
-        dataset.addSeries(initial);
-        return dataset;
+		{
+			if (((Hashtable) vec.get(0)).get("initialDatum") != null) {
+				myDatum = ((Hashtable) vec.get(0)).get("initialDatum").toString();
+			}
+		}
+		TimeSeries initial = new TimeSeries("Initialwert, angelegt am " + myDatum);
+		TimeSeriesCollection dataset = new TimeSeriesCollection();
+		for (int i = 0; i < vec.size(); i++) {
+			try {
+				// System.err.println("Eintrag "+(Double)
+				// ((Hashtable)vec.elementAt(i)).get("wert"));
+				s1.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+						(Double) ((Hashtable) vec.elementAt(i)).get("wert"));
+				if (createInitalValue) {
+					initial.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+							(Double) ((Hashtable) vec.elementAt(i)).get("initial"));
+				}
+			} catch (Exception ex) {
+				System.err.println("Exception " + ex);
+			}
+
+		}
+
+		dataset.addSeries(s1);
+		if (createInitalValue) {
+			dataset.addSeries(initial);
+		}
+		return dataset;
 	}
-	
+
 	private static XYDataset createDatasetKontoart(Vector vec) {
 
         TimeSeries s1 = new TimeSeries("Geldkonto");
@@ -223,7 +227,12 @@ public class GenerateChart extends HttpServlet {
       //plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
       plot.setDomainCrosshairVisible(true);
       plot.setRangeCrosshairVisible(true);
-      
+      Calendar calendar = Calendar.getInstance();
+      double millis = calendar.getTimeInMillis();
+        final Marker today = new ValueMarker(millis);
+        today.setPaint(Color.blue);
+        today.setLabel("Heute");
+        plot.addDomainMarker(today);
       XYItemRenderer r = plot.getRenderer();
       if (r instanceof XYLineAndShapeRenderer) {
           XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
@@ -270,7 +279,14 @@ public class GenerateChart extends HttpServlet {
 		          //renderer.setShapesVisible(true);
 		          //renderer.setShapesFilled(true);
 		      }
-		      
+		      Calendar calendar = Calendar.getInstance();
+		      double millis = calendar.getTimeInMillis();
+		        final Marker today = new ValueMarker(millis);
+		        today.setPaint(Color.blue);
+		        today.setLabel("Heute");
+		        plot.addDomainMarker(today);
+		       // currentEnd.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+		        //currentEnd.setLabelTextAnchor(TextAnchor.TOP_LEFT);
 		      DateAxis axis = (DateAxis) plot.getDomainAxis();
 		      axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
 		      
@@ -300,7 +316,12 @@ public class GenerateChart extends HttpServlet {
 		      //plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
 		      plot.setDomainCrosshairVisible(true);
 		      plot.setRangeCrosshairVisible(true);
-		      
+		      Calendar calendar = Calendar.getInstance();
+		      double millis = calendar.getTimeInMillis();
+		        final Marker today = new ValueMarker(millis);
+		        today.setPaint(Color.blue);
+		        today.setLabel("Heute");
+		        plot.addDomainMarker(today);
 		      XYItemRenderer r = plot.getRenderer();
 		      if (r instanceof XYLineAndShapeRenderer) {
 		          XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;

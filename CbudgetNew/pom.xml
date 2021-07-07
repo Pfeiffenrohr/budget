@@ -17,12 +17,10 @@
      	<version>1.0</version>
      </dependency>
      <dependency>
-        <groupId>jcommon</groupId>
-        <artifactId>jcommon</artifactId>
-        <version>1.0</version>
-        <scope>system</scope>
-        <systemPath>${basedir}/lib/jcommon-1.0.23.jar</systemPath>
-    </dependency>
+         <groupId>org.jfree</groupId>
+         <artifactId>jcommon</artifactId>
+         <version>1.0.23</version>
+     </dependency>
     <!-- https://mvnrepository.com/artifact/org.jfree/jfreechart -->
 	<dependency>
     	<groupId>org.jfree</groupId>
