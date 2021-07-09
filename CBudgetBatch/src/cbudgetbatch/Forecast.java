@@ -51,15 +51,15 @@ public class Forecast {
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
-				/*
-				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+				
+				/*if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
 					continue;
 				}
 
 				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
 					continue;
-				}
-					*/
+				}*/
+					
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -78,6 +78,7 @@ public class Forecast {
 				Calendar calmonth_start = (Calendar) calThreeYearBack.clone();
 				Calendar calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
+				calmonth_end.add(Calendar.DATE,-1);
 
 				for (int k = 0; k < 12; k++) {
 					montharry[getMonth(calmonth_start)][0] = db.getKategorienAlleSummeWhere(
@@ -96,7 +97,7 @@ public class Forecast {
 				calmonth_start = (Calendar) calTowYearBack.clone();
 				calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
-
+				calmonth_end.add(Calendar.DATE,-1);
 				for (int k = 0; k < 12; k++) {
 					montharry[getMonth(calmonth_start)][1] = db.getKategorienAlleSummeWhere(
 							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
@@ -111,7 +112,7 @@ public class Forecast {
 				calmonth_start = (Calendar) calOneYearBack.clone();
 				calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
-
+				calmonth_end.add(Calendar.DATE,-1);
 				for (int k = 0; k < 12; k++) {
 					montharry[getMonth(calmonth_start)][2] = db.getKategorienAlleSummeWhere(
 							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
