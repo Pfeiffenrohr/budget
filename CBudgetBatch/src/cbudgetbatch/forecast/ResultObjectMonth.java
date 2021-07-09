@@ -1,6 +1,6 @@
-package cbudgetbatch;
+package cbudgetbatch.forecast;
 
-public class ResultObject {
+public class ResultObjectMonth {
 	
 	private int month;
 	private double yearback1;
@@ -11,7 +11,17 @@ public class ResultObject {
     private double realValue;
     private double diff;
     private double diffProzent;
+    private double prozentsatzFuerMonat;
     
+    
+	public double getProzentsatzFuerMonat() {
+		return prozentsatzFuerMonat;
+	}
+
+	public void setProzentsatzFuerMonat(double prozentsatzFuerMonat) {
+		this.prozentsatzFuerMonat = prozentsatzFuerMonat;
+	}
+
 	public double getDiffProzent() {
 		return diffProzent;
 	}
