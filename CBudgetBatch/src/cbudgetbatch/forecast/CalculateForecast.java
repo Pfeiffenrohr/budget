@@ -31,11 +31,17 @@ public class CalculateForecast {
 			System.exit(1);
 		}
 		CalculateForecast forecast = new CalculateForecast();
-		forecast.getAllKategoriesWithForecast(db);
+		ResultObjectAll roa = new ResultObjectAll();
+		Gewichtung gewichtung = new Gewichtung();
+		gewichtung.setyear1back(3);
+		gewichtung.setyear2back(2);
+		gewichtung.setyear3back(1);
+		
+		forecast.getAllKategoriesWithForecast(db,roa,gewichtung);
 		db.closeConnection();
 	}
 
-	private void getAllKategoriesWithForecast(DBBatch db) {
+	private void getAllKategoriesWithForecast(DBBatch db,ResultObjectAll roa,Gewichtung gewichtung) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calOneYearBack = Calendar.getInstance();
 		Calendar calTowYearBack = Calendar.getInstance();
@@ -51,12 +57,12 @@ public class CalculateForecast {
 		Vector kategories = db.getAllKategorien();
 		// Dann alle Konten
 		Vector konten = db.getAllKonto();
-		ResultObjectAll roa = new ResultObjectAll();
+		
 		roa.setAbweichungGesamt(0.0);
 		// Dann von allen Kategorien den Durchschnitt der letzten drei Jahre holen und
 		// den Durchschnitt pro Monat ausrechnen.
 		for (int i = 0; i < kategories.size(); i++) {
-			//System.out.println("Bearbeite kategorie " +i+ " von "+kategories.size());
+			System.out.println("Bearbeite kategorie " +i+ " von "+kategories.size());
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
@@ -88,12 +94,12 @@ public class CalculateForecast {
 				//System.out.println("----Year3back");
 				Double wertYear3 = db.getKategorienAlleSummeWhere(formatter.format(calThreeYearBack.getTime()),
 						formatter.format(calTowYearBack.getTime()), where);
-
+				
 				Calendar calmonth_start = (Calendar) calThreeYearBack.clone();
 				Calendar calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
 				calmonth_end.add(Calendar.DATE,-1);
-                
+				rsoy.setWertYear3(wertYear3);
 				for (int k = 0; k < 12; k++) {
 					ResultObjectMonth ro = new ResultObjectMonth(); 						
 					 ro.setYearback1(db.getKategorienAlleSummeWhere(
@@ -113,7 +119,7 @@ public class CalculateForecast {
 				calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
 				calmonth_end.add(Calendar.DATE,-1);
-                
+				rsoy.setWertYear2(wertYear2);
 				for (int k = 0; k < 12; k++) {					
 					ResultObjectMonth ro = ros.get(getMonth(calmonth_start));
 					ro.setYearback2(db.getKategorienAlleSummeWhere(
@@ -131,7 +137,7 @@ public class CalculateForecast {
 				calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
 				calmonth_end.add(Calendar.DATE,-1);
-
+				rsoy.setWertYear1(wertYear1);
 				for (int k = 0; k < 12; k++) {
 					ResultObjectMonth ro = ros.get(getMonth(calmonth_start));
 					ro.setYearback3(db.getKategorienAlleSummeWhere(
@@ -151,7 +157,7 @@ public class CalculateForecast {
 					
 				}
 				Double wertUngewichtet = wertYear1 + wertYear2 + wertYear3;
-				Double wert = (3 * wertYear1 + 2 * wertYear2 + wertYear3) / 6;
+				Double wert = (gewichtung.getyear1back() * wertYear1 + gewichtung.getyear2back() * wertYear2 + gewichtung.getyear3back() * wertYear3) / (gewichtung.getyear1back() +gewichtung.getyear2back() +gewichtung.getyear3back());   ;
 				//Double wert = ( wertYear1 +  wertYear2 + wertYear3) / 3;
 				if (wert > 0.001 || wert < -0.001) {
 					// Rechne Prozentwert aus
@@ -219,7 +225,7 @@ public class CalculateForecast {
 						System.out.println("Realer Wert Wert = "+ ro.getRealValue());
 						System.out.println("Diff in Euro="+ ro.getDiff());
 						*/
-						if (k == 6) 
+						if (k == 8) 
 						{
 							
 							System.out.println("Monat = "+ro.getMonth());
@@ -288,6 +294,8 @@ public class CalculateForecast {
 		System.out.println("Kategorie = " + roa.getKategorieGroesteAbweichung()); 
 
 	}
+	
+	
 
 	private int getMonth(Calendar cal) {
 		SimpleDateFormat formatter = new SimpleDateFormat("MM");
