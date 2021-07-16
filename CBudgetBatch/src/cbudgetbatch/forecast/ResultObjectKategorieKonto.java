@@ -2,7 +2,7 @@ package cbudgetbatch.forecast;
 
 import java.util.Map;
 
-public class ResultObjectYear {
+public class ResultObjectKategorieKonto {
 	
 	
 	private int jahr;

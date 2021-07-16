@@ -6,22 +6,34 @@ import java.util.Map;
 public class ResultObjectAll {
 	
 	private double abweichungGesamt;
-	private Map <Integer, ResultObjectYear> roa;
+	private Map <Integer, ResultObjectKategorieKonto> roy;
 	private String KontoGroesteAbweichung;
 	private String KategorieGroesteAbweichung;
+	private int counter;
 	
 	public ResultObjectAll() {
-		roa = new  HashMap<Integer,ResultObjectYear>();
+		roy = new  HashMap<Integer,ResultObjectKategorieKonto>();
+		counter=0;
 	}
 	
-	public ResultObjectAll(double abweichungGesamt, Map<Integer, ResultObjectYear> roa, String kontoGroesteAbweichung,
+	public ResultObjectAll(double abweichungGesamt, Map<Integer, ResultObjectKategorieKonto> roy, String kontoGroesteAbweichung,
 			String kategorieGroesteAbweichung) {
 		super();
 		this.abweichungGesamt = abweichungGesamt;
-		this.roa = roa;
+		this.roy = roy;
 		KontoGroesteAbweichung = kontoGroesteAbweichung;
 		KategorieGroesteAbweichung = kategorieGroesteAbweichung;
 	}
+	
+	
+	public int getCounter() {
+		return counter;
+	}
+
+	public void setCounter(int counter) {
+		this.counter = counter;
+	}
+
 	public String getKontoGroesteAbweichung() {
 		return KontoGroesteAbweichung;
 	}
@@ -40,11 +52,14 @@ public class ResultObjectAll {
 	public void setAbweichungGesamt(double abweichungGesamt) {
 		this.abweichungGesamt = abweichungGesamt;
 	}
-	public Map<Integer, ResultObjectYear> getRoa() {
-		return roa;
+	public Map<Integer, ResultObjectKategorieKonto> getRoy() {
+		return roy;
 	}
-	public void setRoa(Map<Integer, ResultObjectYear> roa) {
-		this.roa = roa;
+	public void setRoy(Map<Integer, ResultObjectKategorieKonto> roy) {
+		this.roy = roy;
 	}
 
+	public void count () {
+		counter++;
+	}
 }

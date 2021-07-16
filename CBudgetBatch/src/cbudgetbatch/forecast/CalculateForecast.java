@@ -1,11 +1,16 @@
 package cbudgetbatch.forecast;
 
+import java.io.BufferedWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import cbudgetbatch.DBBatch;
 
@@ -37,22 +42,25 @@ public class CalculateForecast {
 		gewichtung.setyear2back(2);
 		gewichtung.setyear3back(1);
 		
-		forecast.getAllKategoriesWithForecast(db,roa,gewichtung);
+		forecast.getAllKategoriesWithForecast(db,roa,gewichtung,-1);
+		//forecast.getAllKategoriesWithForecast(db,roa,gewichtung,-2);
+		
+		forecast.calculate(roa,gewichtung);
+
 		db.closeConnection();
 	}
 
-	private void getAllKategoriesWithForecast(DBBatch db,ResultObjectAll roa,Gewichtung gewichtung) {
+	private void getAllKategoriesWithForecast(DBBatch db,ResultObjectAll roa,Gewichtung gewichtung,int yearBack) {
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calOneYearBack = Calendar.getInstance();
 		Calendar calTowYearBack = Calendar.getInstance();
 		Calendar calThreeYearBack = Calendar.getInstance();
 		Calendar calnow = Calendar.getInstance();
-		int YearBack= -1;
 		// Drei Jahre zurück rechnen
-		calnow.add(Calendar.YEAR, YearBack);
-		calThreeYearBack.add(Calendar.YEAR, -3+YearBack);
-		calTowYearBack.add(Calendar.YEAR, -2+YearBack);
-		calOneYearBack.add(Calendar.YEAR, -1+YearBack);
+		calnow.add(Calendar.YEAR, yearBack);
+		calThreeYearBack.add(Calendar.YEAR, -3+yearBack);
+		calTowYearBack.add(Calendar.YEAR, -2+yearBack);
+		calOneYearBack.add(Calendar.YEAR, -1+yearBack);
 		// Erst mal alle Kategorien holen.
 		Vector kategories = db.getAllKategorien();
 		// Dann alle Konten
@@ -67,13 +75,15 @@ public class CalculateForecast {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				
-				if (!((String) kategorie.get("name")).equals("Handy")) {
+				/*
+				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
 					continue;
 				}
-				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
+				
+				if (!((String) konto.get("name")).equals("Sparkassen Depot")) {
 					continue;
-				}
-				ResultObjectYear rsoy = new ResultObjectYear();
+				}*/
+				ResultObjectKategorieKonto rsoy = new ResultObjectKategorieKonto();
 				rsoy.setJahr(getYear(calnow));
 				rsoy.setKategorie((String)kategorie.get("name"));
 				rsoy.setKonto((String)konto.get("name"));
@@ -175,15 +185,7 @@ public class CalculateForecast {
 					//System.out.println("Gesamtprozent= "+ gesamtprozent);
 					Double wertMonth = wert / 12;
 					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
-					// System.out.println("Year3" + kategorie.get("name")+ " "+ konto.get("name") +" "+
-					//+ wertYear3 );
-					// System.out.println("Year2" + kategorie.get("name")+ " "+ konto.get("name") +" "+
-					// + wertYear2);
-					// System.out.println("Year1" + kategorie.get("name")+ " "+ konto.get("name") +" "+
-					// + wertYear1);
-
-					// System.out.println(kategorie.get("name")+ " "+ konto.get("name") +" "+
-					// wertMonth);
+					
 					Calendar cal_end = Calendar.getInstance();
 					cal_end.add(Calendar.YEAR, 30);
 					Calendar calstart = Calendar.getInstance();
@@ -193,7 +195,7 @@ public class CalculateForecast {
 					//Ab hier beginnt die Auswertung
 					//System.out.println("!!!!!!!!Auswertung!!!!!!!!!");
 					Calendar cal = Calendar.getInstance();
-					cal.add(Calendar.YEAR, YearBack);
+					cal.add(Calendar.YEAR, yearBack);
 					calmonth_start = (Calendar) cal.clone();
 				    calmonth_end = (Calendar) cal.clone();
 					calmonth_end.add(Calendar.MONTH, 1);
@@ -219,43 +221,22 @@ public class CalculateForecast {
 						{
 						ro.setDiffProzent(abs(ro.getDiff()/ro.getRealValue()));
 						}
-						//System.out.println("Diff ="+ ro.getDiffProzent());
-						/*ÜSystem.out.println("k = "+k);
-						System.out.println("geschätzter Wert = "+ wert * prozent[getMonth(calmonth_start)]);
-						System.out.println("Realer Wert Wert = "+ ro.getRealValue());
-						System.out.println("Diff in Euro="+ ro.getDiff());
-						*/
-						if (k == 8) 
-						{
-							
-							System.out.println("Monat = "+ro.getMonth());
-							System.out.println("Wert ungewichtet  = "+wertUngewichtet);
-							System.out.println("Wert   = "+wert);
-							System.out.println("roYear1Back = "+ro.getYearback1());
-							System.out.println("roYear2Back = "+ro.getYearback2());
-							System.out.println("roYear3Back = "+ro.getYearback3());
-							System.out.println("roGesamt = "+ro.getGesamt());
-							System.out.println("Prozentsatz = "+ro.getProzentsatzFuerMonat());
-							System.out.println("geschätzter Wert = "+ wert * prozent[getMonth(calmonth_start)]);
-							System.out.println("Realer Wert Wert = "+ ro.getRealValue());
-							System.out.println("Abweichung  = " + ro.getDiffProzent());
-							System.out.println("Abweichung in Euro  = " + ro.getDiff());
-						}
+						
 						rsoy.setAbweichungjahr(rsoy.getAbweichungjahr()+ro.getDiff());
 						rsoy.setRsom(ros);
 						calmonth_start.add(Calendar.MONTH, 1);
 						calmonth_end.add(Calendar.MONTH, 1);
-					}
+					
 					
 					//System.out.println("Abweichung im Jahr = " + rsoy.getAbweichungjahr());
-					Map mymap = roa.getRoa();
-					mymap.put(new Integer(getYear(calnow)),rsoy);
-					roa.setRoa  (mymap);
+						
+					
 					if (roa.getAbweichungGesamt() < rsoy.getAbweichungjahr() )
 					{
 						roa.setAbweichungGesamt(rsoy.getAbweichungjahr());
 						roa.setKategorieGroesteAbweichung(rsoy.getKategorie());
 						roa.setKontoGroesteAbweichung(rsoy.getKonto());
+					}
 					}
 					while (calstart.before(cal_end))
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
@@ -283,6 +264,10 @@ public class CalculateForecast {
 						calstart.add(Calendar.MONTH, 1);
 
 					}
+					Map mymap = roa.getRoy();
+					mymap.put(roa.getCounter(),rsoy);
+					roa.count();
+					roa.setRoy  (mymap);
 					// --------------------------Eintag in kategorien
 				}
 				
@@ -295,7 +280,84 @@ public class CalculateForecast {
 
 	}
 	
+	private void calculate(ResultObjectAll roa, Gewichtung gewichtung) {
+
+		System.out.println("ROA Anzahl " + roa.getRoy().size());
+		for (Map.Entry<Integer, ResultObjectKategorieKonto> entryYear : roa.getRoy().entrySet()) {
+			ResultObjectKategorieKonto roy = entryYear.getValue();
+			Double wertUngewichtet = roy.getWertYear1() + roy.getWertYear2() + roy.getWertYear3();
+			Double wert = (gewichtung.getyear1back() * roy.getWertYear1()
+					+ gewichtung.getyear2back() * roy.getWertYear2() + gewichtung.getyear3back() * roy.getWertYear3())
+					/ (gewichtung.getyear1back() + gewichtung.getyear2back() + gewichtung.getyear3back());
+			;
+			if (wert > 0.001 || wert < -0.001) {
+				// Rechne Prozentwert aus
+				//double prozent =0.0;
+				double gesamtprozent = 0.0;
+
+				for (Map.Entry<Integer, ResultObjectMonth> entryMonth : entryYear.getValue().getRsom().entrySet()) {
+					//System.out.println(entryMonth.getKey());
+					ResultObjectMonth rom = entryMonth.getValue();
+					double prozentwertwert = rom.getGesamt();
+					gesamtprozent = gesamtprozent + rom.getProzentsatzFuerMonat();
+					Double wertMonth = wert / 12;
+					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
+					rom.setDiff(abs(wert * rom.getProzentsatzFuerMonat() - rom.getRealValue()));
+					if (rom.getRealValue() == 0.0 )
+					{
+						if (rom.getDiff() == 0.0 )
+						{
+						rom.setDiffProzent(0.0);
+						}
+						else
+						{
+							rom.setDiffProzent(100.0);	
+						}
+					}
+					else
+					{
+					rom.setDiffProzent(abs(rom.getDiff()/rom.getRealValue()));
+					}
+					// Auf zwei Nachkommastellen formatieren
+					rom.setYearback1(Math.round(100.0 * rom.getYearback1()) / 100.0);
+					rom.setYearback2(Math.round(100.0 * rom.getYearback2()) / 100.0);
+					rom.setYearback3(Math.round(100.0 * rom.getYearback3()) / 100.0);
+					rom.setRealValue(Math.round(100.0 * rom.getRealValue()) / 100.0);
+					String kategorie = roy.getKategorie() + ","+ roy.getKonto();
+					if (rom.getRealValue() != 0.0)
+					{
+					writeData(rom.getYearback1()+","+rom.getYearback2()+","+rom.getYearback3()+","+rom.getRealValue()+"," + kategorie +","+ rom.getMonth()+"\n");
+					}
+				}
+
+			}
+		}
+
+	}
 	
+	private void writeData(String content)
+	{
+		try {
+		String filename="C:/temp/myfile";
+		File file = new File(filename);
+		 BufferedWriter output = null;
+        output = new BufferedWriter(new FileWriter(file,true));
+        output.write(content);
+        output.close();
+		}
+		catch (IOException e) {
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		}
+	}
+      
+ /*     System.out.println("Successfully wrote to the file. " +filename);
+	
+ } catch (IOException e) {
+   System.out.println("An error occurred.");
+   e.printStackTrace();
+		}
+	}*/
 
 	private int getMonth(Calendar cal) {
 		SimpleDateFormat formatter = new SimpleDateFormat("MM");
