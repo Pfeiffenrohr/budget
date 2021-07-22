@@ -75,14 +75,14 @@ public class CalculateForecast {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				
-				/*
-				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+				
+				if (!((String) kategorie.get("name")).equals("Drogerie")) {
 					continue;
 				}
 				
-				if (!((String) konto.get("name")).equals("Sparkassen Depot")) {
+				if (!((String) konto.get("name")).equals("Bargeld")) {
 					continue;
-				}*/
+				}
 				ResultObjectKategorieKonto rsoy = new ResultObjectKategorieKonto();
 				rsoy.setJahr(getYear(calnow));
 				rsoy.setKategorie((String)kategorie.get("name"));
@@ -267,7 +267,7 @@ public class CalculateForecast {
 					Map mymap = roa.getRoy();
 					mymap.put(roa.getCounter(),rsoy);
 					roa.count();
-					roa.setRoy  (mymap);
+					roa.setRoy(mymap);
 					// --------------------------Eintag in kategorien
 				}
 				
