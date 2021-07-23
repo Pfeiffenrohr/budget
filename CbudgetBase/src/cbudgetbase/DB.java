@@ -2140,7 +2140,7 @@ public class DB {
 			if (wert< 0.001 || wert > 0.001)
 			{
 				
-				return true;
+				return false;
 				//if (debug) System.out.println("Faktor multipliziert "+wert+" Faktor " +faktor);
 			}
 			
@@ -2148,11 +2148,11 @@ public class DB {
 	}
 		} catch (SQLException e) {
 			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
-			return false;
+			return true;
 		}
 		if (debug) System.out.println("Select-Anweisung ausgeführt");
 		// return summe/(float)getAnz(tag,monat,year);
-		return false;
+		return true;
 	}
 	
 	
