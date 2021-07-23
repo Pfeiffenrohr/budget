@@ -191,12 +191,11 @@ public class BerechnePlanungBatch {
         {
         	//Loccke hier den Plan
         	Hashtable hash_plan = (Hashtable)vec.elementAt(i);
-        	//System.out.println("Open Connection");
-        	//db.dataBaseConnect(user, pass, datenbank);
+        	//System.out.println(hash_plan);
+        	
         	if (! hash.containsKey((String)((Integer)hash_plan.get("plan_id")).toString()))
         	{
-        		//System.out.println("Open Connection");
-            	//db.closeConnection();
+        		
         		continue;
         	}
         	Vector zuBerechnen=(Vector)hash.get((String)((Integer)hash_plan.get("plan_id")).toString());
@@ -435,52 +434,6 @@ public class BerechnePlanungBatch {
 	}
 	
 	
-	
-	private void parents (Vector kat,DB db,Vector vec,Integer kat_id)
-	{
-		if (debug)
-		{
-			System.out.println("parents");
-		}
-		//Suche kategorie
-		for (int i=0;i<kat.size();i++)
-		{
-			//System.out.println("first= "+(Integer)((Hashtable)kat.elementAt(i)).get("id"));
-			//System.out.println("second= "+kat_id);
-			if (((Integer)((Hashtable)kat.elementAt(i)).get("id")).intValue()==kat_id.intValue())
-			{
-				//System.out.println("Id gefunden");
-				if (! vec.contains(kat_id))
-				{
-					//System.out.println("Füge hinzu"+kat_id);	
-				vec.addElement(kat_id);
-				}
-				if(((String)((Hashtable)kat.elementAt(i)).get("mode")).equals("ausgabe"))
-				{
-					if (! vec.contains(-1))
-					{
-						vec.addElement(-1);
-					}
-				}
-				else
-				{
-					if (! vec.contains(-2))
-					{
-						vec.addElement(-2);
-					}
-				}
-					
-					
-				//System.out.println("Parent ist "+(String)((Hashtable)kat.elementAt(i)).get("parent"));
-				if ((String)((Hashtable)kat.elementAt(i)).get("parent")!=null)
-				{
-					//System.out.println("Parent ist "+(String)((Hashtable)kat.elementAt(i)).get("parent"));
-					parents (kat,db,vec,db.getKategorieId((String)((Hashtable)kat.elementAt(i)).get("parent")));	
-				}
-			}
-		}
-		
-	}
 	
 	public void searchSub (Vector all, String kat,Vector allkat,int tiefe)
 	{

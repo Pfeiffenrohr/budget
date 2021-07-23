@@ -2090,6 +2090,13 @@ public class DB {
 			{
 				sum=sum+getKategorienAlleRecursivPlanung(((String)allKats.elementAt(i)),plan_id,faktor);
 			}
+			// Hier erst mal schauen, ob die Kategorie zu den Parent dazugez�klt werden soll.
+			// Das ist nur der Fall, wenn der Planwert != 0 ist.
+			if (planwertGleichNull(plan_id, kategorie ))
+			{
+				return 0.0;
+			}
+			
 			str_stm="select absolut,wert from planung_daten where plan_id="+plan_id+" and kategorie = (select id from kategorien where name ='"+kategorie+"')";
 			if (debug) System.out.println(str_stm);
 			stmt = con
@@ -2114,6 +2121,38 @@ public class DB {
 		if (debug) System.out.println("Select-Anweisung ausgeführt");
 		// return summe/(float)getAnz(tag,monat,year);
 		return sum;
+	}
+	
+	
+	private boolean planwertGleichNull(int plan_id, String kategorie )
+	{
+		PreparedStatement stmt;
+		ResultSet res = null;
+		String str_stm="";
+		try {						
+			str_stm="select wert from planung_daten where plan_id="+plan_id+" and  kategorie =  (select id from kategorien where name ='"+kategorie+"')";
+			if (debug) System.out.println(str_stm);
+			stmt = con
+			.prepareStatement(str_stm);
+	res = stmt.executeQuery();
+	while (res.next()) {
+			Double wert=res.getDouble("wert");
+			if (wert< 0.001)
+			{
+				
+				return true;
+				//if (debug) System.out.println("Faktor multipliziert "+wert+" Faktor " +faktor);
+			}
+			
+		
+	}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return false;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return false;
 	}
 	
 	
