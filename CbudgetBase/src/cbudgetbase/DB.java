@@ -2137,7 +2137,7 @@ public class DB {
 	res = stmt.executeQuery();
 	while (res.next()) {
 			Double wert=res.getDouble("wert");
-			if (wert< 0.001)
+			if (wert< 0.001 || wert > 0.001)
 			{
 				
 				return true;
