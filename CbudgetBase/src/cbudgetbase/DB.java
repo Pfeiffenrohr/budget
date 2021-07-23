@@ -2130,6 +2130,10 @@ public class DB {
 				
 				
 			}
+			if (planwertGleichNull(plan_id, kategorie ))
+			{
+				return 0.0;
+			}
 			sum=0.0;
 			for (int i=0;i<allKats.size();i++)
 			{
