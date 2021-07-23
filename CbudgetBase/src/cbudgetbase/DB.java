@@ -2122,39 +2122,37 @@ public class DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return sum;
 	}
-	
-	
-	private boolean planwertGleichNull(int plan_id, String kategorie )
-	{
+
+	private boolean planwertGleichNull(int plan_id, String kategorie) {
 		PreparedStatement stmt;
 		ResultSet res = null;
-		String str_stm="";
-		try {						
-			str_stm="select wert from planung_daten where plan_id="+plan_id+" and  kategorie =  (select id from kategorien where name ='"+kategorie+"')";
-			if (debug) System.out.println(str_stm);
-			stmt = con
-			.prepareStatement(str_stm);
-	res = stmt.executeQuery();
-	while (res.next()) {
-			Double wert=res.getDouble("wert");
-			if (wert< 0.001 || wert > 0.001)
-			{
-				
-				return false;
-				//if (debug) System.out.println("Faktor multipliziert "+wert+" Faktor " +faktor);
+		String str_stm = "";
+		try {
+			str_stm = "select wert from planung_daten where plan_id=" + plan_id
+					+ " and  kategorie =  (select id from kategorien where name ='" + kategorie + "')";
+			if (debug)
+				System.out.println(str_stm);
+			stmt = con.prepareStatement(str_stm);
+			res = stmt.executeQuery();
+			while (res.next()) {
+				Double wert = res.getDouble("wert");
+				if (wert < - 0.001 || wert > 0.001) {
+
+					return false;
+					// if (debug) System.out.println("Faktor multipliziert "+wert+" Faktor "
+					// +faktor);
+				}
+
 			}
-			
-		
-	}
 		} catch (SQLException e) {
 			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
 			return true;
 		}
-		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		if (debug)
+			System.out.println("Select-Anweisung ausgeführt");
 		// return summe/(float)getAnz(tag,monat,year);
 		return true;
 	}
-	
 	
 	public double getPlanungAllWhere(Integer plan_id,Double faktor,String where) {
 		double sum=0.0;
