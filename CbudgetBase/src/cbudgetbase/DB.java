@@ -661,6 +661,7 @@ public class DB {
 					
 					
 				}
+				
 				sum=0.0;
 				for (int i=0;i<allKats.size();i++)
 				{
@@ -683,6 +684,50 @@ public class DB {
 			// return summe/(float)getAnz(tag,monat,year);
 			return sum;
 		}
+	
+	public double getKategorienAlleRecursivSumme(String kategorie, String startdatum, String enddatum,String rule, int plan_id) {
+		double sum=0.0;
+		try {
+			Vector allKats =new Vector();
+			PreparedStatement stmt;
+			ResultSet res = null;
+			String str_stm="select name from kategorien where parent = '"+kategorie+"' order by name";
+			if (debug) System.out.println(str_stm);
+			stmt = con
+					.prepareStatement(str_stm);
+			res = stmt.executeQuery();
+			while (res.next()) {
+				
+				allKats.addElement((String) res.getString("name"));
+				
+				
+			}
+			if (planwertGleichNull(plan_id, kategorie ))
+			{
+				return 0.0;
+			}
+			sum=0.0;
+			for (int i=0;i<allKats.size();i++)
+			{
+				sum=sum+getKategorienAlleRecursivSumme(((String)allKats.elementAt(i)),startdatum,enddatum,rule,plan_id);
+			}
+			str_stm="select sum(wert) as summe from transaktionen where kategorie = (select id from kategorien where name ='"+kategorie+"') and datum >=   '"+startdatum+"' and datum <=  '"+enddatum+"' "+rule;
+			
+			if (debug) System.out.println(str_stm);
+			stmt = con
+			.prepareStatement(str_stm);
+	res = stmt.executeQuery();
+	while (res.next()) {
+			sum=sum +(res.getDouble("summe"));
+	}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return sum;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return sum;
+	}
 			
 	public double getKategorienAlleSummeWhere(String startdatum, String enddatum,String where) {
 		double sum=0.0;

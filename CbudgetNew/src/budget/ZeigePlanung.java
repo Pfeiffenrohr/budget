@@ -132,7 +132,7 @@ import javax.servlet.http.HttpSession;
 					{
 						String kategorie=(String)((Hashtable)kat_aus.elementAt(i)).get("name");
 						 wert_relativ=db.getKategorienAlleRecursivPlanung(kategorie,new Integer(plan_id),faktor);
-						 summe=db.getKategorienAlleRecursivSumme(kategorie,formatter.format(hash_plan.get("startdatum")),akt_datum,rule);
+						 summe=db.getKategorienAlleRecursivSumme(kategorie,formatter.format(hash_plan.get("startdatum")),akt_datum,rule,new Integer(plan_id));
 					    prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
@@ -315,7 +315,7 @@ import javax.servlet.http.HttpSession;
 					if(! db.getPlanWertNull(plan_id,(Integer)((Hashtable)all.elementAt(i)).get("id")))
 					{
 					allIds.add((Integer)((Hashtable)all.elementAt(i)).get("id"));
-					hf.searchSub(allIds,(String)((Hashtable)all.elementAt(i)).get("name") , (Integer)((Hashtable)all.elementAt(i)).get("id"), all,0);
+					//hf.searchSub(allIds,(String)((Hashtable)all.elementAt(i)).get("name") , (Integer)((Hashtable)all.elementAt(i)).get("id"), all,0);
 					}
 					}
 				//System.err.println(allIds);

@@ -116,7 +116,7 @@ public class BerechnePlanungBatch {
 						kategorie, new Integer(plan_id), faktor);
 				summe = db.getKategorienAlleRecursivSumme(kategorie,
 						formatter.format(hash_plan.get("startdatum")),
-						formatter.format(cal_akt.getTime()),rule);
+						formatter.format(cal_akt.getTime()),rule,new Integer(plan_id));
 			}
 		}
 				prozent=0.0;
