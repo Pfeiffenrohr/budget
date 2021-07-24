@@ -476,7 +476,7 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
 		if(! db.getPlanWertNull(plan_id,(Integer)((Hashtable)all.elementAt(i)).get("id")))
 		{
 		allIds.add((Integer)((Hashtable)all.elementAt(i)).get("id"));
-		searchSub(allIds,(String)((Hashtable)all.elementAt(i)).get("name") , (Integer)((Hashtable)all.elementAt(i)).get("id"), all,0);
+		//searchSub(allIds,(String)((Hashtable)all.elementAt(i)).get("name") , (Integer)((Hashtable)all.elementAt(i)).get("id"), all,0);
 		}
 		}
 	//System.err.println("Alle Ids:"+allIds);
