@@ -406,6 +406,26 @@ public class DB {
 		 return true;
 
 	}
+	
+	
+	
+	   private boolean updateAllParents(String parent,String id) {
+	        try {         
+	            String old_name = getKategorieName(new Integer(id));
+	            String str= "update kategorien set " +
+	                    "parent = '"+ parent + "' where parent = '"+old_name + "'";
+	            if (debug) System.out.println(str);
+	            PreparedStatement stmt;
+	            stmt = con.prepareStatement(str);
+	            stmt.executeUpdate();
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Update-Anweisung nicht ausführen" + e);
+	            return false;
+	        }
+	        return true;
+	    }
+	
+	
 	public boolean updateKategorie(Hashtable hash) {
 		try {
 			String id= ((Integer)hash.get("id")).toString();
@@ -427,11 +447,12 @@ public class DB {
 					"forecast = '"+forecast+"',"+
 					"limit_year = '"+yearlimit+"' where id = '"+id+"'";
 					
-				
+			updateAllParents(name,id);
 			if (debug) System.out.println(str);
 			PreparedStatement stmt;
 			stmt = con.prepareStatement(str);
 			stmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			System.err.println("Konnte Update-Anweisung nicht ausführen" + e);
 		    return false;
