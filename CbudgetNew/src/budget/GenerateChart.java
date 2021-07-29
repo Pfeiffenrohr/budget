@@ -281,7 +281,7 @@ public class GenerateChart extends HttpServlet {
 		      plot.setDomainCrosshairVisible(true);
 		      plot.setRangeCrosshairVisible(true);
 		      
-		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(0, Color.red);
+		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(0, Color.blue);
 		      plot.getRendererForDataset(plot.getDataset(0)).setSeriesPaint(1, Color.green);
 		      XYItemRenderer r = plot.getRenderer();
 		      if (r instanceof XYLineAndShapeRenderer) {
@@ -301,7 +301,7 @@ public class GenerateChart extends HttpServlet {
 		        plot.addDomainMarker(today);
 		        
 		        final Marker start = new ValueMarker(aktValue);
-		        start.setPaint(Color.red);
+		        start.setPaint(Color.blue);
 		        start.setLabel("Aktueller Wert "+myformat(aktValue));
 		        //start.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
 		        //start.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
@@ -313,6 +313,14 @@ public class GenerateChart extends HttpServlet {
 		        //start.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
 		        //start.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
 		        plot.addRangeMarker(initial);
+		        
+		        
+		        final Marker hundert = new ValueMarker(100.0);
+		        hundert.setPaint(Color.red);
+               // start.setLabel("Aktueller Wert "+myformat(hundert));
+                //start.setLabelAnchor(RectangleAnchor.BOTTOM_RIGHT);
+                //start.setLabelTextAnchor(TextAnchor.TOP_RIGHT);
+                plot.addRangeMarker(hundert);
 		       //
 		       // Marker end
 		       //

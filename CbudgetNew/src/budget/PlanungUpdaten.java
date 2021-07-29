@@ -53,6 +53,7 @@ import javax.servlet.http.HttpSession;
 				String name = request.getParameter("Name");
 				String beschreibung =request.getParameter("beschreibung");
 				String batch =request.getParameter("batch");
+				String forecast =request.getParameter("forecast");
 				
 				if (batch==null)
 				{
@@ -62,6 +63,10 @@ import javax.servlet.http.HttpSession;
 				{
 					beschreibung="";
 				}
+				if (forecast==null)
+                {
+                    forecast="";
+                }
 				String rule_id =request.getParameter("rule_id");
 				if (rule_id==null)
 				{
@@ -71,7 +76,7 @@ import javax.servlet.http.HttpSession;
 				String enddatum =request.getParameter("enddatum");
 				//String wert = request.getParameter("wert");
 				
-				System.out.println("Startdatum="+startdatum);
+			//	System.out.println("Startdatum="+startdatum);
 				hash.put("name",name);
 				hash.put("beschreibung",beschreibung);
 				hash.put("startdatum",startdatum);
@@ -86,7 +91,26 @@ import javax.servlet.http.HttpSession;
 					
 					//System.out.println("Name = " +(String)((Hashtable)allAusgaben.elementAt(i)).get("name"));
 					//System.out.println(session.getAttribute("Auto"));
+				    if (forecast.equals("ja"))
+				    {
+				        Double value=0.0;
+				        String kategorie= (String)((Hashtable)allAusgaben.elementAt(i)).get("name");
+				        if (request.getParameter( (String)((Hashtable)allAusgaben.elementAt(i)).get("name")).equals("0.0")
+				                ||request.getParameter( (String)((Hashtable)allAusgaben.elementAt(i)).get("name")).equals("0" ))
+				                {
+				            value=0.0;
+				                }
+				        else
+				        {
+				         value = computeForecastValue(db,kategorie,startdatum,enddatum,new Integer (rule_id),(Integer)hash.get("plan_id"));
+				        }
+				          hash.put( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"),value.toString()); 
+				       // hash.put( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"),request.getParameter( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"))); 
+				    }
+				    else
+				    {
 					hash.put( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"),request.getParameter( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"))); 
+				    }
 					hash.put((String) ((Hashtable) allAusgaben.elementAt(i))
 							.get("name")
 							+ "_radio", request
@@ -96,7 +120,27 @@ import javax.servlet.http.HttpSession;
 				}
 				for (int i=0;i<allEinnahmen.size();i++)
 				{
+				    
+				    if (forecast.equals("ja"))
+                    {
+                        Double value=0.0;
+                        String kategorie= (String)((Hashtable)allEinnahmen.elementAt(i)).get("name");
+                        if (request.getParameter( (String)((Hashtable)allEinnahmen.elementAt(i)).get("name")).equals("0.0")
+                                ||request.getParameter( (String)((Hashtable)allEinnahmen.elementAt(i)).get("name")).equals("0" ))
+                                {
+                            value=0.0;
+                                }
+                        else
+                        {
+                         value = computeForecastValue(db,kategorie,startdatum,enddatum,new Integer (rule_id),(Integer)hash.get("plan_id"));
+                        }
+                          hash.put( (String)((Hashtable)allEinnahmen.elementAt(i)).get("name"),value.toString()); 
+                       // hash.put( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"),request.getParameter( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"))); 
+                    }
+				    else
+				    {
 					hash.put( ((Hashtable)allEinnahmen.elementAt(i)).get("name"),request.getParameter((String)((Hashtable)allEinnahmen.elementAt(i)).get("name"))); 
+				    }
 					hash.put(((Hashtable) allEinnahmen.elementAt(i)).get("name")+"_radio",
 							request.getParameter((String) ((Hashtable) allEinnahmen
 									.elementAt(i)).get("name")+"_radio"));
@@ -234,7 +278,7 @@ import javax.servlet.http.HttpSession;
 				}
 
 		}
-		public boolean checkfloat(String str)
+		private boolean checkfloat(String str)
 		{
 			try{
 				Float fl = new Float(str);
@@ -243,6 +287,20 @@ import javax.servlet.http.HttpSession;
 				return false;
 			}
 			return true;
+		}
+		
+		private double computeForecastValue(DB db ,String kategorie, String startdatum, String enddatum, int rule_id,int plan_id)
+		{   
+		    int kategorieId = db.getKategorieId(kategorie);
+		    String rule=" kategorie = '"+kategorieId+"' AND " + db.getRuleCommand(new Integer(rule_id)); 
+		    
+		   // double summe = db.getKategorienAlleRecursivSumme(kategorie,
+           //         startdatum,enddatum,rule,new Integer(plan_id));
+		    
+		    double summe = db.getKategorienAlleSummeWhere(startdatum,enddatum,rule);
+		    summe = Math.round(100.0 * summe) / 100.0;
+		    System.out.println("Kategorie "+ kategorie +" Summe:" +summe);
+		    return summe;
 		}
 }
 
