@@ -1975,7 +1975,6 @@ public class DB {
 			String stm= "insert into tmpplanningjobs values(default,'" 
 				+ plan_id + "',"
 			 + kategorie + ")";
-			debug=true;
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();

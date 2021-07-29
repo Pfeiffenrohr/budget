@@ -211,6 +211,9 @@ import javax.servlet.http.HttpSession;
 				{
 				out.println("<input type=\"checkbox\" name=\"batch\" value=\"ja\">Planung im Batch berechnen <br>");
 				}
+				out.println("<p>");
+				out.println("<input type=\"checkbox\" name=\"forecast\" value=\"ja\">Planungsdaten anhand des forcast automatisch anpassen (!!Vorsicht!!) <br>");
+				out.println("<p>");
 				out.println("<input type=\"submit\" value=\" Absenden \">");
 				out.println("</form>");
 
