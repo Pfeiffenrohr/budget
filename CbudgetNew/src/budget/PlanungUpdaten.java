@@ -137,7 +137,10 @@ import javax.servlet.http.HttpSession;
                           hash.put( (String)((Hashtable)allEinnahmen.elementAt(i)).get("name"),value.toString()); 
                        // hash.put( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"),request.getParameter( (String)((Hashtable)allAusgaben.elementAt(i)).get("name"))); 
                     }
-					//hash.put( ((Hashtable)allEinnahmen.elementAt(i)).get("name"),request.getParameter((String)((Hashtable)allEinnahmen.elementAt(i)).get("name"))); 
+				    else
+				    {
+					hash.put( ((Hashtable)allEinnahmen.elementAt(i)).get("name"),request.getParameter((String)((Hashtable)allEinnahmen.elementAt(i)).get("name"))); 
+				    }
 					hash.put(((Hashtable) allEinnahmen.elementAt(i)).get("name")+"_radio",
 							request.getParameter((String) ((Hashtable) allEinnahmen
 									.elementAt(i)).get("name")+"_radio"));
