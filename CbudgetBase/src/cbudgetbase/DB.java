@@ -1959,7 +1959,7 @@ public class DB {
 		System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
 		return false;
 	}
-	System.out.println("Select-Anweisung ausgeführt");
+	//System.out.println("Select-Anweisung ausgeführt");
 	// return summe/(float)getAnz(tag,monat,year);
 	return false;
 }

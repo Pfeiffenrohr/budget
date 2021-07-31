@@ -37,15 +37,15 @@ public class BerechnePlanungBatch {
 			}
 			Date startDate = cal.getTime();
 			Date endDate = cal_akt.getTime();
-			System.out.println("Found inwork");
 			cal.setTime((Date)hash_plan.get("datum"));
 			long startTime = startDate.getTime();
 			long endTime = endDate.getTime();
 			long diffTime = endTime - startTime;
 			long diffDays = diffTime / (1000 * 60 * 60 * 24);
-			System.out.println("diffDays =" +diffDays);
 			if (diffDays > intervall )
 			{
+			System.out.println("diffDays =" +diffDays);
+			System.out.println("Delete inwork "+ (Integer) hash_plan.get("id"));
 				//Delete inwork
 			dbbatch.updateInwork((Integer) hash_plan.get("id"));
 			}
