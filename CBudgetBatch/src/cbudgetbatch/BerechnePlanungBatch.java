@@ -49,7 +49,7 @@ public class BerechnePlanungBatch {
 				//Delete inwork
 			dbbatch.updateInwork((Integer) hash_plan.get("id"));
 			}
-			
+			dbbatch.cleanunusedCaches();
 		}
 		
 		//Säubert alle alten Transaktion_historie Einträge, die keineRefernnz mehr haben

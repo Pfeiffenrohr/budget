@@ -257,6 +257,23 @@ public class DBBatch extends DB {
 		 return true;
 	}
 	
+	public boolean cleanunusedCaches()
+    {
+        try {
+
+            PreparedStatement stmt;
+            String stm= "delete from plan_cache where plan_id not in (select plan_id from planung)";
+            //if (debug) 
+            stmt = con.prepareStatement(stm);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Konnte Insert-Anweisung nicht ausfÃ¼hren" + e);
+            return false;
+        }
+         return true;
+    }
+    
+	
 	public Vector getAllTmpUpdate() {
 		Vector vec = new Vector();
 		try {
