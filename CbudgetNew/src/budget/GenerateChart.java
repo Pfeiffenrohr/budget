@@ -431,7 +431,6 @@ public class GenerateChart extends HttpServlet {
 	 
 	 private Double getinitialValue(Vector chartVec)
 	 {
-	     System.out.println("Start getinitialValue");
 		 Calendar cal = Calendar.getInstance();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		 for (int i =0; i < chartVec.size(); i++)
