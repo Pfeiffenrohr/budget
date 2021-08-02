@@ -133,7 +133,7 @@ import javax.servlet.http.HttpSession;
 						String kategorie=(String)((Hashtable)kat_aus.elementAt(i)).get("name");
 						 wert_relativ=db.getKategorienAlleRecursivPlanung(kategorie,new Integer(plan_id),faktor);
 						 summe=db.getKategorienAlleRecursivSumme(kategorie,formatter.format(hash_plan.get("startdatum")),akt_datum,rule,new Integer(plan_id));
-					    prozent=0.0;
+						 prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
 							prozent=0.0;

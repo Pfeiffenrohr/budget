@@ -431,16 +431,24 @@ public class GenerateChart extends HttpServlet {
 	 
 	 private Double getinitialValue(Vector chartVec)
 	 {
+	     System.out.println("Start getinitialValue");
 		 Calendar cal = Calendar.getInstance();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		 for (int i =0; i < chartVec.size(); i++)
 		 {
 			 try {
-					
+				
 					Day myDay = new Day((Date) ((Hashtable) chartVec.elementAt(i)).get("datum"));
 					Day today = new Day(cal.getTime());
 					if (myDay.equals(today)){
+					    if (((Hashtable) chartVec.elementAt(i)).get("initial")==null)
+					    {
+					        return 0.0;
+					    }
+					    else
+					    {
 						return (Double) ((Hashtable) chartVec.elementAt(i)).get("initial");
+					    }
 					}
 		 }
 			 catch (Exception ex) {

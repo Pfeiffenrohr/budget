@@ -70,14 +70,15 @@ public class KlonePlanungEinfuegen extends javax.servlet.http.HttpServlet {
 			}
 			for (int i=0; i<vec.size(); i++)
 			{
-				//System.out.println("Planung = "+planung);
-				//System.out.println("Wert = "+ ((String)((Hashtable)vec.elementAt(i)).get("name")));
+				System.out.println("Planung = "+planung);
+				System.out.println("Wert = "+ ((String)((Hashtable)vec.elementAt(i)).get("name")));
 				if (((String)((Hashtable)vec.elementAt(i)).get("name")).equals(planung))
 				{
-					//System.out.println("gefunden");
+					System.out.println("gefunden");
 					oldhash=(Hashtable)vec.elementAt(i);
 				}
 			}
+			System.out.println("Oldhash = " +oldhash);
 			old_plan_id=(Integer)oldhash.get("plan_id");
 			Integer new_plan_id= db.getHighestId("planung", "plan_id")+1;
 			Hashtable hash= new Hashtable();

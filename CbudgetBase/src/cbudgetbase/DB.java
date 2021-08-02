@@ -717,6 +717,7 @@ public class DB {
 			stmt = con
 					.prepareStatement(str_stm);
 			res = stmt.executeQuery();
+			
 			while (res.next()) {
 				
 				allKats.addElement((String) res.getString("name"));
