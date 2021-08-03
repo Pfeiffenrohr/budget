@@ -45,20 +45,24 @@ public class Forecast {
 		Vector kategories = db.getAllKategorien();
 		// Dann alle Konten
 		Vector konten = db.getAllKonto();
+		Hashtable settings=db.getSettings();
 		// Dann von allen Kategorien den Durchschnitt der letzten drei Jahre holen und
 		// den Durchschnitt pro Monat ausrechnen.
+		
 		for (int i = 0; i < kategories.size(); i++) {
+		    double inflation=0.0;
+	        double inflationMonth=0.0;
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				
-				/*if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+				if (!((String) kategorie.get("name")).equals("Handy")) {
 					continue;
 				}
 
 				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
 					continue;
-				}*/
+				}
 					
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
@@ -67,6 +71,12 @@ public class Forecast {
 					// System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
 					// berechnet werden");
 					continue;
+				}
+				if ((Integer)kategorie.get("inflation") == 1)
+				{
+				    inflationMonth= new Double ((String)settings.get("inflation"));
+				    inflationMonth=inflationMonth/12;
+				    inflationMonth=inflationMonth/100;
 				}
 				where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
@@ -149,17 +159,19 @@ public class Forecast {
 					calstart.add(Calendar.DATE, 6);
 					while (calstart.before(cal_end))
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
+				
 					{
 						Hashtable trans = new Hashtable();
-
+                        double myWert=wert * prozent[getMonth(calstart)] + (wert * prozent[getMonth(calstart)] *inflation);
+                        inflation=inflation+inflationMonth;
 						// Einfuegen
 						// zuerst schauen, ob der Eintrag schon da ist
 						trans.put("datum", (String) formatter.format(calstart.getTime()));
-						trans.put("user", "Wiederholung");
+						trans.put("user", "Forecast");
 						trans.put("name", "Forecast " + kategorie.get("name"));
 						trans.put("konto", konto.get("id"));
 						// trans.put("wert", wertMonth.toString());
-						trans.put("wert", wert * prozent[getMonth(calstart)]);
+						trans.put("wert", myWert);
 						trans.put("partner", "");
 						trans.put("beschreibung", "");
 						trans.put("kategorie", kategorie.get("id"));
@@ -167,7 +179,7 @@ public class Forecast {
 						trans.put("cycle", "0");
 						trans.put("planed", "j");
 						// System.out.println("Transwert "+trans.get("wert"));
-						if (wert * prozent[getMonth(calstart)] > 0.001 || wert * prozent[getMonth(calstart)] < -0.001) {
+						if (myWert > 0.001 || myWert < -0.001) {
 							db.insertTransaktionZycl(trans);
 						}
 						calstart.add(Calendar.MONTH, 1);

@@ -60,6 +60,7 @@ import javax.servlet.http.HttpSession;
 				String mode = request.getParameter("art");
 				String active = request.getParameter("active");
 				String forecast = request.getParameter("forecast");
+				String inflation = request.getParameter("inflation");
 				
 				hash.put("name",name);
 				hash.put("parent",parent);
@@ -69,6 +70,7 @@ import javax.servlet.http.HttpSession;
 				hash.put("mode",mode);
 				hash.put("active",active);
 				hash.put("forecast",forecast);
+				hash.put("inflation",forecast);
 				
 				HeaderFooter hf = new HeaderFooter();
 				out.println("<html>");

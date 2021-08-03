@@ -59,6 +59,7 @@ import javax.servlet.http.HttpSession;
 				String mode=request.getParameter("art");
 				String active=request.getParameter("active");
 				String forecast=request.getParameter("forecast");
+				String inflation=request.getParameter("inflation");
 				
 				Hashtable hash= new Hashtable();
 				hash.put("name",name);
@@ -67,13 +68,13 @@ import javax.servlet.http.HttpSession;
 				hash.put("mode",mode);
 				hash.put("active",active);
 				hash.put("forecast",forecast);
+				hash.put("inflation",inflation);
 				//hash.put("active",active);
-				
+				System.out.println("Inflation = " + hash.get("inflation"));
 				if (!checkfloat (monthlimit))
 				{
 					monthlimit="-1";
 				}
-				System.out.println("monthlimit="+monthlimit);
 				hash.put("monthlimit",monthlimit);
 				if (!checkfloat (yearlimit))
 				{

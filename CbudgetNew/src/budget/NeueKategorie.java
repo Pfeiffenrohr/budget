@@ -69,6 +69,9 @@ import javax.servlet.http.HttpSession;
 					out.println("<p>Für die Kategorie soll es einen Forecast geben: <br>");
 					out.println("<input type=\"radio\" name=\"forecast\" value=\"1\" checked > Ja <br>");
 					out.println("<input type=\"radio\" name=\"forecast\" value=\"0\"> Nein <br>");
+					out.println("<p>Für die Kategorie soll die Inflation mitberechnet werden: <br>");
+                    out.println("<input type=\"radio\" name=\"inflation\" value=\"1\" checked > Ja <br>");
+                    out.println("<input type=\"radio\" name=\"inflation\" value=\"0\"> Nein <br>");
 
 					out.println("<input type=\"submit\" value=\" Absenden \">");
 					out.println("</form>");

@@ -162,6 +162,25 @@ import javax.servlet.http.HttpSession;
 				{
 				out.println("<input type=\"radio\" name=\"forecast\" value=\"0\"> Nein <br>");
 				}
+				
+                out.println("<p>Soll die Infaltionsrate im Forecast berechnet werden?: <br>");
+                
+                if (((Integer)((Hashtable)vec.elementAt(element)).get("inflation")).intValue()==1)
+                {
+                out.println("<input type=\"radio\" name=\"inflation\" value=\"1\"checked> Ja <br>");
+                }
+                else
+                {
+                out.println("<input type=\"radio\" name=\"inflation\" value=\"1\"> Ja <br>");    
+                }
+                if (((Integer)((Hashtable)vec.elementAt(element)).get("inflation")).intValue()==0)
+                {
+                out.println("<input type=\"radio\" name=\"inflation\" value=\"0\"checked> Nein <br>");
+                }
+                else
+                {
+                out.println("<input type=\"radio\" name=\"inflation\" value=\"0\"> Nein <br>");
+                }
 				out.println("<p>Kategorie löschen: <br>");
 				out.println("<input type=\"checkbox\" name=\"loeschen\" value=\"ja\"> Kategorie komplett löschen <br>");
 				out.println("<input type=\"submit\" value=\" Absenden \">");

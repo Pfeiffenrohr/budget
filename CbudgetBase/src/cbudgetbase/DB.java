@@ -293,7 +293,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,name,parent,description,limit_month,limit_year,mode,active,forecast from kategorien order by name");
+					.prepareStatement("select id,name,parent,description,limit_month,limit_year,mode,active,forecast,inflation from kategorien order by name");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -307,6 +307,7 @@ public class DB {
 				hash.put("mode", (String) res.getString("mode"));
 				hash.put("active", new Integer(res.getInt("active")));
 				hash.put("forecast", new Integer(res.getInt("forecast")));
+				hash.put("inflation", new Integer(res.getInt("inflation")));
 				vec.addElement(hash);
 			}
 		} catch (SQLException e) {
@@ -325,7 +326,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,name,parent,description,limit_month,limit_year,mode,active,forecast from kategorien where mode='"+mode+"' order by name");
+					.prepareStatement("select id,name,parent,description,limit_month,limit_year,mode,active,forecast,inflation from kategorien where mode='"+mode+"' order by name");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -339,6 +340,7 @@ public class DB {
 				hash.put("mode", (String) res.getString("mode"));
 				hash.put("active", new Integer(res.getInt("active")));
 				hash.put("forecast", new Integer(res.getInt("forecast")));
+				hash.put("inflation", new Integer(res.getInt("inflation")));
 				vec.addElement(hash);
 			}
 		} catch (SQLException e) {
@@ -357,7 +359,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,name,parent,description,limit_month,limit_year,mode,active,forecast from kategorien where active=1 order by name");
+					.prepareStatement("select id,name,parent,description,limit_month,limit_year,mode,active,forecast,inflation from kategorien where active=1 order by name");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -371,6 +373,7 @@ public class DB {
 				hash.put("mode", (String) res.getString("mode"));
 				hash.put("active", new Integer(res.getInt("active")));
 				hash.put("forecast", new Integer(res.getInt("forecast")));
+				hash.put("inflation", new Integer(res.getInt("inflation")));
 				vec.addElement(hash);
 			}
 		} catch (SQLException e) {
@@ -395,7 +398,8 @@ public class DB {
 				+ hash.get("yearlimit") + "','"
 				+ hash.get("mode") + "','"
 				+ hash.get("active") + "','"
-			    + hash.get("forecast") + "')";
+				+ hash.get("forecast") + "','"
+			    + hash.get("inflation") + "')";
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -437,6 +441,7 @@ public class DB {
 			String mode =(String)hash.get("mode");
 			String active =(String)hash.get("active");
 			String forecast =(String)hash.get("forecast");
+			String inflation =(String)hash.get("inflation");
 			String str= "update kategorien set " +
 					"name = '"+ name + "'," +
 					"description = '"+beschreibung+"',"+
@@ -445,6 +450,7 @@ public class DB {
 					"mode = '"+mode+"',"+
 					"active = '"+active+"',"+
 					"forecast = '"+forecast+"',"+
+					"inflation = '"+inflation+"',"+
 					"limit_year = '"+yearlimit+"' where id = '"+id+"'";
 					
 			updateAllParents(name,id);
@@ -637,7 +643,7 @@ public class DB {
 				{
 					getKategorienAlleRecursiv(((String)allKats.elementAt(i)),vec);
 				}
-				str_stm="select id,name,parent,description,limit_month,limit_year,mode,active,forecast from kategorien where name = '"+kategorie+"'";
+				str_stm="select id,name,parent,description,limit_month,limit_year,mode,active,forecast,inflation from kategorien where name = '"+kategorie+"'";
 				if (debug) System.out.println(str_stm);
 				stmt = con
 				.prepareStatement(str_stm);
@@ -654,6 +660,7 @@ public class DB {
 				hash.put("mode", (String) res.getString("mode"));
 				hash.put("active", new Integer(res.getInt("active")));
 				hash.put("forecast", new Integer(res.getInt("forecast")));
+				hash.put("inflation", new Integer(res.getInt("inflation")));
 				vec.addElement(hash);
 		}
 			} catch (SQLException e) {
