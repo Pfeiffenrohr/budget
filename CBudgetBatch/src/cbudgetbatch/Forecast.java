@@ -55,7 +55,7 @@ public class Forecast {
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
-				
+				/*
 				if (!((String) kategorie.get("name")).equals("Handy")) {
 					continue;
 				}
@@ -63,7 +63,7 @@ public class Forecast {
 				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
 					continue;
 				}
-					
+					*/
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
