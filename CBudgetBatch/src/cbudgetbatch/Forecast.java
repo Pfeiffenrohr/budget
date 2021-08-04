@@ -56,14 +56,14 @@ public class Forecast {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				/*
-				if (!((String) kategorie.get("name")).equals("Handy")) {
+				if (!((String) kategorie.get("name")).equals("Computer")) {
 					continue;
 				}
 
-				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
+				if (!((String) konto.get("name")).equals("Paypal")) {
 					continue;
 				}
-					*/
+				*/
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -143,15 +143,21 @@ public class Forecast {
 					}
 					Double wertMonth = wert / 12;
 					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
-					// System.out.println("Year3" + kategorie.get("name")+ " "+ konto.get("name") +" "+
-					//+ wertYear3 );
-					// System.out.println("Year2" + kategorie.get("name")+ " "+ konto.get("name") +" "+
-					// + wertYear2);
-					// System.out.println("Year1" + kategorie.get("name")+ " "+ konto.get("name") +" "+
-					// + wertYear1);
-
-					// System.out.println(kategorie.get("name")+ " "+ konto.get("name") +" "+
-					// wertMonth);
+					/*
+					 System.out.println("Year3" + kategorie.get("name")+ " "+ konto.get("name") +" "+
+					+ wertYear3 );
+					 System.out.println("Year2" + kategorie.get("name")+ " "+ konto.get("name") +" "+
+					 + wertYear2);
+					 System.out.println("Year1" + kategorie.get("name")+ " "+ konto.get("name") +" "+
+					 + wertYear1);
+         			 System.out.println("WertMonth "+
+					 wertMonth);
+         			 System.out.println("Wert "+
+        					 wert);
+					 
+					 */
+					 
+					 
 					Calendar cal_end = Calendar.getInstance();
 					cal_end.add(Calendar.YEAR, 30);
 					Calendar calstart = Calendar.getInstance();
@@ -163,7 +169,18 @@ public class Forecast {
 					{
 						Hashtable trans = new Hashtable();
                         double myWert=wert * prozent[getMonth(calstart)] + (wert * prozent[getMonth(calstart)] *inflation);
+						//double myWert=wert * prozent[getMonth(calstart)] *inflation;
                         inflation=inflation+inflationMonth;
+                        /*
+                        System.out.println("Datum = " + (String) formatter.format(calstart.getTime()));
+                        System.out.println("Inflation = " +inflation );
+                        System.out.println("Prozentwert = "+prozent[getMonth(calstart)]);
+                        System.out.println("Inflationswert =  " + wert * prozent[getMonth(calstart)] *inflation );
+                        System.out.println("Wert = " +wert * prozent[getMonth(calstart)] );
+                        System.out.println("Wert mit inflation = " + myWert);
+                        
+                        System.out.println();
+                        */
 						// Einfuegen
 						// zuerst schauen, ob der Eintrag schon da ist
 						trans.put("datum", (String) formatter.format(calstart.getTime()));
@@ -171,7 +188,8 @@ public class Forecast {
 						trans.put("name", "Forecast " + kategorie.get("name"));
 						trans.put("konto", konto.get("id"));
 						// trans.put("wert", wertMonth.toString());
-						trans.put("wert", myWert);
+						//trans.put("wert", myWert);
+						trans.put("wert", wert * prozent[getMonth(calstart)]);
 						trans.put("partner", "");
 						trans.put("beschreibung", "");
 						trans.put("kategorie", kategorie.get("id"));
