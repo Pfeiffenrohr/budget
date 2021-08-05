@@ -89,7 +89,7 @@ public class Forecast {
 				Calendar calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
 				calmonth_end.add(Calendar.DATE,-1);
-
+   
 				for (int k = 0; k < 12; k++) {
 					montharry[getMonth(calmonth_start)][0] = db.getKategorienAlleSummeWhere(
 							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
