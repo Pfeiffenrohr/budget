@@ -164,6 +164,10 @@ public class Forecast {
 						Hashtable trans = new Hashtable();
                         double myWert=wert * prozent[getMonth(calstart)] + (wert * prozent[getMonth(calstart)] *inflation);
                         inflation=inflation+inflationMonth;
+                        /*
+                        System.out.println("Wert ohne inflation = "+wert * prozent[getMonth(calstart)] );
+                        System.out.println("Wert mit inflation = "+myWert );
+                        */
 						// Einfuegen
 						// zuerst schauen, ob der Eintrag schon da ist
 						trans.put("datum", (String) formatter.format(calstart.getTime()));
