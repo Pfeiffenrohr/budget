@@ -1,9 +1,16 @@
 package cbudgetbatch;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
+
+import cbudgetbatch.DBBatch;
+import cbudgetbatch.forecastnew.OverAllTable;
+import cbudgetbatch.forecastnew.YearTable;
 
 public class Forecast {
 	static String user;
@@ -52,18 +59,20 @@ public class Forecast {
 		for (int i = 0; i < kategories.size(); i++) {
 		    double inflation=0.0;
 	        double inflationMonth=0.0;
+	        
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				/*
-				if (!((String) kategorie.get("name")).equals("Computer")) {
+				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
 					continue;
 				}
-
-				if (!((String) konto.get("name")).equals("Paypal")) {
+                
+				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
 					continue;
 				}
 				*/
+				 System.out.println("Kategorie "+ kategorie.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -82,6 +91,16 @@ public class Forecast {
 
 				double[][] montharry = new double[12][3];
                //Hier machen wir das Ganze 3 Mal hintereinander für jedes Jahr. Das sollte man eigentlich besser machen.
+				OverAllTable oat = new OverAllTable();
+				Map <Integer,Double >mapYear3 = new HashMap<Integer, Double>();
+				YearTable yt3 = new YearTable();
+				
+				
+				mapYear3=db.getKategorienAlleSummeWhereAsMapPerDay(formatter.format(calThreeYearBack.getTime()),
+						formatter.format(calTowYearBack.getTime()), where);
+				yt3.setMapYear(mapYear3);
+				yt3.computeSum();
+				
 				Double wertYear3 = db.getKategorienAlleSummeWhere(formatter.format(calThreeYearBack.getTime()),
 						formatter.format(calTowYearBack.getTime()), where);
 
@@ -102,47 +121,37 @@ public class Forecast {
 
 					sum = sum + montharry[k][0];
 				}
-				Double wertYear2 = db.getKategorienAlleSummeWhere(formatter.format(calTowYearBack.getTime()),
+				Map <Integer,Double >mapYear2 = new HashMap<Integer, Double>();
+				YearTable yt2 = new YearTable();
+				mapYear2=db.getKategorienAlleSummeWhereAsMapPerDay(formatter.format(calTowYearBack.getTime()),
 						formatter.format(calOneYearBack.getTime()), where);
-				calmonth_start = (Calendar) calTowYearBack.clone();
-				calmonth_end = (Calendar) calmonth_start.clone();
-				calmonth_end.add(Calendar.MONTH, 1);
-				calmonth_end.add(Calendar.DATE,-1);
-				for (int k = 0; k < 12; k++) {
-					montharry[getMonth(calmonth_start)][1] = db.getKategorienAlleSummeWhere(
-							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
-							where);
-					calmonth_start.add(Calendar.MONTH, 1);
-					calmonth_end.add(Calendar.MONTH, 1);
-				}
-
-				Double wertYear1 = db.getKategorienAlleSummeWhere(formatter.format(calOneYearBack.getTime()),
+				yt2.setMapYear(mapYear2);
+				yt2.computeSum();
+				
+			
+				Map <Integer,Double >mapYear1 = new HashMap<Integer, Double>();
+				YearTable yt1 = new YearTable();
+				mapYear1=db.getKategorienAlleSummeWhereAsMapPerDay(formatter.format(calOneYearBack.getTime()),
 						formatter.format(calnow.getTime()), where);
-
-				calmonth_start = (Calendar) calOneYearBack.clone();
-				calmonth_end = (Calendar) calmonth_start.clone();
-				calmonth_end.add(Calendar.MONTH, 1);
-				calmonth_end.add(Calendar.DATE,-1);
-				for (int k = 0; k < 12; k++) {
-					montharry[getMonth(calmonth_start)][2] = db.getKategorienAlleSummeWhere(
-							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
-							where);
-					calmonth_start.add(Calendar.MONTH, 1);
-					calmonth_end.add(Calendar.MONTH, 1);
+				yt1.setMapYear(mapYear1);
+				yt1.computeSum();
+				
+				
+			
+				Double wertMapungewichtet = yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear();
+				oat.setSummeUngewichtet(yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear()); ;
+				oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+				for (int k=1; k< 366; k++ )
+				{
+					if (mapYear1.get(k)==null ) mapYear1.put(k,0.0);
+					if (mapYear2.get(k)==null ) mapYear2.put(k,0.0);
+					if (mapYear3.get(k)==null ) mapYear3.put(k,0.0);
+					oat.computeProzentDay(k, mapYear1.get(k), mapYear2.get(k), mapYear3.get(k));
 				}
-				Double wertUngewichtet = wertYear1 + wertYear2 + wertYear3;
-				Double wert = (3 * wertYear1 + 2 * wertYear2 + wertYear3) / 6;
-				if (wert > 0.001 || wert < -0.001) {
-					// Rechne Prozentwert aus
-					double[] prozent = new double[12];
-					double gesmantprozent = 0.0;
-					for (int k = 0; k < 12; k++) {
-						double prozentwertwert = (montharry[k][0] + montharry[k][1] + montharry[k][2]);					
-						prozent[k] = prozentwertwert / wertUngewichtet;
-						gesmantprozent = gesmantprozent + prozent[k];
-					}
-					Double wertMonth = wert / 12;
-					wertMonth = Math.round(100.0 * wertMonth) / 100.0;
+				//oat.printSumProzent();
+				oat.computeDayGewichtet();
+				
+				
 					/*
 					 System.out.println("Year3" + kategorie.get("name")+ " "+ konto.get("name") +" "+
 					+ wertYear3 );
@@ -152,11 +161,15 @@ public class Forecast {
 					 + wertYear1);
          			 System.out.println("WertMonth "+
 					 wertMonth);
+         			 System.out.println("WertUngewichtet "+
+         					wertUngewichtet);
+         			 System.out.println("WertUngewichtetMap "+
+          					wertUngewichtet);
          			 System.out.println("Wert "+
         					 wert);
 					 
-					 */
 					 
+					 */
 					 
 					Calendar cal_end = Calendar.getInstance();
 					cal_end.add(Calendar.YEAR, 30);
@@ -167,10 +180,18 @@ public class Forecast {
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 				
 					{
+						
+						
 						Hashtable trans = new Hashtable();
-                        double myWert=wert * prozent[getMonth(calstart)] + (wert * prozent[getMonth(calstart)] *inflation);
+                      
 						//double myWert=wert * prozent[getMonth(calstart)] *inflation;
                         inflation=inflation+inflationMonth;
+                        
+                        int dayOfYear = calstart.get(Calendar.DAY_OF_YEAR); 
+                        if (isLeapYear (calstart.get(Calendar.YEAR)) &&  (dayOfYear > 59 ))
+                        {
+                        	dayOfYear = dayOfYear -1;
+                        }
                         /*
                         System.out.println("Datum = " + (String) formatter.format(calstart.getTime()));
                         System.out.println("Inflation = " +inflation );
@@ -189,7 +210,8 @@ public class Forecast {
 						trans.put("konto", konto.get("id"));
 						// trans.put("wert", wertMonth.toString());
 						//trans.put("wert", myWert);
-						trans.put("wert", wert * prozent[getMonth(calstart)]);
+						//trans.put("wert", wert * prozent[getMonth(calstart)]);
+						trans.put("wert",oat.getDayGewichtet(dayOfYear) );
 						trans.put("partner", "");
 						trans.put("beschreibung", "");
 						trans.put("kategorie", kategorie.get("id"));
@@ -197,11 +219,11 @@ public class Forecast {
 						trans.put("cycle", "0");
 						trans.put("planed", "j");
 						// System.out.println("Transwert "+trans.get("wert"));
-						if (myWert > 0.001 || myWert < -0.001) {
+						if (oat.getDayGewichtet(dayOfYear) > 0.001 || oat.getDayGewichtet(dayOfYear) < -0.001) {
 							db.insertTransaktionZycl(trans);
 						}
-						calstart.add(Calendar.MONTH, 1);
-
+						//calstart.add(Calendar.MONTH, 1);
+						calstart.add(Calendar.DATE, 1);
 					}
 					// --------------------------Eintag in kategorien
 				}
@@ -209,11 +231,23 @@ public class Forecast {
 
 		}
 
-	}
+
 
 	private int getMonth(Calendar cal) {
 		SimpleDateFormat formatter = new SimpleDateFormat("MM");
 
 		return new Integer(formatter.format(cal.getTime())) - 1;
 	}
+	
+	  public static boolean isLeapYear(int year){
+	       Calendar cal = Calendar.getInstance(); //gets Calendar based on local timezone and locale
+	       cal.set(Calendar.YEAR, year); //setting the calendar year
+	       int noOfDays = cal.getActualMaximum(Calendar.DAY_OF_YEAR);
+	     
+	       if(noOfDays > 365){
+	           return true;
+	       }
+	     
+	       return false;
+	   }
 }

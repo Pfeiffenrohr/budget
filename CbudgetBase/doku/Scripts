@@ -4,3 +4,7 @@ kategorie_id integer,
 datum date,
 wert double precision)
 ;
+
+
+# Gruppieren per Tag
+Select sum (wert),date_trunc('day', transaktionen.datum) from transaktionen group by date_trunc('day', transaktionen.datum)
