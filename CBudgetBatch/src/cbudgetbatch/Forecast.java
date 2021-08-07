@@ -108,7 +108,7 @@ public class Forecast {
 				Calendar calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
 				calmonth_end.add(Calendar.DATE,-1);
-
+   
 				for (int k = 0; k < 12; k++) {
 					montharry[getMonth(calmonth_start)][0] = db.getKategorienAlleSummeWhere(
 							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
@@ -193,6 +193,10 @@ public class Forecast {
                         	dayOfYear = dayOfYear -1;
                         }
                         /*
+<<<<<<< HEAD
+                        System.out.println("Wert ohne inflation = "+wert * prozent[getMonth(calstart)] );
+                        System.out.println("Wert mit inflation = "+myWert );
+=======
                         System.out.println("Datum = " + (String) formatter.format(calstart.getTime()));
                         System.out.println("Inflation = " +inflation );
                         System.out.println("Prozentwert = "+prozent[getMonth(calstart)]);
@@ -201,6 +205,7 @@ public class Forecast {
                         System.out.println("Wert mit inflation = " + myWert);
                         
                         System.out.println();
+>>>>>>> branch 'test' of https://github.com/Pfeiffenrohr/budget.git
                         */
 						// Einfuegen
 						// zuerst schauen, ob der Eintrag schon da ist
