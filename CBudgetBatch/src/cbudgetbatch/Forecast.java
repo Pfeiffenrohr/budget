@@ -58,7 +58,7 @@ public class Forecast {
 		
 		for (int i = 0; i < kategories.size(); i++) {
 		    double inflation=0.0;
-	        double inflationMonth=0.0;
+	        double inflationDay=0.0;
 	        
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
@@ -83,9 +83,9 @@ public class Forecast {
 				}
 				if ((Integer)kategorie.get("inflation") == 1)
 				{
-				    inflationMonth= new Double ((String)settings.get("inflation"));
-				    inflationMonth=inflationMonth/12;
-				    inflationMonth=inflationMonth/100;
+					inflationDay= new Double ((String)settings.get("inflation"));
+				    inflationDay=inflationDay/365;
+				    inflationDay=inflationDay/100;
 				}
 				where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
@@ -216,7 +216,7 @@ public class Forecast {
 						// trans.put("wert", wertMonth.toString());
 						//trans.put("wert", myWert);
 						//trans.put("wert", wert * prozent[getMonth(calstart)]);
-						trans.put("wert",oat.getDayGewichtet(dayOfYear) );
+						trans.put("wert",oat.getDayGewichtet(dayOfYear) *inflation );
 						trans.put("partner", "");
 						trans.put("beschreibung", "");
 						trans.put("kategorie", kategorie.get("id"));
