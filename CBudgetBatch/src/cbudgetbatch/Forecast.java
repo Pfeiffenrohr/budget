@@ -185,13 +185,15 @@ public class Forecast {
 						Hashtable trans = new Hashtable();
                       
 						//double myWert=wert * prozent[getMonth(calstart)] *inflation;
-                        inflation=inflation+inflationMonth;
+						
                         
                         int dayOfYear = calstart.get(Calendar.DAY_OF_YEAR); 
                         if (isLeapYear (calstart.get(Calendar.YEAR)) &&  (dayOfYear > 59 ))
                         {
                         	dayOfYear = dayOfYear -1;
                         }
+                        double myWert=oat.getDayGewichtet(dayOfYear) + (oat.getDayGewichtet(dayOfYear) *inflation);
+                        inflation=inflation+ inflationDay;
                         /*
 <<<<<<< HEAD
                         System.out.println("Wert ohne inflation = "+wert * prozent[getMonth(calstart)] );
@@ -216,7 +218,7 @@ public class Forecast {
 						// trans.put("wert", wertMonth.toString());
 						//trans.put("wert", myWert);
 						//trans.put("wert", wert * prozent[getMonth(calstart)]);
-						trans.put("wert",oat.getDayGewichtet(dayOfYear) *inflation );
+						trans.put("wert",myWert );
 						trans.put("partner", "");
 						trans.put("beschreibung", "");
 						trans.put("kategorie", kategorie.get("id"));
