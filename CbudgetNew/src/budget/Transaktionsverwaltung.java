@@ -78,7 +78,7 @@ import javax.servlet.http.HttpSession;
 				SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
 				vecTrans=db.getAllTransaktionenWithWhere("where konto_id = (select id from konten where kontoname='"+konto+"') AND datum > to_date('"
 						+formater.format(cal_begin.getTime())+"','YYYY-MM-DD') AND datum < to_date('"
-								+formater.format(cal_end.getTime())+"','YYYY-MM-DD') order by datum");
+								+formater.format(cal_end.getTime())+"','YYYY-MM-DD') and name not like '%Forecast%' order by datum");
 				session.setAttribute("transaktionen",vecTrans);
 				//SimpleDateFormat forma tter = new SimpleDateFormat("yyyy-MM-dd");
 				//cal_begin.setTime((Date)hash_trans.get("datum"));
