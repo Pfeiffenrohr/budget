@@ -64,7 +64,7 @@ public class Forecast {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				/*
-				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+				if (!((String) kategorie.get("name")).equals("Drogerie")) {
 					continue;
 				}
                 
@@ -176,6 +176,8 @@ public class Forecast {
 					Calendar calstart = Calendar.getInstance();
 					//calstart.add(Calendar.MONTH, 1);
 					//calstart.add(Calendar.DATE, 6);
+					//oat.printSumProzent();
+					//System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
 					while (calstart.before(cal_end))
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 				
@@ -195,20 +197,20 @@ public class Forecast {
                         double myWert=oat.getDayGewichtet(dayOfYear) + (oat.getDayGewichtet(dayOfYear) *inflation);
                         inflation=inflation+ inflationDay;
                         /*
-<<<<<<< HEAD
+
                         System.out.println("Wert ohne inflation = "+wert * prozent[getMonth(calstart)] );
                         System.out.println("Wert mit inflation = "+myWert );
-=======
+
                         System.out.println("Datum = " + (String) formatter.format(calstart.getTime()));
                         System.out.println("Inflation = " +inflation );
                         System.out.println("Prozentwert = "+prozent[getMonth(calstart)]);
-                        System.out.println("Inflationswert =  " + wert * prozent[getMonth(calstart)] *inflation );
-                        System.out.println("Wert = " +wert * prozent[getMonth(calstart)] );
-                        System.out.println("Wert mit inflation = " + myWert);
+                        System.out.println("Inflationswert =  " + wert * prozent[getMonth(calstart)] *inflation )
+*/
+                     //   System.out.println("Wert = " +(oat.getDayGewichtet(dayOfYear) ));
+                     //   System.out.println("Wert mit inflation = " + myWert);
                         
-                        System.out.println();
->>>>>>> branch 'test' of https://github.com/Pfeiffenrohr/budget.git
-                        */
+                    //    System.out.println();
+                        
 						// Einfuegen
 						// zuerst schauen, ob der Eintrag schon da ist
 						trans.put("datum", (String) formatter.format(calstart.getTime()));

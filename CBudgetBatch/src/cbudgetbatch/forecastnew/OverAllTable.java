@@ -66,7 +66,7 @@ public class OverAllTable {
 		for (Map.Entry<Integer, Double> entry : prozentDayOfYear.entrySet()) {
 			sumProzent+= entry.getValue();
 		}
-		System.out.println("Summe Prozent = "+sumProzent);
+		//System.out.println("Summe Prozent = "+sumProzent);
 	}
 
 }
