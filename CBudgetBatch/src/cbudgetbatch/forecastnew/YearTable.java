@@ -37,7 +37,7 @@ public class YearTable {
 		for (Map.Entry<Integer, Double> entry : mapYear.entrySet()) {
 			sumOfYear+= entry.getValue();
 		}
-		System.out.println("Summe = "+sumOfYear);
+		//System.out.println("Summe = "+sumOfYear);
 	}
     
 }

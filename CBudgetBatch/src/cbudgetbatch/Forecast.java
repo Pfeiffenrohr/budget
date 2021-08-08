@@ -57,22 +57,23 @@ public class Forecast {
 		// den Durchschnitt pro Monat ausrechnen.
 		
 		for (int i = 0; i < kategories.size(); i++) {
-		    double inflation=0.0;
-	        double inflationDay=0.0;
+		  
 	        
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
+				  double inflation=0.0;
+			        double inflationDay=0.0;
 				
 				if (!((String) kategorie.get("name")).equals("Laufende Kosten")) {
 					continue;
 				}
                 
-				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
+				if (!((String) konto.get("name")).equals("Paypal")) {
 					continue;
 				}
 				
-				 System.out.println("Kategorie "+ kategorie.get("name"));
+				 System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -177,7 +178,7 @@ public class Forecast {
 					//calstart.add(Calendar.MONTH, 1);
 					//calstart.add(Calendar.DATE, 6);
 					oat.printSumProzent();
-					System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
+					//System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
 					while (calstart.before(cal_end))
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 				
