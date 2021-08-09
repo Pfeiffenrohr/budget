@@ -27,7 +27,10 @@ public class BerechnePlanungBatch {
 		Vector allPlan = dbbatch.getAllCachePlanAktuell();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal= Calendar.getInstance();
-		Calendar cal_akt= Calendar.getInstance();		
+		Calendar cal_akt= Calendar.getInstance();	
+		
+		dbbatch.deleteOldForecast(formatter.format(cal.getTime()));
+		
 		for (int i = 0 ; i < allPlan.size(); i++)
 		{
 			Hashtable hash_plan = (Hashtable)allPlan.get(i);
@@ -49,8 +52,9 @@ public class BerechnePlanungBatch {
 				//Delete inwork
 			dbbatch.updateInwork((Integer) hash_plan.get("id"));
 			}
-			dbbatch.cleanunusedCaches();
+			
 		}
+		dbbatch.cleanunusedCaches();
 		
 		//Säubert alle alten Transaktion_historie Einträge, die keineRefernnz mehr haben
 	 dbbatch.deleteOldtransHistorie();
