@@ -346,6 +346,6 @@
   </context-param>
   <context-param>
     <param-name>DBconnectstring</param-name>
-    <param-value>jdbc:postgresql://myapp-db:5432/budget</param-value>
+    <param-value>jdbc:postgresql:///myapp-db:5432/budget</param-value>
   </context-param> 
 </web-app> 
