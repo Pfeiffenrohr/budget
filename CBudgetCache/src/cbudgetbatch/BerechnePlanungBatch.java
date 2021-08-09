@@ -76,6 +76,7 @@ public class BerechnePlanungBatch {
 			//System.out.println("where danach ="+where);
 			while (! cal_akt.after(cal_end))
 					{
+			   // System.out.println(formatter.format(cal_akt.getTime()));
 				Long akt_zeit= cal_akt.getTimeInMillis();
 				
 				long vergangene_tage=(akt_zeit - begin_zeit)/(3600000*24);
