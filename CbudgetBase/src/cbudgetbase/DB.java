@@ -780,6 +780,37 @@ public class DB {
 		return sum;
 	}
 	
+	public Map <Integer,Double> getKategorienAlleSummeWhereAsMapPerDay(String startdatum, String enddatum,String where) {
+		double sum=0.0;
+		Map <Integer,Double >map = new HashMap<Integer, Double>();
+		try {
+			PreparedStatement stmt;
+			ResultSet res = null;
+			//String str_stm="select sum(wert) as summe from transaktionen where datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum+"'"+" and "+where;
+			String str_stm = "select sum (wert) as summe ,date_trunc('day', transaktionen.datum) as d from transaktionen where datum >=  '"+startdatum+"' and datum <=  '"+enddatum+"'"+" and "+ where + " group by date_trunc('day', transaktionen.datum)";
+			if (debug)System.out.println(str_stm);
+			stmt = con
+			.prepareStatement(str_stm);
+	       res = stmt.executeQuery();
+	   	while (res.next()) {
+			sum=(res.getDouble("summe"));
+			Date day = res.getDate("d");
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(day);
+			int dayOfYear = cal.get(Calendar.DAY_OF_YEAR);  
+			//System.out.println(day);
+			//System.out.println("DayOfYear= "+dayOfYear);
+			map.put(dayOfYear, sum);
+	   	}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return map;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return map;
+	}
+	
 	public double getKategorienSummeKontoart(String mode ,String startdatum, String rule) {
 		double sum=0.0;
 		try {
