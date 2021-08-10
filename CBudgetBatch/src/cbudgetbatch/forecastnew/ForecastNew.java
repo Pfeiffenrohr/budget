@@ -55,22 +55,23 @@ public class ForecastNew {
 		// den Durchschnitt pro Monat ausrechnen.
 		
 		for (int i = 0; i < kategories.size(); i++) {
-		    double inflation=0.0;
-	        double inflationMonth=0.0;
+		  
 	        
 			for (int j = 0; j < konten.size(); j++) {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
+				  double inflation=0.0;
+			        double inflationDay=0.0;
 				/*
-				if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+				if (!((String) kategorie.get("name")).equals("Laufende Kosten")) {
 					continue;
 				}
                 
-				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
+				if (!((String) konto.get("name")).equals("Paypal")) {
 					continue;
 				}
 				*/
-				// System.out.println("Kategorie "+ kategorie.get("name"));
+				 System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -81,9 +82,9 @@ public class ForecastNew {
 				}
 				if ((Integer)kategorie.get("inflation") == 1)
 				{
-				    inflationMonth= new Double ((String)settings.get("inflation"));
-				    inflationMonth=inflationMonth/12;
-				    inflationMonth=inflationMonth/100;
+					inflationDay= new Double ((String)settings.get("inflation"));
+				    inflationDay=inflationDay/365;
+				    inflationDay=inflationDay/100;
 				}
 				where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
@@ -106,7 +107,7 @@ public class ForecastNew {
 				Calendar calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
 				calmonth_end.add(Calendar.DATE,-1);
-
+   
 				for (int k = 0; k < 12; k++) {
 					montharry[getMonth(calmonth_start)][0] = db.getKategorienAlleSummeWhere(
 							formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
@@ -172,8 +173,10 @@ public class ForecastNew {
 					Calendar cal_end = Calendar.getInstance();
 					cal_end.add(Calendar.YEAR, 30);
 					Calendar calstart = Calendar.getInstance();
-					calstart.add(Calendar.MONTH, 1);
-					calstart.add(Calendar.DATE, 6);
+					//calstart.add(Calendar.MONTH, 1);
+					//calstart.add(Calendar.DATE, 6);
+					oat.printSumProzent();
+					//System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
 					while (calstart.before(cal_end))
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 				
@@ -183,23 +186,30 @@ public class ForecastNew {
 						Hashtable trans = new Hashtable();
                       
 						//double myWert=wert * prozent[getMonth(calstart)] *inflation;
-                        inflation=inflation+inflationMonth;
+						
                         
                         int dayOfYear = calstart.get(Calendar.DAY_OF_YEAR); 
                         if (isLeapYear (calstart.get(Calendar.YEAR)) &&  (dayOfYear > 59 ))
                         {
                         	dayOfYear = dayOfYear -1;
                         }
+                        double myWert=oat.getDayGewichtet(dayOfYear) + (oat.getDayGewichtet(dayOfYear) *inflation);
+                        inflation=inflation+ inflationDay;
                         /*
+
+                        System.out.println("Wert ohne inflation = "+wert * prozent[getMonth(calstart)] );
+                        System.out.println("Wert mit inflation = "+myWert );
+
                         System.out.println("Datum = " + (String) formatter.format(calstart.getTime()));
                         System.out.println("Inflation = " +inflation );
                         System.out.println("Prozentwert = "+prozent[getMonth(calstart)]);
-                        System.out.println("Inflationswert =  " + wert * prozent[getMonth(calstart)] *inflation );
-                        System.out.println("Wert = " +wert * prozent[getMonth(calstart)] );
-                        System.out.println("Wert mit inflation = " + myWert);
+                        System.out.println("Inflationswert =  " + wert * prozent[getMonth(calstart)] *inflation )
+*/
+                     //   System.out.println("Wert = " +(oat.getDayGewichtet(dayOfYear) ));
+                     //   System.out.println("Wert mit inflation = " + myWert);
                         
-                        System.out.println();
-                        */
+                    //    System.out.println();
+                        
 						// Einfuegen
 						// zuerst schauen, ob der Eintrag schon da ist
 						trans.put("datum", (String) formatter.format(calstart.getTime()));
@@ -209,7 +219,7 @@ public class ForecastNew {
 						// trans.put("wert", wertMonth.toString());
 						//trans.put("wert", myWert);
 						//trans.put("wert", wert * prozent[getMonth(calstart)]);
-						trans.put("wert",oat.getDayGewichtet(dayOfYear) );
+						trans.put("wert",myWert );
 						trans.put("partner", "");
 						trans.put("beschreibung", "");
 						trans.put("kategorie", kategorie.get("id"));
