@@ -78,7 +78,7 @@
   </servlet>
   <servlet>
     <servlet-name>auswertung</servlet-name>
-    <servlet-class>budget.StatistikKategorien</servlet-class>
+    <servlet-class>budget.statistik.StatistikKategorien</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>planungsverwaltung</servlet-name>

@@ -77,10 +77,17 @@ import budget.HeaderFooter;
 				out.println("</table>");
 				//out.println("</p>");
 				out.println("<th align=\"center\" valign=\"top\">");
-				//--------------------- Tabelle Geldkonto-------------------------------------------------
 				out.println("<table border=\"1\" rules=\"groups\">");
-				out.println("<td>");
-				String mode="Geldkonto";
+                out.println("<td>");
+				Vector allAnlagen = db.getAllAnlagen();
+				for (int j=0; j<allAnlagen.size(); j++ )
+				{
+				    Hashtable hash = (Hashtable)allAnlagen.get(j);
+				//--------------------- Tabelle Geldkonto-------------------------------------------------
+				//out.println("<table border=\"1\" rules=\"groups\">");
+				//out.println("<td>");
+				 out.println("</td><td valign=top>");
+				String mode=(String)hash.get("name");
 				vec=db.getAllKonto(mode);
 				double summe=0.0;
 				double akt_stand;
@@ -122,143 +129,11 @@ import budget.HeaderFooter;
 				out.println("</table>");
 				out.println("</th>");
 				gesamtsumme=gesamtsumme+summe;
+				
+				}
 				//out.println("<tr>");
 				//----------------------------------------------------------------------
-				//--------------------- Tabelle Geldanlage-------------------------------------------------
-				out.println("</td><td>");
-				out.println("<th align=\"center\" valign=\"top\">");
-				mode="Geldanlage";
-				vec=db.getAllKonto(mode);
-				summe=0.0;
-				akt_stand=0.0;
-				out.println("<h2>"+mode+"</h2>");
-//Übersicht über die Konten
-				out.println("<table border=\"1\" rules=\"groups\">");
-				//out.println("<table border=\"1\">");
-				out.println("<thead>");
-				out.println("<tr>");
-				out.println("<th></th>");
-				out.println("<th>Kontoname</th>");
-				out.println("<th>Kontostand</th>");
-				out.println("<th>versteckt</th>");
-				out.println("</tr>");
-				out.println("</thead>");
-				out.println("<tbody>");
-				out.println("<tr>");
 				
-				//Allle Konten durchgehen und eintragen
-			
-				
-				for (int i=0; i<vec.size();i++)
-				{
-				//	Double summe=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
-				//out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Integer)((Hashtable)vec.elementAt(i)).get("id")).toString()+"\"></td>");
-			     out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Hashtable)vec.elementAt(i)).get("id")+"\"></td>");
-				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("name")+"</td>");
-				akt_stand=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
-				out.println("<td><font color=\"green\">"+formater(akt_stand,3)+"</font></td>");
-				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("versteckt")+"</td>");
-				out.println("</tr>");
-				summe=summe+akt_stand;
-				}
-				offset+=vec.size();
-				out.println("<tr>");
-				out.println("<td></td><td><font size=\"5\"> Summe: </font></td><td>"+formater(summe,5)+"</td><td></td>");
-				out.println("</tr>");
-				out.println("</tbody>");
-				out.println("</table>");
-				out.println("</th>");
-				gesamtsumme=gesamtsumme+summe;
-				//--------------------- Tabelle Sachanlage-------------------------------------------------
-				out.println("</td><td>");
-				out.println("<th align=\"center\" valign=\"top\">");
-				mode="Sachanlage";
-				vec=db.getAllKonto(mode);
-				summe=0.0;
-				akt_stand=0.0;
-				out.println("<h2>"+mode+"</h2>");
-//Übersicht über die Konten
-				out.println("<table border=\"1\" rules=\"groups\">");
-				//out.println("<table border=\"1\">");
-				out.println("<thead>");
-				out.println("<tr>");
-				out.println("<th></th>");
-				out.println("<th>Kontoname</th>");
-				out.println("<th>Kontostand</th>");
-				out.println("<th>versteckt</th>");
-				out.println("</tr>");
-				out.println("</thead>");
-				out.println("<tbody>");
-				out.println("<tr>");
-				
-				//Allle Konten durchgehen und eintragen
-			
-				
-				for (int i=0; i<vec.size();i++)
-				{
-				//	Double summe=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
-				//out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Integer)((Hashtable)vec.elementAt(i)).get("id")).toString()+"\"></td>");
-			     out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Hashtable)vec.elementAt(i)).get("id")+"\"></td>");
-				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("name")+"</td>");
-				akt_stand=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
-				out.println("<td><font color=\"green\">"+formater(akt_stand,3)+"</font></td>");
-				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("versteckt")+"</td>");
-				out.println("</tr>");
-				summe=summe+akt_stand;
-				}
-				offset+=vec.size();
-					out.println("<tr>");
-					out.println("<td></td><td><font size=\"5\"> Summe: </font></td><td>"+formater(summe,5)+"</td><td></td>");
-					out.println("</tr>");
-					out.println("</tbody>");
-					out.println("</table>");
-					out.println("</th>");
-					gesamtsumme=gesamtsumme+summe;
-					//--------------------- Tabelle Verbindlichkeit-------------------------------------------------
-					out.println("</td><td>");
-					out.println("<th align=\"center\" valign=\"top\">");
-					mode="Verbindlichkeit";
-					vec=db.getAllKonto(mode);
-					summe=0.0;
-					akt_stand=0.0;
-					out.println("<h2>"+mode+"</h2>");
-	//Übersicht über die Konten
-					out.println("<table border=\"1\" rules=\"groups\">");
-					//out.println("<table border=\"1\">");
-					out.println("<thead>");
-					out.println("<tr>");
-					out.println("<th></th>");
-					out.println("<th>Kontoname</th>");
-					out.println("<th>Kontostand</th>");
-					out.println("<th>versteckt</th>");
-					out.println("</tr>");
-					out.println("</thead>");
-					out.println("<tbody>");
-					out.println("<tr>");
-					
-					//Allle Konten durchgehen und eintragen
-				
-					
-					for (int i=0; i<vec.size();i++)
-					{
-					//	Double summe=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
-					//out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Integer)((Hashtable)vec.elementAt(i)).get("id")).toString()+"\"></td>");
-				     out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Hashtable)vec.elementAt(i)).get("id")+"\"></td>");
-					out.println("<td>"+((Hashtable)vec.elementAt(i)).get("name")+"</td>");
-					akt_stand=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
-					out.println("<td><font color=\"green\">"+formater(akt_stand,3)+"</font></td>");
-					out.println("<td>"+((Hashtable)vec.elementAt(i)).get("versteckt")+"</td>");
-					out.println("</tr>");
-					summe=summe+akt_stand;
-					}
-					offset+=vec.size();
-					out.println("<tr>");
-					out.println("<td></td><td><font size=\"5\"> Summe: </font></td><td>"+formater(summe,5)+"</td><td></td>");
-					out.println("</tr>");
-					out.println("</tbody>");
-					out.println("</table>");
-					out.println("</th>");
-					gesamtsumme=gesamtsumme+summe;
 					//-------------------------------------------------------
 				out.println("</td>");
 				out.println("</table>");

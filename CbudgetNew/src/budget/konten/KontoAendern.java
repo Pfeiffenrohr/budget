@@ -95,6 +95,17 @@ import budget.HeaderFooter;
 				}
 				out.println("<fieldset>");
 				String mode;
+				Vector allAnlagen = db.getAllAnlagen();
+                
+                for (int i=0; i< allAnlagen.size();i++)
+                    
+                {
+                    Hashtable hash = (Hashtable)allAnlagen.get(i);
+               
+                    if (((String)kontosatz.get("mode")).equals(hash.get("name"))) mode="checked";else mode="";
+                    out.println("<input type=\"radio\" id=\""+i+"\" name=\"mode\" value=\""+hash.get("name")+"\" "+mode+"><label for=\"mc\">"+hash.get("name")+"</label><br>");
+                }
+				/*
 				if (((String)kontosatz.get("mode")).equals("Geldkonto")) mode="checked";else mode=""; 
 				out.println("<input type=\"radio\" id=\"0\" name=\"mode\" value=\"Geldkonto\" "+mode+"><label for=\"mc\"> Geldkonto</label><br>"); 
 				if (((String)kontosatz.get("mode")).equals("Geldanlage")) mode="checked";else mode=""; 
@@ -103,6 +114,8 @@ import budget.HeaderFooter;
 				out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Sachanlage\" "+mode+"><label for=\"mc\"> Sachanlage</label><br>");
 				if (((String)kontosatz.get("mode")).equals("Verbindlichkeit")) mode="checked";else mode=""; 
 				out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Verbindlichkeit\" "+mode+"><label for=\"mc\"> Verbindlichkeit</label><br>");
+				*/
+				
 				out.println("</fieldset>");
 				out.println("<p>");
 				

@@ -2,10 +2,13 @@
 
 	import java.io.PrintWriter;
 	import java.util.Hashtable;
+import java.util.Vector;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
 
 import budget.HeaderFooter;
+import cbudgetbase.DB;
 
 		//Aufruf http://localhost:8080/filme/MainFrame
 
@@ -31,10 +34,20 @@ import budget.HeaderFooter;
 			public void performTask(javax.servlet.http.HttpServletRequest request,
 					javax.servlet.http.HttpServletResponse response) {
 				try {
+				    HttpSession session = request.getSession(true);
+				    DB db = (DB)session.getAttribute("db"); 
+	                //Hashtable settings = (Hashtable) session.getAttribute("settings");
+	                String auth=(String)session.getAttribute("auth"); if (db==null || ! auth.equals("ok") )
+	                {
+	                    RequestDispatcher rd;
+	                    rd = getServletContext().getRequestDispatcher("/startseite?info=Zeit abgelaufen");
+	                    rd.forward(request, response);
+	                    return;
+	                }
+	                
 					//FileHandling fh = new FileHandling();
 					response.setContentType("text/html");
 					PrintWriter out = response.getWriter();
-					HttpSession session = request.getSession(true);
 					HeaderFooter hf = new HeaderFooter();
 					out.println("<html>");
 					out.println("<body>");
@@ -48,10 +61,21 @@ import budget.HeaderFooter;
 					out.println("<p>");
 					out.println("<p>Geben Sie die Art des Kontos an:</p>");
 					out.println("<fieldset>");
+					Vector allAnlagen = db.getAllAnlagen();
+					
+					for (int i=0; i< allAnlagen.size();i++)
+					    
+					{
+					    Hashtable hash = (Hashtable)allAnlagen.get(i);
+					    out.println("<input type=\"radio\" id=\""+i+"\" name=\"mode\" value=\""+hash.get("name")+"\"><label for=\"mc\">"+hash.get("name")+"</label><br>"); 
+					}
+					/*
+					 
 					out.println("<input type=\"radio\" id=\"0\" name=\"mode\" value=\"Geldkonto\"><label for=\"mc\"> Geldkonto</label><br>"); 
 					out.println("<input type=\"radio\" id=\"1\" name=\"mode\" value=\"Geldanlage\"><label for=\"mc\"> Geldanlage</label><br>");
 					out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Sachanlage\"><label for=\"mc\"> Sachanlage</label><br>");
-					out.println("<input type=\"radio\" id=\"2\" name=\"mode\" value=\"Verbindlichkeit\"><label for=\"mc\"> Verbindlichkeit</label><br>");
+					out.println("<input type=\"radio\" id=\"3\" name=\"mode\" value=\"Verbindlichkeit\"><label for=\"mc\"> Verbindlichkeit</label><br>");
+					*/
 					out.println("</fieldset>");
 					out.println("<p>");
 					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes Konto <br>");
