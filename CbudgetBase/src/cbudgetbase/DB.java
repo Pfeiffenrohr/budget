@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    public boolean debug=false;
+    public boolean debug=true;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -2922,6 +2922,88 @@ public class DB {
 			}
 			return true;
 		}
+		
+		public Vector getAllAnlagen() {
+	        Vector vec = new Vector();
+	        try {
+
+	            PreparedStatement stmt;
+	            ResultSet res = null;
+	            stmt = con
+	                    .prepareStatement("select id,name from anlagen order by name");
+	            res = stmt.executeQuery();
+	            while (res.next()) {
+	                Hashtable hash = new Hashtable();
+	                hash.put("id", new Integer(res.getInt("id")));
+	                hash.put("name", (String) res.getString("name"));
+	                vec.addElement(hash);
+	            }
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+	            return vec;
+	        }
+	        if (debug) System.out.println("Select-Anweisung ausgeführt");
+	        // return summe/(float)getAnz(tag,monat,year);
+	        return vec;
+	    }
+		
+		public boolean insertAnlage(Hashtable hash) {
+	        try {
+
+	            PreparedStatement stmt;
+	            String stm= "insert into anlagen values(default,'" 
+	                    + hash.get("name") + "','" 
+	                    + hash.get("beschreibung") + "')";
+	                
+	            if (debug) System.out.println(stm);
+	            stmt = con.prepareStatement(stm);
+	            stmt.executeUpdate();
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
+	             return false;
+	        }
+	         return true;
+
+	    }
+		
+		public boolean deleteAnlage(String name) {
+	        try {
+	    
+	            PreparedStatement stmt;
+	            ResultSet res = null;
+	            
+	            stmt = con.prepareStatement("delete from anlagen where name ='" +name+"'" );
+	            stmt.executeUpdate();	           
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Delete-Anweisung nicht ausführen" + e);
+	             return false;
+	        }
+	    return true;        
+	    }
+		
+		public boolean updateAnlage(Hashtable hash) {
+	        try {
+	            String id= ((Integer)hash.get("id")).toString();
+	            String name= (String)hash.get("name");
+	            String beschreibung= (String)hash.get("description");
+	            
+	            String str= "update kategorien set " +
+	                    "name = '"+ name + "'," +
+	                    "description = '"+beschreibung+"',"+
+	                    " where id = '"+id+"'";
+	                    
+	            updateAllParents(name,id);
+	            if (debug) System.out.println(str);
+	            PreparedStatement stmt;
+	            stmt = con.prepareStatement(str);
+	            stmt.executeUpdate();
+	            
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Update-Anweisung nicht ausführen" + e);
+	            return false;
+	        }
+	        return true;
+	    }
 		
 		private String convDatum(String dat)
 		{

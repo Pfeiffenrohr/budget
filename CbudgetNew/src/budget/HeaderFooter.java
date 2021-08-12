@@ -14,6 +14,7 @@ public class HeaderFooter {
 		out.println("<a href='kontouebersicht'>Kontouebersicht</a>");
 		out.println("<a href='regelverwaltung'>Regeln</a>");
 		out.println("<a href='kontoverwaltung'>Kontoverwaltung</a>");
+		out.println("<a href='anlageverwaltung'>Anlagearten</a>");
 		out.println("<a href='transaktionen'>Transaktionen</a>");
 		out.println("<a href='kategorieverwaltung'>Kategorieverwaltung</a>");
 		out.println("<a href='planungsverwaltung'>Planung</a>");
