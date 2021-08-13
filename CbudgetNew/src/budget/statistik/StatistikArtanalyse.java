@@ -5,7 +5,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import cbudgetbase.DB;
 
@@ -218,97 +220,86 @@ public class StatistikArtanalyse extends javax.servlet.http.HttpServlet {
 				Vector trans;
 				
    
+				Map <String,Double >anlagen = new HashMap<String, Double>();
+				Vector allAnlagen = db.getAllAnlagen();
+				
+				for (int i=0; i< allAnlagen.size();i++)
+				{
+				    Hashtable hash = (Hashtable) allAnlagen.get(i);
+				    anlagen.put((String)hash.get("name"),(Double)db.getKategorienSummeKontoart((String)hash.get("name"),startdatum.replaceAll("-", ""),rule) );
+				}
 				//Anfangswerte für alle Kontenarten holen	
-				Double aktwertGeldkonto = db.getKategorienSummeKontoart("Geldkonto",startdatum.replaceAll("-", ""),rule);
+				/*Double aktwertGeldkonto = db.getKategorienSummeKontoart("Geldkonto",startdatum.replaceAll("-", ""),rule);
 				Double aktwertGeldanlage = db.getKategorienSummeKontoart("Geldanlage",startdatum.replaceAll("-", ""),rule);
 				Double aktwertSachanlage = db.getKategorienSummeKontoart("Sachanlage",startdatum.replaceAll("-", ""),rule);
 				Double aktwertVerbindlichkeit = db.getKategorienSummeKontoart("Verbindlichkeit",startdatum.replaceAll("-", ""),rule);
+				*/
 				trans = db.getAllTransaktionenWithKontoArt(startdatum.replaceAll("-", ""),enddatum.replaceAll("-", ""),rule);
 				
-   			    
-				
-				Vector chartvec = new Vector();
-				//System.out.println("Elemente gefunden: "+trans.size());
-				for (int i = 0; i < trans.size(); i++) {
+                Vector chartvec = new Vector();
+                // System.out.println("Elemente gefunden: "+trans.size());
+                for (int i = 0; i < trans.size(); i++) {
 
-					Hashtable hash_chart = new Hashtable();
-					hash_chart.put("datum", (Date) ((Hashtable) trans
-							.elementAt(i)).get("datum"));
-					
-					if (((String)((Hashtable)trans.elementAt(i)).get("mode")).equals("Geldkonto"))
-					{
-						aktwertGeldkonto+=(Double) ((Hashtable) trans.elementAt(i))
-								.get("wert");
-					}
-					if (((String)((Hashtable)trans.elementAt(i)).get("mode")).equals("Geldanlage"))
-					{
-						aktwertGeldanlage+=(Double) ((Hashtable) trans.elementAt(i))
-								.get("wert");
-					}
-					if (((String)((Hashtable)trans.elementAt(i)).get("mode")).equals("Sachanlage"))
-					{
-						aktwertSachanlage+=(Double) ((Hashtable) trans.elementAt(i))
-								.get("wert");
-						//System.out.println("aktwertSachanlage = "+ aktwertSachanlage );
-					}
-					if (((String)((Hashtable)trans.elementAt(i)).get("mode")).equals("Verbindlichkeit"))
-					{
-						aktwertVerbindlichkeit+=(Double) ((Hashtable) trans.elementAt(i))
-								.get("wert");
-					}
-					hash_chart.put("Verbindlichkeit",aktwertVerbindlichkeit);
-					hash_chart.put("Geldkonto",aktwertGeldkonto);
-					hash_chart.put("Geldanlage",aktwertGeldkonto + aktwertGeldanlage);
-					hash_chart.put("Sachanlage",aktwertGeldanlage + aktwertGeldkonto +  aktwertSachanlage );
-					
-										// System.out.println("Aktwert = "+aktwert
-					chartvec.addElement(hash_chart);
-				}
-				// System.out.println(chartvec);
-				session.setAttribute("chart_vec", chartvec);
+                    Hashtable hash_chart = new Hashtable();
+                    hash_chart.put("datum", (Date) ((Hashtable) trans.elementAt(i)).get("datum"));
+                    for (int j = 0; j < allAnlagen.size(); j++) {
+                        Hashtable hash = (Hashtable) allAnlagen.get(j);
+                        if (((String) ((Hashtable) trans.elementAt(i)).get("mode")).equals(hash.get("name")))
+                            anlagen.put((String) hash.get("name"), anlagen.get(hash.get("name"))
+                                    + (Double) ((Hashtable) trans.elementAt(i)).get("wert"));
+                    }
 
-				out.println("<img src=chart?mode=art width'600' height='400'>");
+                    for (int j = 0; j < allAnlagen.size(); j++) {
+                        Hashtable hash = (Hashtable) allAnlagen.get(j);
+                        hash_chart.put(hash.get("name"), anlagen.get(hash.get("name")));
+                    }
+                    // System.out.println("Aktwert = "+aktwert
+                    chartvec.addElement(hash_chart);
+                }
+                // System.out.println(chartvec);
+                session.setAttribute("chart_vec", chartvec);
 
-			}
-			out.println("</td>");
-			out.println("</tr>");
-			out.println("</tbody>");
-			out.println("</table>");
-			out.println("</td></tr>");
+                out.println("<img src=chart?mode=art width'600' height='400'>");
 
-			out.println("</table>");
-			out.println("</body>");
-			out.println("</html>");
-			out.close();
-		} catch (Throwable theException) {
-			theException.printStackTrace();
-		}
+            }
+            out.println("</td>");
+            out.println("</tr>");
+            out.println("</tbody>");
+            out.println("</table>");
+            out.println("</td></tr>");
 
-	}
+            out.println("</table>");
+            out.println("</body>");
+            out.println("</html>");
+            out.close();
+        } catch (Throwable theException) {
+            theException.printStackTrace();
+        }
 
-	private String formater(Double d) {
-		String str = "";
-		DecimalFormat f = new DecimalFormat("#0.00");
-		if (d.doubleValue() < 0) {
-			str = "<font color=\"red\">";
-		} else {
-			str = "<font color=\"green\">";
-		}
+    }
 
-		str = str + f.format(d);
-		str = str + "</font>";
-		return str;
-	}
+    private String formater(Double d) {
+        String str = "";
+        DecimalFormat f = new DecimalFormat("#0.00");
+        if (d.doubleValue() < 0) {
+            str = "<font color=\"red\">";
+        } else {
+            str = "<font color=\"green\">";
+        }
 
-	private Vector replaceIdWithName(Vector katGroup, DB db) {
-		for (int i = 0; i < katGroup.size(); i++) {
-			Integer kat_id = (Integer) ((Hashtable) katGroup.elementAt(i))
-					.get("kategorie");
-			String name = db.getKategorieName(kat_id);
+        str = str + f.format(d);
+        str = str + "</font>";
+        return str;
+    }
 
-			((Hashtable) katGroup.elementAt(i)).put("name", name);
-		}
-		return katGroup;
-	}
+    private Vector replaceIdWithName(Vector katGroup, DB db) {
+        for (int i = 0; i < katGroup.size(); i++) {
+            Integer kat_id = (Integer) ((Hashtable) katGroup.elementAt(i)).get("kategorie");
+            String name = db.getKategorieName(kat_id);
+
+            ((Hashtable) katGroup.elementAt(i)).put("name", name);
+        }
+        return katGroup;
+    }
 
 }

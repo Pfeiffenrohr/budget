@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 public class DB { 
 	public Connection con = null;
-    public boolean debug=true;
+    public boolean debug=false;
 	/**
 	 * Macht den INI-Hash in der Klasse "global" und stellt die Verbindung zum
 	 * Datenbank-Server her.
@@ -911,8 +911,10 @@ public class DB {
 
 			PreparedStatement stmt;
 			ResultSet res = null;
+			
 			String str_stm=("select trans.datum as datum, trans.wert as wert, (select mode from konten where id=trans.konto_id) AS mode from transaktionen trans where datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"'"+ rule +" order by datum");
 			if (debug) System.out.println(str_stm);
+			
 			stmt = con
 					.prepareStatement(str_stm);
 			res = stmt.executeQuery();
