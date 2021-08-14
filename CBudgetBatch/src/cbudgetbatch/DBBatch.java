@@ -216,11 +216,12 @@ public class DBBatch extends DB {
 				PreparedStatement stmt;
 				ResultSet res = null;
 				stmt = con
-						.prepareStatement("select id,datum,zeit,kategorie,inwork from plan_aktuell order by id");
+						.prepareStatement("select id,plan_id,datum,zeit,kategorie,inwork from plan_aktuell order by id");
 				res = stmt.executeQuery();
 				while (res.next()) {
 					Hashtable hash = new Hashtable();
 					hash.put("id", new Integer(res.getInt("id")));
+					hash.put("plan_id", new Integer(res.getInt("plan_id")));
 					hash.put("datum", (Date) res.getDate("datum"));	
 					hash.put("zeit", (String) res.getString("zeit"));	
 					hash.put("kategorie", new Integer(res.getInt("kategorie")));

@@ -33,14 +33,16 @@ public class BerechnePlanungBatch {
 		
 		for (int i = 0 ; i < allPlan.size(); i++)
 		{
+			
 			Hashtable hash_plan = (Hashtable)allPlan.get(i);
 			if ((Integer)hash_plan.get("inwork")==0)
 			{
 				continue;
 			}
+			cal.setTime((Date)hash_plan.get("datum"));
 			Date startDate = cal.getTime();
 			Date endDate = cal_akt.getTime();
-			cal.setTime((Date)hash_plan.get("datum"));
+			
 			long startTime = startDate.getTime();
 			long endTime = endDate.getTime();
 			long diffTime = endTime - startTime;
@@ -48,9 +50,9 @@ public class BerechnePlanungBatch {
 			if (diffDays > intervall )
 			{
 			System.out.println("diffDays =" +diffDays);
-			System.out.println("Delete inwork "+ (Integer) hash_plan.get("id"));
+			System.out.println("Delete inwork "+ (Integer) hash_plan.get("plan_id"));
 				//Delete inwork
-			dbbatch.updateInwork((Integer) hash_plan.get("id"));
+			dbbatch.updateInwork((Integer) hash_plan.get("plan_id"));
 			}
 			
 		}
