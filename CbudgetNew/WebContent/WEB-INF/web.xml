@@ -6,71 +6,71 @@
   </servlet>
   <servlet>
     <servlet-name>kontoverwaltung</servlet-name>
-    <servlet-class>budget.Kontoverwaltung</servlet-class>
+    <servlet-class>budget.konten.Kontoverwaltung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>neuesKonto</servlet-name>
-    <servlet-class>budget.NeuesKonto</servlet-class>
+    <servlet-class>budget.konten.NeuesKonto</servlet-class>
   </servlet>
   <servlet> 
     <servlet-name>kontoEinfuegen</servlet-name>
-    <servlet-class>budget.KontoEinfuegen</servlet-class>
+    <servlet-class>budget.konten.KontoEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kontoAendern</servlet-name>
-    <servlet-class>budget.KontoAendern</servlet-class>
+    <servlet-class>budget.konten.KontoAendern</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kontoUpdaten</servlet-name>
-    <servlet-class>budget.KontoUpdaten</servlet-class>
+    <servlet-class>budget.konten.KontoUpdaten</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kategorieverwaltung</servlet-name>
-    <servlet-class>budget.Kategorieverwaltung</servlet-class>
+    <servlet-class>budget.kategorie.Kategorieverwaltung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>neueKategorie</servlet-name>
-    <servlet-class>budget.NeueKategorie</servlet-class>
+    <servlet-class>budget.kategorie.NeueKategorie</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kategorieEinfuegen</servlet-name>
-    <servlet-class>budget.KategorieEinfuegen</servlet-class>
+    <servlet-class>budget.kategorie.KategorieEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kategorienAendern</servlet-name>
-    <servlet-class>budget.KategorienAendern</servlet-class>
+    <servlet-class>budget.kategorie.KategorienAendern</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kategorienUpdaten</servlet-name>
-    <servlet-class>budget.KategorienUpdaten</servlet-class>
+    <servlet-class>budget.kategorie.KategorienUpdaten</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>transaktionsverwaltung</servlet-name>
-    <servlet-class>budget.Transaktionsverwaltung</servlet-class>
+    <servlet-class>budget.transaktionen.Transaktionsverwaltung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>neueTransaktion</servlet-name>
-    <servlet-class>budget.NeueTransaktion</servlet-class>
+    <servlet-class>budget.transaktionen.NeueTransaktion</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>transaktionEinfuegen</servlet-name>
-    <servlet-class>budget.TransaktionEinfuegen</servlet-class>
+    <servlet-class>budget.transaktionen.TransaktionEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>transaktionAendern</servlet-name>
-    <servlet-class>budget.TransaktionAendern</servlet-class>
+    <servlet-class>budget.transaktionen.TransaktionAendern</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>transaktionenUpdaten</servlet-name>
-    <servlet-class>budget.TransaktionenUpdaten</servlet-class>
+    <servlet-class>budget.transaktionen.TransaktionenUpdaten</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>neueZyklischeTransaktion</servlet-name>
-    <servlet-class>budget.NeueZyklischeTransaktion</servlet-class>
+    <servlet-class>budget.transaktionen.NeueZyklischeTransaktion</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>zyklischeTransaktionEinfuegen</servlet-name>
-    <servlet-class>budget.ZyklischeTransaktionEinfuegen</servlet-class>
+    <servlet-class>budget.transaktionen.ZyklischeTransaktionEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>GenerateChart</servlet-name>
@@ -78,63 +78,63 @@
   </servlet>
   <servlet>
     <servlet-name>auswertung</servlet-name>
-    <servlet-class>budget.StatistikKategorien</servlet-class>
+    <servlet-class>budget.statistik.StatistikKategorien</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>planungsverwaltung</servlet-name>
-    <servlet-class>budget.Planungsverwaltung</servlet-class>
+    <servlet-class>budget.planung.Planungsverwaltung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>neuePlanung</servlet-name>
-    <servlet-class>budget.NeuePlanung</servlet-class>
+    <servlet-class>budget.planung.NeuePlanung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>planungEinfuegen</servlet-name>
-    <servlet-class>budget.PlanungEinfuegen</servlet-class>
+    <servlet-class>budget.planung.PlanungEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>planungAendern</servlet-name>
-    <servlet-class>budget.PlanungAendern</servlet-class>
+    <servlet-class>budget.planung.PlanungAendern</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>planungUpdaten</servlet-name>
-    <servlet-class>budget.PlanungUpdaten</servlet-class>
+    <servlet-class>budget.planung.PlanungUpdaten</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>zeigePlanung</servlet-name>
-    <servlet-class>budget.ZeigePlanung</servlet-class>
+    <servlet-class>budget.planung.ZeigePlanung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>planChart</servlet-name>
-    <servlet-class>budget.PlanChart</servlet-class>
+    <servlet-class>budget.planung.PlanChart</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>auswertungverlauf</servlet-name>
-    <servlet-class>budget.StatistikVerlauf</servlet-class>
+    <servlet-class>budget.statistik.StatistikVerlauf</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>transaktionen</servlet-name>
-    <servlet-class>budget.Transaktionen</servlet-class>
+    <servlet-class>budget.transaktionen.Transaktionen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>auswertungmonat</servlet-name>
-    <servlet-class>budget.StatistikMonatsanalyse</servlet-class>
+    <servlet-class>budget.statistik.StatistikMonatsanalyse</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>auswertungart</servlet-name>
-    <servlet-class>budget.StatistikArtanalyse</servlet-class>
+    <servlet-class>budget.statistik.StatistikArtanalyse</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>klonePlanung</servlet-name>
-    <servlet-class>budget.KlonePlanung</servlet-class>
+    <servlet-class>budget.planung.KlonePlanung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>klonePlanungEinfuegen</servlet-name>
-    <servlet-class>budget.KlonePlanungEinfuegen</servlet-class>
+    <servlet-class>budget.planung.KlonePlanungEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>kontouebersicht</servlet-name>
-    <servlet-class>budget.Kontouebersicht</servlet-class>
+    <servlet-class>budget.konten.Kontouebersicht</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>authentifizierung</servlet-name>
@@ -146,15 +146,15 @@
   </servlet>
   <servlet>
     <servlet-name>neueregel</servlet-name>
-    <servlet-class>budget.NeueRegel</servlet-class>
+    <servlet-class>budget.regel.NeueRegel</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>regeleinfuegen</servlet-name>
-    <servlet-class>budget.RegelEinfuegen</servlet-class>
+    <servlet-class>budget.regel.RegelEinfuegen</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>regelverwaltung</servlet-name>
-    <servlet-class>budget.Regelverwaltung</servlet-class>
+    <servlet-class>budget.regel.Regelverwaltung</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>einstellungen</servlet-name>
@@ -162,11 +162,31 @@
   </servlet>
    <servlet>
     <servlet-name>boneinfuegen</servlet-name>
-    <servlet-class>budget.BonEinfuegen</servlet-class>
+    <servlet-class>budget.bon.BonEinfuegen</servlet-class>
   </servlet> 
    <servlet>
     <servlet-name>bonupdate</servlet-name>
-    <servlet-class>budget.BonUpdate</servlet-class>
+    <servlet-class>budget.bon.BonUpdate</servlet-class>
+  </servlet> 
+  <servlet>
+    <servlet-name>anlageverwaltung</servlet-name>
+    <servlet-class>budget.anlagearten.Anlageverwaltung</servlet-class>
+  </servlet> 
+  <servlet>
+    <servlet-name>neueanlageart</servlet-name>
+    <servlet-class>budget.anlagearten.NeueAnlageart</servlet-class>
+  </servlet>
+   <servlet>
+    <servlet-name>anlageeinfuegen</servlet-name>
+    <servlet-class>budget.anlagearten.AnlageEinfuegen</servlet-class>
+  </servlet> 
+   <servlet>
+    <servlet-name>anlageupdaten</servlet-name>
+    <servlet-class>budget.anlagearten.AnlageUpdaten</servlet-class>
+  </servlet> 
+    <servlet>
+    <servlet-name>anlageaendern</servlet-name>
+    <servlet-class>budget.anlagearten.AnlageAendern</servlet-class>
   </servlet> 
   <servlet-mapping>
     <servlet-name>startseite</servlet-name>
@@ -336,6 +356,26 @@
     <servlet-name>bonupdate</servlet-name>
     <url-pattern>/bonupdate</url-pattern>
   </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>anlageverwaltung</servlet-name>
+    <url-pattern>/anlageverwaltung</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>neueanlageart</servlet-name>
+    <url-pattern>/neueanlageart</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>anlageeinfuegen</servlet-name>
+    <url-pattern>/anlageeinfuegen</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>anlageaendern</servlet-name>
+    <url-pattern>/anlageaendern</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>anlageupdaten</servlet-name>
+    <url-pattern>/anlageupdaten</url-pattern>
+  </servlet-mapping>
   <context-param>
     <param-name>DBusername</param-name>
     <param-value>budget</param-value>
@@ -346,6 +386,6 @@
   </context-param>
   <context-param>
     <param-name>DBconnectstring</param-name>
-    <param-value>jdbc:postgresql://myapp-db:5432/budget</param-value>
+    <param-value>jdbc:postgresql://192.168.2.29:5432/budget</param-value>
   </context-param> 
 </web-app> 
