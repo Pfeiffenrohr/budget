@@ -375,7 +375,7 @@
   <servlet-mapping>
     <servlet-name>anlageupdaten</servlet-name>
     <url-pattern>/anlageupdaten</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping>  
   <context-param>
     <param-name>DBusername</param-name>
     <param-value>budget</param-value>
@@ -386,6 +386,6 @@
   </context-param>
   <context-param>
     <param-name>DBconnectstring</param-name>
-    <param-value>jdbc:postgresql://192.168.2.29:5432/budget</param-value>
+    <param-value>jdbc:postgresql://myapp-db:5432/budget</param-value>
   </context-param> 
 </web-app> 
