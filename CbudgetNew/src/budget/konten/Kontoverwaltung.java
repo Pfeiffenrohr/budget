@@ -80,9 +80,12 @@ import budget.HeaderFooter;
 				out.println("<table border=\"1\" rules=\"groups\">");
                 out.println("<td>");
 				Vector allAnlagen = db.getAllAnlagen();
+				Vector anlageGroup = new Vector();
 				for (int j=0; j<allAnlagen.size(); j++ )
 				{
+				    Hashtable anlageGroupHash = new Hashtable();
 				    Hashtable hash = (Hashtable)allAnlagen.get(j);
+				    anlageGroupHash.put("name", hash.get("name"));
 				//--------------------- Tabelle Geldkonto-------------------------------------------------
 				//out.println("<table border=\"1\" rules=\"groups\">");
 				//out.println("<td>");
@@ -129,7 +132,11 @@ import budget.HeaderFooter;
 				out.println("</table>");
 				out.println("</th>");
 				gesamtsumme=gesamtsumme+summe;
-				
+				anlageGroupHash.put("wert", summe);
+				if (! hash.get("name").equals("Verbindlichkeit"))
+				{
+				    anlageGroup.add(anlageGroupHash);
+				}
 				}
 				//out.println("<tr>");
 				//----------------------------------------------------------------------
@@ -139,6 +146,62 @@ import budget.HeaderFooter;
 				out.println("</table>");
 				out.println("</form>");
 				out.println("<td></td><td><font size=\"5\"> Summe gesamt: </font></td><td>"+formater(gesamtsumme,5)+"</td><td></td>");
+				
+				out.println("<p>");
+				
+				session.setAttribute("chart_vec",anlageGroup);
+                out.println("<img src=chart?mode=kat width'600' height='400'>");
+                out.println("<p>");
+                out.println("<table border=\"1\"  bgcolor=\"#CCEECC\">");
+                //out.println("<table border=\"1\">");
+                out.println("<thead>");
+                out.println("<tr>");
+                out.println("<th>Nr.</th>");
+                out.println("<th>Name der Anlage</th>");
+                out.println("<th>Wert</th>");
+                out.println("<th>Prozent</th>");
+                out.println("</tr>");
+                out.println("</thead>");
+                out.println("<tbody>");
+                double summe=0.0;
+                //Ermittle prozentualen Wert
+                for (int i=0; i< anlageGroup.size();i++)
+                {
+                    summe=summe+(Double)((Hashtable)anlageGroup.elementAt(i)).get("wert");
+                }
+                Vector sortedGroup = new Vector(); 
+                //double min=-200000;
+                for (int i=0; i< anlageGroup.size();i++)
+                {
+                    Double prozent=((Double)((Hashtable)anlageGroup.elementAt(i)).get("wert")/summe)*100;
+                    ((Hashtable)anlageGroup.elementAt(i)).put("prozent", prozent);
+                    int j=0;
+                    if ( i==0)
+                    {
+                        sortedGroup.addElement( (Hashtable)anlageGroup.elementAt(i));  
+                    }
+                    else
+                    {
+                    while (  j < sortedGroup.size() && (prozent < ((Double)((Hashtable)sortedGroup.elementAt(j)).get("prozent"))))
+                    {
+                        j++;
+                    }
+                    
+                    sortedGroup.insertElementAt(  (Hashtable)anlageGroup.elementAt(i)  , j);
+                    }
+                }
+                anlageGroup=sortedGroup;
+                
+                for (int i=0; i< anlageGroup.size();i++)
+                {
+                out.println("<tr>");
+                out.println("<td>"+i+"<td>"+((Hashtable)anlageGroup.elementAt(i)).get("name")+"</td><td>"+formater((Double)((Hashtable)anlageGroup.elementAt(i)).get("wert"))+"</td><td>"+formater((Double)((Hashtable)anlageGroup.elementAt(i)).get("prozent"))+"%</td>") ;
+                out.println("</tr>");
+                }
+                out.println("<tr>");
+                out.println("<td></td><td><font size=\"5\">Summe:</font></td><td>"+formater(summe)+"</td><td>"+formater(100.0)+"%</td>");
+                out.println("</tbody>");
+                out.println("</table>");
 				
 				out.println("</body>");
 				out.println("</html>");
@@ -162,5 +225,23 @@ import budget.HeaderFooter;
 			str = str + "</font>";
 			return str;
 		}
+		
+		private String formater(Double d)
+        {
+            String str="";
+            DecimalFormat f = new DecimalFormat("#0.00");
+            if (d.doubleValue()<0)
+            {
+                str="<font color=\"red\">";
+            }
+            else
+            {
+                str="<font color=\"green\">";
+            }
+            
+            str=str+f.format(d);
+            str=str+"</font>";
+            return str;
+        }
 
 }
