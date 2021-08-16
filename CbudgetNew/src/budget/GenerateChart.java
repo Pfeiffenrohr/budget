@@ -20,6 +20,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.time.Day;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -31,15 +32,21 @@ import org.jfree.chart.axis.DateAxis;
 import org.jfree.data.category.*;
 import org.jfree.chart.plot.*;
 import org.jfree.data.category.CategoryDataset;
+import org.jfree.chart.renderer.xy.StackedXYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYAreaRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.data.time.TimePeriod;
 
 
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
@@ -103,11 +110,13 @@ public class GenerateChart extends HttpServlet {
 		}
 		
 		if (mode.equals("art")) {
-			System.err.println("Create Chart Kontoarten");
+			//System.err.println("Create Chart Kontoarten");
 			XYDataset dataset = createDatasetKontoart(chartVec);
+			//TimeTableXYDataset dataset1 =  createDatasetKontoart1(chartVec);
 			//System.err.println("Create Dataset");
 			//System.err.println(chartVec);
 			JFreeChart chart = createChartKontoArt(dataset);
+			//JFreeChart chart = createAreaChart(dataset1);
 			//System.err.println("Chart fertig");
 			int width = 500;
 			int height = 350;
@@ -180,6 +189,144 @@ public class GenerateChart extends HttpServlet {
 
 	private static XYDataset createDatasetKontoart(Vector vec) {
 
+
+	    /*
+	    TimeSeries s1 = new TimeSeries("Geldkonto");
+        TimeSeries s2 = new TimeSeries("Geldanlage");
+        TimeSeries s3 = new TimeSeries("Sachanlage");
+        TimeSeries s4 = new TimeSeries("Verbindlichkeit");
+        */
+        Map <String,TimeSeries >timeSeries = new HashMap<String, TimeSeries>();
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        Hashtable hashinit = (Hashtable)vec.get(0);
+        
+        Set<String> setKeys = hashinit.keySet();
+        
+        for (String key : setKeys) {
+           
+            if (key.equals("datum"))
+            {
+                continue;
+            }
+            TimeSeries s = new TimeSeries(key);
+            timeSeries.put(key, s);
+            
+        }
+        
+        
+        for (int i=0; i<vec.size();i++)
+        {
+            try{
+           // Hashtable hash = (Hashtable)vec.get(i);
+            
+            
+            Set<String> setOfKeys = timeSeries.keySet();
+        
+            for (String key : setOfKeys) {
+            
+                TimeSeries s =  timeSeries.get(key);
+                double value= (Double) ((Hashtable) vec.elementAt(i)).get(key);
+                s.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get(key)); 
+              
+             
+            }
+            
+        	
+        
+			} catch (Exception ex) {
+				System.err.println("Exception " + ex);
+			}
+
+		}
+        Set<String> setmyKeys = timeSeries.keySet();
+        for (String key : setmyKeys) {
+            
+            dataset.addSeries(timeSeries.get(key)); 
+        }
+        /*
+		dataset.addSeries(s1);
+		dataset.addSeries(s2);
+		dataset.addSeries(s3);
+		dataset.addSeries(s4);
+		*/
+		return dataset;
+	}
+	
+	private static TimeTableXYDataset createDatasetKontoart1(Vector vec) {
+
+
+        /*
+        TimeSeries s1 = new TimeSeries("Geldkonto");
+        TimeSeries s2 = new TimeSeries("Geldanlage");
+        TimeSeries s3 = new TimeSeries("Sachanlage");
+        TimeSeries s4 = new TimeSeries("Verbindlichkeit");
+        */
+        Map <String,TimeSeries >timeSeries = new HashMap<String, TimeSeries>();
+        TimeTableXYDataset dataset = new TimeTableXYDataset();
+        Hashtable hashinit = (Hashtable)vec.get(0);
+        
+        Set<String> setKeys = hashinit.keySet();
+        
+        for (String key : setKeys) {
+           
+            if (key.equals("datum"))
+            {
+                continue;
+            }
+            TimeSeries s = new TimeSeries(key);
+            timeSeries.put(key, s);
+            
+        }
+        
+        
+        for (int i=0; i<vec.size();i++)
+        {
+            try{
+           // Hashtable hash = (Hashtable)vec.get(i);
+            
+            
+            Set<String> setOfKeys = timeSeries.keySet();
+        
+            for (String key : setOfKeys) {
+            
+                TimeSeries s =  timeSeries.get(key);
+                TimePeriod p = new Day();
+                double value= (Double) ((Hashtable) vec.elementAt(i)).get(key);
+                s.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get(key)); 
+                
+                dataset.add(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get(key),
+                        key);
+                
+            }
+            
+            
+        
+            } catch (Exception ex) {
+                System.err.println("Exception " + ex);
+            }
+
+        }
+        /*
+        Set<String> setmyKeys = timeSeries.keySet();
+        for (String key : setmyKeys) {
+            
+            dataset.add(timeSeries.get(key)); 
+        }*/
+       
+        /*
+        dataset.addSeries(s1);
+        dataset.addSeries(s2);
+        dataset.addSeries(s3);
+        dataset.addSeries(s4);
+        */
+        return dataset;
+    }
+/*
+	private static XYDataset createDatasetKontoart(Vector vec) {
+
         TimeSeries s1 = new TimeSeries("Geldkonto");
         TimeSeries s2 = new TimeSeries("Geldanlage");
         TimeSeries s3 = new TimeSeries("Sachanlage");
@@ -187,36 +334,37 @@ public class GenerateChart extends HttpServlet {
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         for (int i=0; i<vec.size();i++)
         {
-        	try{
-        	//System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
-				s1.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
-						(Double) ((Hashtable) vec.elementAt(i)).get("Geldkonto"));
-				s2.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
-						(Double) ((Hashtable) vec.elementAt(i)).get("Geldanlage"));
-				s3.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
-						(Double) ((Hashtable) vec.elementAt(i)).get("Sachanlage"));
-				s4.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
-						(Double) ((Hashtable) vec.elementAt(i)).get("Verbindlichkeit"));
+            
+            try{
+            //System.err.println("Eintrag "+(Double) ((Hashtable)vec.elementAt(i)).get("wert"));
+                s1.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get("Geldkonto"));
+                s2.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get("Geldanlage"));
+                s3.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get("Sachanlage"));
+                s4.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get("Verbindlichkeit"));
 
-				// s2.addOrUpdate(new
-				// Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double)
-				// ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
-				// System.out.println("Wert = "+(Double)
-				// ((Hashtable)vec.elementAt(i)).get("Sachanlage")+" Datum " +
-				// ((Hashtable)vec.elementAt(i)).get("datum"));
-				// System.err.println("fertig Eintrag "+i);
-			} catch (Exception ex) {
-				System.err.println("Exception " + ex);
-			}
+                // s2.addOrUpdate(new
+                // Day((Date)((Hashtable)vec.elementAt(i)).get("datum")),(Double)
+                // ((Hashtable)vec.elementAt(i)).get("wert")-100.0);
+                // System.out.println("Wert = "+(Double)
+                // ((Hashtable)vec.elementAt(i)).get("Sachanlage")+" Datum " +
+                // ((Hashtable)vec.elementAt(i)).get("datum"));
+                // System.err.println("fertig Eintrag "+i);
+            } catch (Exception ex) {
+                System.err.println("Exception " + ex);
+            }
 
-		}
-		dataset.addSeries(s1);
-		dataset.addSeries(s2);
-		dataset.addSeries(s3);
-		dataset.addSeries(s4);
-		return dataset;
-	}
-
+        }
+        dataset.addSeries(s1);
+        dataset.addSeries(s2);
+        dataset.addSeries(s3);
+        dataset.addSeries(s4);
+        return dataset;
+    }
+*/
 	private static JFreeChart createChart(XYDataset dataset) {
 		JFreeChart chart = ChartFactory.createTimeSeriesChart(
 
@@ -333,9 +481,82 @@ public class GenerateChart extends HttpServlet {
 
 		  }
 	 
+	 private static JFreeChart stackedArea ( CategoryDataset dataset)
+	         {
+	     JFreeChart chart = ChartFactory.createStackedAreaChart(
+	             
+                 "Anlageverlauf",  // title
+                 "Datum",             // x-axis label
+                 "Wert",   // y-axis label
+                 dataset,            // data
+                 PlotOrientation.VERTICAL,
+                 true,               // create legend?
+                 true,               // generate tooltips?
+                 false               // generate URLs?
+             );
+         // XYItemRenderer render = new XYAreaRenderer();
+         
+           chart.setBackgroundPaint(Color.white);
+
+           XYPlot plot = (XYPlot) chart.getPlot();
+           XYItemRenderer render = plot.getRenderer();
+           plot.setRenderer(render);
+           plot.setBackgroundPaint(Color.lightGray);
+           plot.setDomainGridlinePaint(Color.white);
+           plot.setRangeGridlinePaint(Color.white);
+           //plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+           plot.setDomainCrosshairVisible(true);
+           plot.setRangeCrosshairVisible(true);
+           Calendar calendar = Calendar.getInstance();
+           double millis = calendar.getTimeInMillis();
+             final Marker today = new ValueMarker(millis);
+             today.setPaint(Color.blue);
+             today.setLabel("Heute");
+             plot.addDomainMarker(today);
+           XYItemRenderer r = plot.getRenderer();
+           if (r instanceof XYLineAndShapeRenderer) {
+               XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
+               //renderer.setShapesVisible(true);
+               //renderer.setShapesFilled(true);
+           }
+           
+           DateAxis axis = (DateAxis) plot.getDomainAxis();
+           axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+           
+           return chart;
+
+       }
+	      
+	 
+	 private JFreeChart createAreaChart(final TimeTableXYDataset dataset) {
+	        final JFreeChart chart = ChartFactory.createStackedXYAreaChart(
+	                "Live Sentiment Chart", "Time", "Sentiments", dataset, PlotOrientation.VERTICAL, true, true, false);
+
+	        final StackedXYAreaRenderer render = new StackedXYAreaRenderer();
+	        render.setSeriesPaint(0, Color.RED);
+	        render.setSeriesPaint(1, Color.GREEN);
+
+	        DateAxis domainAxis = new DateAxis();
+	        domainAxis.setAutoRange(true);
+	        domainAxis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+	       
+
+	        XYPlot plot = (XYPlot) chart.getPlot();
+	        plot.setRenderer(render);
+	        plot.setDomainAxis(domainAxis);
+	        plot.setSeriesRenderingOrder(SeriesRenderingOrder.FORWARD);
+	        plot.setForegroundAlpha(0.5f);
+
+	       // NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+	       // rangeAxis.setNumberFormatOverride(new DecimalFormat("#,###.#"));
+	       // rangeAxis.setAutoRange(true);
+
+	        return chart;
+	    }
+	 
 	 private static JFreeChart createChartKontoArt(XYDataset dataset) {
 			JFreeChart chart = ChartFactory.createTimeSeriesChart(
-				
+	   
 		            "Anlageverlauf",  // title
 		            "Datum",             // x-axis label
 		            "Wert",   // y-axis label
@@ -344,10 +565,12 @@ public class GenerateChart extends HttpServlet {
 		            true,               // generate tooltips?
 		            false               // generate URLs?
 		        );
-			 XYItemRenderer render = new XYAreaRenderer();
+			// XYItemRenderer render = new XYAreaRenderer();
+			
 			  chart.setBackgroundPaint(Color.white);
 
 		      XYPlot plot = (XYPlot) chart.getPlot();
+		     XYItemRenderer render = plot.getRenderer();
 		      plot.setRenderer(render);
 		      plot.setBackgroundPaint(Color.lightGray);
 		      plot.setDomainGridlinePaint(Color.white);

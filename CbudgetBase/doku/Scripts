@@ -6,5 +6,9 @@ wert double precision)
 ;
 
 
+ create table anlagen ( id SERIAL PRIMARY KEY,
+name varchar (50),
+beschreibung  varchar (200) );
+
 # Gruppieren per Tag
 Select sum (wert),date_trunc('day', transaktionen.datum) from transaktionen group by date_trunc('day', transaktionen.datum)
