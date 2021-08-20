@@ -239,14 +239,14 @@ public class DBBatch extends DB {
 
 	}
 	
-	public boolean updateInwork(Integer id)
+	public boolean updateInwork(Integer id,Integer kategorie)
 	{
 		try {
 
 			PreparedStatement stmt;
 			String stm= "update plan_aktuell set " +
 			"inwork=0 "+
-			" where plan_id = "+id;
+			" where plan_id = "+id + " and kategorie = " +kategorie;
 			//if (debug) 
 			System.out.println(stm);
 			stmt = con.prepareStatement(stm);
