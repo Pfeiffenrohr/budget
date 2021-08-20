@@ -45,12 +45,13 @@ public class BerechnePlanungBatch {
 			long endTime = endDate.getTime();
 			long diffTime = endTime - startTime;
 			long diffDays = diffTime / (1000 * 60 * 60 * 24);
+			System.out.println("diffDays =" +diffDays);
 			if (diffDays > intervall )
 			{
 			System.out.println("diffDays =" +diffDays);
-			System.out.println("Delete inwork "+ (Integer) hash_plan.get("id"));
+			System.out.println("Delete inwork "+ (Integer) hash_plan.get("plan_id") +" and kategorie ="+ (Integer) hash_plan.get("kategorie"));
 				//Delete inwork
-			dbbatch.updateInwork((Integer) hash_plan.get("id"));
+			dbbatch.updateInwork((Integer) hash_plan.get("plan_id"),(Integer) hash_plan.get("kategorie"));
 			}
 			
 		}

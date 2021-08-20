@@ -64,7 +64,7 @@ public class Forecast {
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				  double inflation=0.0;
 			        double inflationDay=0.0;
-				/*
+				
 				if (!((String) kategorie.get("name")).equals("Laufende Kosten")) {
 					continue;
 				}
@@ -72,7 +72,7 @@ public class Forecast {
 				if (!((String) konto.get("name")).equals("Paypal")) {
 					continue;
 				}
-				*/
+				
 				 System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
