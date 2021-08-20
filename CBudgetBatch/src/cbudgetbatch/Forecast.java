@@ -139,9 +139,11 @@ public class Forecast {
 				
 				
 			
-				Double wertMapungewichtet = yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear();
 				oat.setSummeUngewichtet(yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear()); ;
-				oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+				
+				//oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+				oat.gewichteWert(yt1, yt2, yt3);
+				
 				for (int k=1; k< 366; k++ )
 				{
 					if (mapYear1.get(k)==null ) mapYear1.put(k,0.0);
