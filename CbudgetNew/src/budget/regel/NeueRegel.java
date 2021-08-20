@@ -88,6 +88,7 @@ import budget.HeaderFooter;
 					Vector kategorien=db.getAllKategorien();
 					Vector konten=db.getAllKonto();
 					Vector regeln=db.getAllRules();
+					Vector anlagen=db.getAllAnlagen();
 					
 					out.println("<html>");
 					out.println("<head>");
@@ -108,6 +109,7 @@ import budget.HeaderFooter;
 					out.println("<option  value='rule'>Regel</option>");
 					out.println("<option  value='konto'>Konto</option>");
 					out.println("<option  value='betrag'>Betrag</option>");
+					out.println("<option  value='anlage'>Anlageart</option>");
 					out.println("<option  value='delete'>&lt;Filter löschen&gt;</option>");
 
 					out.println("</select>");
@@ -159,8 +161,16 @@ import budget.HeaderFooter;
 					out.println("<option  value='ne'>&lt;&gt;</option>");
 					out.println("</select>");
 					out.println("&nbsp;<input type='integer' id='betrag__FILTER_ID__' name='betrag__FILTER_ID__' size='3' class='inputString' value=''   /></div>");
-					
-					
+					//Anlagen
+					out.println("<div id='anlageEmpty' style='display:none;'>Anlage<input type='radio' id='anlageOp__FILTER_ID__' name='anlageOp__FILTER_ID__' size='' class='inputString' value='eq'   /><label for='anlageOp__FILTER_ID__' id='labelanlageOp__FILTER_ID__'>ist</label>&nbsp;<input type='radio' id='anlageOp__FILTER_ID___0' name='anlageOp__FILTER_ID__' size='' class='inputString' value='ne'   /><label for='anlageOp__FILTER_ID___0' id='labelanlageOp__FILTER_ID___0'>ist nicht</label>&nbsp;<select name='anlageId__FILTER_ID__' id='anlageId__FILTER_ID__' style='width: 210px;' >");
+                    for (int i=0;i<anlagen.size();i++)
+                    {
+                        
+                        out.println("<option value="+((Hashtable)anlagen.elementAt(i)).get("id") +">"+((Hashtable)anlagen.elementAt(i)).get("name")+"</option>");
+                    }
+                    out.println("</select>");
+                    out.println("</div>");
+					//Ende
 					out.println("<form action=regeleinfuegen method=post>");
 					out.println("<p>Name:<br><input name=\"Name\" type=\"text\"  value=\""+ name +"\"size=\"40\" maxlength=\"50\"></p>");
 					out.println("<p>");

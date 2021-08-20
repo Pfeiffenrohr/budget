@@ -97,6 +97,27 @@ function addFilterOnStart(count,wert,op,val ){
  		}
  	} 
 	}//Konto
+	//Anlage
+	if ( wert=='anlage')
+	{
+	
+	if (op=='eq')
+	{
+	document.getElementById("anlageOp"+count).checked = true
+	}
+	else
+	{
+	document.getElementById("anlageOp"+count+"_0").checked = true
+	}
+	for (var i=0; i < document.getElementById("anlageId"+count).length; i++){ 
+	//document.write(wert);
+	 if (document.getElementById("anlageId"+count).options[i].value == val) {
+ 		document.getElementById("anlageId"+count).options[i].selected = true;
+ 		} else {
+ 		document.getElementById("anlageId"+count).options[i].selected = false;
+ 		}
+ 	} 
+	}//Anlage
 	//Regel
 	if ( wert=='rule')
 	{
