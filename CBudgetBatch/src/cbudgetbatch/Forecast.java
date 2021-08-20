@@ -178,7 +178,7 @@ public class Forecast {
 					cal_end.add(Calendar.YEAR, 30);
 					Calendar calstart = Calendar.getInstance();
 					//calstart.add(Calendar.MONTH, 1);
-					//calstart.add(Calendar.DATE, 6);
+					calstart.add(Calendar.DATE, 1);
 					oat.printSumProzent();
 					//System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
 					while (calstart.before(cal_end))
