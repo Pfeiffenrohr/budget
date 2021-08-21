@@ -22,7 +22,7 @@ public class BerechnePlanungBatch {
 	 */
 	private void cleanOldCacheEntries(DBBatch dbbatch)
 	{
-		long intervall = 3; //Anzahl der Tage nachdem gelˆscht wird.
+		long intervall = 3; //Anzahl der Tage nachdem gel√∂scht wird.
 		
 		Vector allPlan = dbbatch.getAllCachePlanAktuell();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -47,18 +47,20 @@ public class BerechnePlanungBatch {
 			long endTime = endDate.getTime();
 			long diffTime = endTime - startTime;
 			long diffDays = diffTime / (1000 * 60 * 60 * 24);
+			System.out.println("diffDays =" +diffDays);
 			if (diffDays > intervall )
 			{
 			System.out.println("diffDays =" +diffDays);
-			System.out.println("Delete inwork "+ (Integer) hash_plan.get("plan_id"));
+			System.out.println("Delete inwork "+ (Integer) hash_plan.get("plan_id") +" and kategorie ="+ (Integer) hash_plan.get("kategorie"));
 				//Delete inwork
-			dbbatch.updateInwork((Integer) hash_plan.get("plan_id"));
+			dbbatch.updateInwork((Integer) hash_plan.get("plan_id"),(Integer) hash_plan.get("kategorie"));
+
 			}
 			
 		}
 		dbbatch.cleanunusedCaches();
 		
-		//S‰ubert alle alten Transaktion_historie Eintr‰ge, die keineRefernnz mehr haben
+		//S√§ubert alle alten Transaktion_historie Eintr√§ge, die keineRefernnz mehr haben
 	 dbbatch.deleteOldtransHistorie();
 		
 	}
@@ -211,14 +213,14 @@ public class BerechnePlanungBatch {
     	uzt.update(db);
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
-        //Alle Kategorien ermitteln,f¸r die Planungen berechnet werden m¸ssen
+        //Alle Kategorien ermitteln,f√ºr die Planungen berechnet werden m√ºssen
         Hashtable plan_todo = new Hashtable();
         Calendar cal= Calendar.getInstance();
         Calendar cal_start= Calendar.getInstance();
         Calendar cal_end= Calendar.getInstance(); 
         if (tmp.size() > 0)
         	{
-        	System.out.println("Gefunden "+ tmp.size()+" Eintr‰ge");
+        	System.out.println("Gefunden "+ tmp.size()+" Eintr√§ge");
         	}
         for (int i=0;i<tmp.size();i++)
         {
@@ -231,7 +233,7 @@ public class BerechnePlanungBatch {
         		cal_end.setTime((Date)((Hashtable)allplan.elementAt(j)).get("enddatum"));
         		if (cal.before(cal_end) && cal.after(cal_start))
         		{
-        			//Planung ist im Zeitraum und muﬂ berechnet werden
+        			//Planung ist im Zeitraum und mu√ü berechnet werden
         			Vector vec=null;
         			if (plan_todo.containsKey(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString()))
         			{
@@ -244,7 +246,7 @@ public class BerechnePlanungBatch {
         			if (! vec.contains((Integer)((Hashtable)tmp.elementAt(i)).get("kategorie")))
         			{
         			
-        			//System.out.println("F¸ge hinzu"+(Integer)((Hashtable)tmp.elementAt(i)).get("kategorie"));	
+        			//System.out.println("F√ºge hinzu"+(Integer)((Hashtable)tmp.elementAt(i)).get("kategorie"));	
         			vec.addElement((Integer)((Hashtable)tmp.elementAt(i)).get("kategorie"));
         			}
         			Vector kat = db.getAllKategorien();
@@ -291,7 +293,7 @@ public class BerechnePlanungBatch {
 				//System.out.println("Id gefunden");
 				if (! vec.contains(kat_id))
 				{
-					//System.out.println("F¸ge hinzu"+kat_id);	
+					//System.out.println("F√ºge hinzu"+kat_id);	
 				vec.addElement(kat_id);
 				}
 				if(((String)((Hashtable)kat.elementAt(i)).get("mode")).equals("ausgabe"))

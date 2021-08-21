@@ -68,5 +68,11 @@ public class OverAllTable {
 		}
 		//System.out.println("Summe Prozent = "+sumProzent);
 	}
+	
+	public void gewichteWert(YearTable yt1,YearTable yt2, YearTable yt3 )
+	
+	{
+		setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+	}
 
 }
