@@ -45,7 +45,6 @@ public class BerechnePlanungBatch {
 			long endTime = endDate.getTime();
 			long diffTime = endTime - startTime;
 			long diffDays = diffTime / (1000 * 60 * 60 * 24);
-			System.out.println("diffDays =" +diffDays);
 			if (diffDays > intervall )
 			{
 			System.out.println("diffDays =" +diffDays);
