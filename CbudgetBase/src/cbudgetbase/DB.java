@@ -2949,6 +2949,26 @@ public class DB {
 	        return vec;
 	    }
 		
+		  public String getAnlagenamebyID(String id) {
+		      String result="";
+	            try {	               
+	                PreparedStatement stmt;
+	                ResultSet res = null;
+	                stmt = con
+	                        .prepareStatement("select name from anlagen where id = "+id);
+	                res = stmt.executeQuery();
+	                while (res.next()) {
+	                    result = res.getString("name");              
+	                }
+	            } catch (SQLException e) {
+	                System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+	                return result;
+	            }
+	            if (debug) System.out.println("Select-Anweisung ausgeführt");
+	            // return summe/(float)getAnz(tag,monat,year);
+	            return result;
+	        }
+		
 		public boolean insertAnlage(Hashtable hash) {
 	        try {
 

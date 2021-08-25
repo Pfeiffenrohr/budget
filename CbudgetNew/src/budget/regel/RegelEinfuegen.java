@@ -278,6 +278,43 @@ import budget.HeaderFooter;
 						}
 						count++;
 					}
+					///
+					if (filter.equals("anlage"))
+                    {
+                        String operator=request.getParameter("anlageOp"+count.toString());
+                        if (operator==null)
+                        {
+                            operator="eq";
+                        }
+                        String title = request.getParameter("anlageId"+count.toString());
+                        //System.out.println("Regel "+count+" Konto "+operator+" "+title);
+                        rule.put("art","anlage");
+                        rule.put("operator",operator);
+                        rule.put("value",title);
+                        db.insertRuleItem(rule);
+                        if (!first)
+                        {
+                            command=command+conjunc;
+                        }
+                        else
+                        {
+                            first=false;
+                        }
+                       // konto_id in (select id from konten k where mode = 'P2p')
+                        command=command+" konto_id ";
+                        if (operator.equals("eq"))
+                        {
+                            command=command+" in ";
+                        }
+                        if (operator.equals("ne"))
+                        {
+                            command=command+" not in ";
+                        }
+                        String anlagename = db.getAnlagenamebyID(title);
+                        command=command+"(select id from konten k where mode = ''"+anlagename+"'')";
+                        count++;
+                    }
+					////////
 					if (filter.equals("betrag"))
 					{
 						String operator=request.getParameter("betragOperator"+count.toString());
