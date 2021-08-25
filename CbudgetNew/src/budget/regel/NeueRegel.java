@@ -83,7 +83,6 @@ import budget.HeaderFooter;
 							start=start+");";
 						}
 					}
-					System.out.println("Start = "+start);
 					
 					Vector kategorien=db.getAllKategorien();
 					Vector konten=db.getAllKonto();
