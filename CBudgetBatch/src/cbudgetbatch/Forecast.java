@@ -65,11 +65,11 @@ public class Forecast {
 				  double inflation=0.0;
 			        double inflationDay=0.0;
 				/*
-				if (!((String) kategorie.get("name")).equals("Laufende Kosten")) {
+				if (!((String) kategorie.get("name")).equals("Zinsen Dividenden")) {
 					continue;
 				}
                 
-				if (!((String) konto.get("name")).equals("Paypal")) {
+				if (!((String) konto.get("name")).equals("Mintos")) {
 					continue;
 				}
 				*/
@@ -149,7 +149,7 @@ public class Forecast {
 					if (mapYear1.get(k)==null ) mapYear1.put(k,0.0);
 					if (mapYear2.get(k)==null ) mapYear2.put(k,0.0);
 					if (mapYear3.get(k)==null ) mapYear3.put(k,0.0);
-					oat.computeProzentDay(k, mapYear1.get(k), mapYear2.get(k), mapYear3.get(k));
+					oat.computeProzentDay(k, mapYear1.get(k), mapYear2.get(k), mapYear3.get(k),yt1.getAnzOfDaysNotZero(),yt2.getAnzOfDaysNotZero(),yt3.getAnzOfDaysNotZero());
 				}
 				//oat.printSumProzent();
 				oat.computeDayGewichtet();
