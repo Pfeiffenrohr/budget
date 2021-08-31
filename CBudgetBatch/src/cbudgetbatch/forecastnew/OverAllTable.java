@@ -50,9 +50,10 @@ public class OverAllTable {
 	    if (notzeroY1 > 4 && notzeroY2 == 0 && notzeroY3 == 0)
 	    {
 	     //   System.out.println("Found To compute monthly");
+	     //   System.out.println("Summe ungewichtet: " +this.summeUngewichtet);
 	        if (dayOfYear % 30 == 0)
 	        {
-	            prozentDayOfYear.put(dayOfYear,this.summeUngewichtet /12);
+	            prozentDayOfYear.put(dayOfYear, 0.0833333); //Ein zwölftel des Jahres = 1/12
 	        }
 	        else
 	        {
