@@ -102,6 +102,10 @@ import budget.HeaderFooter;
 					if (batch.equals("ja"))
 					{
 						Hashtable hash = db.getAllPlanAktuell(plan_id,kategorie_id);
+						if (hash.get("duration")==null)
+						{
+						    hash.put("duration", 0);
+						}
 						SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
 						if (! hash.containsKey("datum"))
 						{
@@ -118,7 +122,7 @@ import budget.HeaderFooter;
 						
 						daten=db.getAllPlanCache(plan_id, kategorie_id);
 						out.println("<p>(Letzte Berechnung: "+datum +" "+zeit+")<p>");
-		    			
+						out.println("<p><font size=\"-2\">(Dauer der Berechunng: "+computeDuration((Integer)hash.get("duration"))+ ")</font><p>");
 					}
 					else
 					{
@@ -311,5 +315,21 @@ import budget.HeaderFooter;
 				}
 				where=where+")"+rule;
 				return where;
+			}
+			private String computeDuration(Integer duration)
+			{
+			   String formatedDuration="";
+			   if (duration > 59)
+			   {
+			       int mins = duration / 60;
+			       duration = duration - mins * 60;
+			       int secs = duration;
+			       formatedDuration=mins +" Minuten, "+secs+" Sekunden";
+			   }
+			   else
+			   {
+			       formatedDuration= duration +" Sekunden";
+			   }
+			   return formatedDuration;
 			}
 	}

@@ -2370,12 +2370,13 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select datum,zeit from plan_aktuell where plan_id="+plan_id+" and kategorie="+kategorie);
+					.prepareStatement("select datum,zeit,duration from plan_aktuell where plan_id="+plan_id+" and kategorie="+kategorie);
 			res = stmt.executeQuery();
 			while (res.next()) {
 				
 				hash.put("datum", (Date) res.getDate("datum"));
 				hash.put("zeit", (Date) res.getTime("zeit"));
+				hash.put("duration", (Integer) res.getInt("duration"));
 				
 				
 			}
@@ -3026,6 +3027,26 @@ public class DB {
 	        }
 	        return true;
 	    }
+		
+		 public Integer getAnstehendePlanungsJobs() {
+            Integer result=0;
+              try {                  
+                  PreparedStatement stmt;
+                  ResultSet res = null;
+                  stmt = con
+                          .prepareStatement("select count (id) as anz from tmpplanningjobs t");
+                  res = stmt.executeQuery();
+                  while (res.next()) {
+                      result = res.getInt("anz");              
+                  }
+              } catch (SQLException e) {
+                  System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+                  return result;
+              }
+              if (debug) System.out.println("Select-Anweisung ausgeführt");
+              // return summe/(float)getAnz(tag,monat,year);
+              return result;
+          }
 		
 		private String convDatum(String dat)
 		{
