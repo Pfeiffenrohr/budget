@@ -166,47 +166,7 @@ public class DBBatch extends DB {
 			return false;
 		}
 	}
-	
-	
-	public boolean updatePlanAktuell(String plan_id, String datum, String zeit,Integer kategorie)
-	{
-		try {
 
-			PreparedStatement stmt;
-			String stm= "update plan_aktuell set " +
-			"plan_id = "+ plan_id + "," +
-			"datum='"+datum+"',"+
-			"zeit = '"+zeit+"' where plan_id = "+plan_id+" and kategorie="+kategorie;
-			//if (debug) 
-			System.out.println(stm);
-			stmt = con.prepareStatement(stm);
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
-			return false;
-		}
-		 return true;
-	}
-	public boolean insertPlanAktuell(String plan_id, String datum, String zeit,Integer kategorie)
-	{
-		try {
-
-			PreparedStatement stmt;
-			String stm= "insert into plan_aktuell values(default," 
-				+ plan_id + ",'"
-				+ datum + "','"
-			    + zeit + "',"
-			    + kategorie +")";
-			//if (debug) 
-				System.out.println(stm);
-			stmt = con.prepareStatement(stm);
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
-			 return false;
-		}
-		 return true;
-	}
 	
 	public Vector getAllCachePlanAktuell()
 	{		
@@ -216,7 +176,7 @@ public class DBBatch extends DB {
 				PreparedStatement stmt;
 				ResultSet res = null;
 				stmt = con
-						.prepareStatement("select id,plan_id,datum,zeit,kategorie,inwork from plan_aktuell order by id");
+						.prepareStatement("select id,plan_id,datum,zeit,kategorie,inwork,duration from plan_aktuell order by id");
 				res = stmt.executeQuery();
 				while (res.next()) {
 					Hashtable hash = new Hashtable();
@@ -226,6 +186,7 @@ public class DBBatch extends DB {
 					hash.put("zeit", (String) res.getString("zeit"));	
 					hash.put("kategorie", new Integer(res.getInt("kategorie")));
 					hash.put("inwork", new Integer(res.getInt("inwork")));
+					hash.put("duration", new Integer(res.getInt("duration")));
 					
 					vec.addElement(hash);
 				}

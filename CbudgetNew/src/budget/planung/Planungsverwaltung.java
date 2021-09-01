@@ -55,7 +55,7 @@ import budget.HeaderFooter;
 				Vector vec= new Vector();
 				vec=db.getAllPlanungen();
 				session.setAttribute("planungen", vec);
-
+				Integer anzPlanJobs= db.getAnstehendePlanungsJobs();
 				out.println("<html>");
 				out.println("<body bgcolor=\"#EEFFBB\">");
 				hf.writeHeader(out,(String)((Hashtable)session.getAttribute("settings")).get("instance"));
@@ -75,7 +75,7 @@ import budget.HeaderFooter;
 				out.println("</td></tr>");
 				out.println("</table>");
 				out.println("</p>");
-				
+				out.println("<font size=\"-2\">Es stehen noch  "+anzPlanJobs+" Planungen zur Berechnung aus.</font>");
 //Übersicht über die Kategorien
 				out.println("<table border=\"1\" bgcolor=\"#CCEECC\">");
 				//out.println("<table border=\"1\">");

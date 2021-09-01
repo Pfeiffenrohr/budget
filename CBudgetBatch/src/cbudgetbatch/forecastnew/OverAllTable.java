@@ -40,14 +40,36 @@ public class OverAllTable {
 		this.prozentDayOfYear = prozentDayOfYear;
 	}
 	
-	public void computeProzentDay (int dayOfYear ,Double y1, Double y2, Double y3)
+	public void computeProzentDay (int dayOfYear ,Double y1, Double y2, Double y3,Integer notzeroY1,Integer notzeroY2,Integer notzeroY3)
 	{
+	    /*
+         *Hier haben wir eine Besonderheit. Wenn der Wert in den vorigen Jahren nicht vor kam,
+         *aber in diesen Jahr schon mehrmals vorkam, dann soll der Wert an allen Tagen gleich gewichtet werden. 
+         */
+	    System.out.println("notzero1 "+notzeroY1+ " notzero2 "+notzeroY2 + " notzero3 "+notzeroY3);
+	    if (notzeroY1 > 4 && notzeroY2 == 0 && notzeroY3 == 0)
+	    {
+	     //   System.out.println("Found To compute monthly");
+	     //   System.out.println("Summe ungewichtet: " +this.summeUngewichtet);
+	        if (dayOfYear % 30 == 0)
+	        {
+	            prozentDayOfYear.put(dayOfYear, 0.0833333); //Ein zwölftel des Jahres = 1/12
+	        }
+	        else
+	        {
+	            prozentDayOfYear.put(dayOfYear,0.0);
+	        }
+	    }
+	    else
+	    {
 		Double prozentTag = (y1+y2+y3) / this.summeUngewichtet;
 		prozentDayOfYear.put(dayOfYear, prozentTag);
+	    }
 	}
 	
 	public void computeDayGewichtet()
 	{
+	    
 		this.dayGewichtet = new HashMap<Integer, Double>();
 		for (Map.Entry<Integer, Double> entry : prozentDayOfYear.entrySet()) {
 			Double wertGewichtet = summeGewichtet*entry.getValue();

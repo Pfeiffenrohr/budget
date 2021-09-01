@@ -249,7 +249,7 @@ public class DBBatch extends DB {
 	}
 	
 	
-	public boolean updatePlanAktuell(String plan_id, String datum, String zeit,Integer kategorie,Integer inwork)
+	public boolean updatePlanAktuell(String plan_id, String datum, String zeit,Integer kategorie,Integer inwork,Integer duration)
 	{
 		try {
 
@@ -258,6 +258,7 @@ public class DBBatch extends DB {
 			"plan_id = "+ plan_id + "," +
 			"datum='"+datum+"',"+
 			"inwork="+ inwork+","+
+			"duration="+duration +","+
 			"zeit = '"+zeit+"' where plan_id = "+plan_id+" and kategorie="+kategorie;
 			//if (debug) 
 			System.out.println(stm);
@@ -296,7 +297,7 @@ public class DBBatch extends DB {
 		}
 	}
 	
-	public boolean insertPlanAktuell(String plan_id, String datum, String zeit,Integer kategorie,Integer inwork)
+	public boolean insertPlanAktuell(String plan_id, String datum, String zeit,Integer kategorie,Integer inwork, Integer duration)
 	{
 		try {
 
@@ -306,7 +307,8 @@ public class DBBatch extends DB {
 				+ datum + "','"
 			    + zeit + "',"
 			    + kategorie +","
-			    + inwork + ")";
+			    + inwork +","
+			    + duration + ")";
 			//if (debug) 
 				System.out.println(stm);
 			stmt = con.prepareStatement(stm);
