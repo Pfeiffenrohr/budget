@@ -46,7 +46,7 @@ public class OverAllTable {
          *Hier haben wir eine Besonderheit. Wenn der Wert in den vorigen Jahren nicht vor kam,
          *aber in diesen Jahr schon mehrmals vorkam, dann soll der Wert an allen Tagen gleich gewichtet werden. 
          */
-	    System.out.println("notzero1 "+notzeroY1+ " notzero2 "+notzeroY2 + " notzero3 "+notzeroY3);
+	    //System.out.println("notzero1 "+notzeroY1+ " notzero2 "+notzeroY2 + " notzero3 "+notzeroY3);
 	    if (notzeroY1 > 4 && notzeroY2 == 0 && notzeroY3 == 0)
 	    {
 	     //   System.out.println("Found To compute monthly");
