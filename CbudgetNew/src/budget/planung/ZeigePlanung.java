@@ -75,6 +75,7 @@ import budget.HeaderFooter;
 					{
 					rule=" AND "+db.getRuleCommand(new Integer(rule_id));
 					}
+					Integer avgDuration = db.getAvgCumputaionTimeForPlanningJobs(plan_id);
 					out.println("<html>");
 					out.println("<body>");
 					hf.writeHeader(out,(String)((Hashtable)session.getAttribute("settings")).get("instance"));
@@ -113,7 +114,8 @@ import budget.HeaderFooter;
 					long gesamte_tage=(end_zeit -begin_zeit)/(3600000*24);
 					//double faktor=((double)vergangene_tage*100)/(double)gesamte_tage;
 					double faktor=((double)vergangene_tage)/(double)gesamte_tage;
-					//out.println("<p>gesamt: "+gesamte_tage+" Vergangen: "+vergangene_tage+" Faktor: "+faktor+"<p>");
+					
+					out.println("<p><font size=\"-2\">(Durchschnittliche Berechunngsdauer: "+computeDuration(avgDuration)+ ")</font><p>");
 					out.println("<h2>Ausgaben</h2>");
 					out.println("<table border=\"1\"  bgcolor=\"#CCEECC\">");
 					//out.println("<table border=\"1\">");
@@ -344,4 +346,21 @@ import budget.HeaderFooter;
 						
 				return where;
 			}
+			
+			private String computeDuration(Integer duration)
+            {
+               String formatedDuration="";
+               if (duration > 59)
+               {
+                   int mins = duration / 60;
+                   duration = duration - mins * 60;
+                   int secs = duration;
+                   formatedDuration=mins +" Minuten, "+secs+" Sekunden";
+               }
+               else
+               {
+                   formatedDuration= duration +" Sekunden";
+               }
+               return formatedDuration;
+            }
 	}

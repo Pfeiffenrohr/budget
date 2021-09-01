@@ -3048,6 +3048,26 @@ public class DB {
               return result;
           }
 		
+		 public Integer getAvgCumputaionTimeForPlanningJobs(String planID) {
+	            Integer result=0;
+	              try {                  
+	                  PreparedStatement stmt;
+	                  ResultSet res = null;
+	                  stmt = con
+	                          .prepareStatement("select avg(duration) as dur from plan_aktuell pa where plan_id = "+planID);
+	                  res = stmt.executeQuery();
+	                  while (res.next()) {
+	                      result = res.getInt("dur");              
+	                  }
+	              } catch (SQLException e) {
+	                  System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+	                  return result;
+	              }
+	              if (debug) System.out.println("Select-Anweisung ausgeführt");
+	              // return summe/(float)getAnz(tag,monat,year);
+	              return result;
+	          }
+		 
 		private String convDatum(String dat)
 		{
 			
