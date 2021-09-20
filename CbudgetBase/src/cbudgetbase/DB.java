@@ -817,11 +817,13 @@ public class DB {
 	        try {
 	            PreparedStatement stmt;
 	            ResultSet res = null;
+	         
 	            //String str_stm="select sum(wert) as summe from transaktionen where datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum+"'"+" and "+where;
 	            String str_stm = "select sum (wert) as summe ,date_trunc('day', transaktionen.datum) as d from transaktionen where datum >=  '"+startdatum+"' and datum <=  '"+enddatum+"'"+" and "+ where + " group by date_trunc('day', transaktionen.datum)";
 	            if (debug)System.out.println(str_stm);
 	            stmt = con
 	            .prepareStatement(str_stm);
+	          
 	           res = stmt.executeQuery();
 	        while (res.next()) {
 	            sum=(res.getDouble("summe"));

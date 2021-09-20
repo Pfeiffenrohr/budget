@@ -90,7 +90,7 @@ import budget.HeaderFooter;
 				aktWert=db.getAktuellerKontostand(konto, formater.format(cal_begin.getTime()), "");
 				String strAktStand;
 				Vector chartvec = new Vector();
-				System.out.println(vecTrans.size() +" Transaktionen gefunden");
+				//System.out.println(vecTrans.size() +" Transaktionen gefunden");
 				for (int i=0; i<vecTrans.size();i++)
 				{
 					
