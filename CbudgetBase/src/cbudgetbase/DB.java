@@ -135,7 +135,7 @@ public class DB {
 				hash.put("name", (String) res.getString("kontoname"));
 				hash.put("versteckt", (String) res.getString("hidden"));
 				hash.put("upperlimit", new Float(res.getFloat("upperlimit")));
-				hash.put("lowaerlimit", new Float(res.getFloat("lowerlimit")));
+				hash.put("lowerlimit", new Float(res.getFloat("lowerlimit")));
 				hash.put("description", (String) res.getString("description"));
 				hash.put("mode", (String) res.getString("mode"));
 				
@@ -810,6 +810,33 @@ public class DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return map;
 	}
+	
+	   public Vector getKategorienAlleSummeWhereAsVectorPerDay(String startdatum, String enddatum,String where) {
+	        double sum=0.0;
+	     Vector vec = new Vector();
+	        try {
+	            PreparedStatement stmt;
+	            ResultSet res = null;
+	         
+	            //String str_stm="select sum(wert) as summe from transaktionen where datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum+"'"+" and "+where;
+	            String str_stm = "select sum (wert) as summe ,date_trunc('day', transaktionen.datum) as d from transaktionen where datum >=  '"+startdatum+"' and datum <=  '"+enddatum+"'"+" and "+ where + " group by date_trunc('day', transaktionen.datum)";
+	            if (debug)System.out.println(str_stm);
+	            stmt = con
+	            .prepareStatement(str_stm);
+	          
+	           res = stmt.executeQuery();
+	        while (res.next()) {
+	            sum=(res.getDouble("summe"));
+	             vec.addElement(sum);
+	        }
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+	            return vec;
+	        }
+	        if (debug) System.out.println("Select-Anweisung ausgeführt");
+	        // return summe/(float)getAnz(tag,monat,year);
+	        return vec;
+	    }
 	
 	public double getKategorienSummeKontoart(String mode ,String startdatum, String rule) {
 		double sum=0.0;
@@ -2453,7 +2480,7 @@ public class DB {
 			}
 			else
 			{
-				str="insert into settings values(null,'"+parameter+"','"+wert+"')";
+				str="insert into settings values(default,'"+parameter+"','"+wert+"')";
 				if (debug) System.out.println(str);
 				stmt = con.prepareStatement(str);
 				stmt.executeUpdate();
