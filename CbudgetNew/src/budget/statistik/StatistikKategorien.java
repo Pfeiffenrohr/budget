@@ -315,7 +315,7 @@ import budget.HeaderFooter;
 	                    					
 						
 						
-						System.out.println(katGroup);
+						//System.out.println(katGroup);
 						
 						session.setAttribute("chart_vec",katGroup);
 						out.println("<img src=chart?mode=kat width'600' height='400'>");

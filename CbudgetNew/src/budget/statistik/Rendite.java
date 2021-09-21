@@ -56,6 +56,10 @@ public class Rendite extends javax.servlet.http.HttpServlet {
 
             Hashtable settings = (Hashtable) session.getAttribute("settings");
             String mode = request.getParameter("mode");
+            if (mode==null)
+            {
+                mode="";
+            }
             String startdatum = request.getParameter("startdatum");
             // System.err.println("Stardatum = "+startdatum);
             // System.err.println(settings);
@@ -149,11 +153,13 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     "<div id=\"chooserSpan\" class=\"dateChooser select-free\" style=\"display: none; visibility: hidden; width: 160px;\">");
             out.println("</div>");
             out.println("<p>");
-            out.println("<input type=\"hidden\" name=\"mode\" value=\"kategorie\">");
+            out.println("<input type=\"hidden\" name=\"mode\" value=\"rendite\">");
             out.println("<input type=\"submit\" value=\"Absenden\";>");
             out.println("</form>");
             out.println("</td>");
             out.println("<td valign=top>");
+            if (mode.equals("rendite"))
+            {
             String[] anlage = { "P2p", "ETF", "Fonds" };
             for (int j = 0; j < anlage.length; j++) {
                 Vector kontos = db.getAllKonto(anlage[j]);
@@ -183,7 +189,18 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     cal_end.setTime(formatter.parse(enddatum));
                     int count = 1;
                     int sumcount = 0;
-                    String where = ""; // TODO Hier muss die Rule rein.
+                    String rule;
+                    if (rule_id.equals("-1"))
+                    {
+                        //dummy
+                        
+                    rule="";
+                    }
+                    else
+                    {
+                    rule=" AND "+db.getRuleCommand(new Integer(rule_id));
+                    }
+                    String where = rule; // TODO Hier muss die Rule rein.
                     Double sum = 0.0;
                     while (cal_end.after(cal_begin)) {
                         Double kontostand = db.getAktuellerKontostand((String) konto.get("name"),
@@ -201,10 +218,13 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         count++;
                         cal_end.add(Calendar.DATE, -1);
                     }
-
+                    if (count == 1)
+                    {
+                        continue;
+                    }
                     Double dayAvg = sum / sumcount;
 
-                    where = "konto_id=" + konto.get("id") + " and name ='Ertrag'";
+                    where = "konto_id=" + konto.get("id") + " and name ='Ertrag'" + where;
                     Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
                     // Ertrag hochrechnen auf Jahr
                     Double ertragProjahr = ertrag * (365.0 / count);
@@ -226,6 +246,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 out.println("</tbody>");
                 out.println("</table>");
                 out.println("</td><td valign=top>");
+            }
             }
             out.println("<td></tr>");
 
