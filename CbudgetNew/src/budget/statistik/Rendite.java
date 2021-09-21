@@ -56,6 +56,10 @@ public class Rendite extends javax.servlet.http.HttpServlet {
 
             Hashtable settings = (Hashtable) session.getAttribute("settings");
             String mode = request.getParameter("mode");
+            if (mode==null)
+            {
+                mode="";
+            }
             String startdatum = request.getParameter("startdatum");
             // System.err.println("Stardatum = "+startdatum);
             // System.err.println(settings);
@@ -149,11 +153,13 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     "<div id=\"chooserSpan\" class=\"dateChooser select-free\" style=\"display: none; visibility: hidden; width: 160px;\">");
             out.println("</div>");
             out.println("<p>");
-            out.println("<input type=\"hidden\" name=\"mode\" value=\"kategorie\">");
+            out.println("<input type=\"hidden\" name=\"mode\" value=\"rendite\">");
             out.println("<input type=\"submit\" value=\"Absenden\";>");
             out.println("</form>");
             out.println("</td>");
             out.println("<td valign=top>");
+            if (mode.equals("rendite"))
+            {
             String[] anlage = { "P2p", "ETF", "Fonds" };
             for (int j = 0; j < anlage.length; j++) {
                 Vector kontos = db.getAllKonto(anlage[j]);
@@ -226,6 +232,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 out.println("</tbody>");
                 out.println("</table>");
                 out.println("</td><td valign=top>");
+            }
             }
             out.println("<td></tr>");
 
