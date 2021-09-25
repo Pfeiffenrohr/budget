@@ -51,12 +51,16 @@ import budget.HeaderFooter;
                 
                 String name = request.getParameter("Name");
                 String beschreibung = request.getParameter("Beschreibung");
+                String rendite=request.getParameter("rendite");
+                Integer rule_id= new Integer (request.getParameter("rule_id"));
                
                 
                 Hashtable hash= new Hashtable();
                
                 hash.put("name",name);
                 hash.put("description",beschreibung);
+                hash.put("rendite",rendite);
+                hash.put("rule_id",rule_id);
                 
                 HeaderFooter hf = new HeaderFooter();
                 out.println("<html>");
@@ -68,11 +72,11 @@ import budget.HeaderFooter;
                 out.println("<p>");
                 if (db.insertAnlage(hash))
                 {
-                out.println("Kategorie erfolgreich erstellt");
+                out.println("Anlage erfolgreich erstellt");
                 }
                 else
                 {
-                    out.println("<font color=\"green\">!!!Kategorie konte nicht erstellt werden!!!</font>");
+                    out.println("<font color=\"red\">!!!Anlage konte nicht erstellt werden!!!</font>");
                 }
                 out.println("</body>");
                 out.println("</html>");

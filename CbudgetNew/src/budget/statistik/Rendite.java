@@ -160,10 +160,18 @@ public class Rendite extends javax.servlet.http.HttpServlet {
             out.println("<td valign=top>");
             if (mode.equals("rendite"))
             {
-            String[] anlage = { "P2p", "ETF", "Fonds" };
-            for (int j = 0; j < anlage.length; j++) {
-                Vector kontos = db.getAllKonto(anlage[j]);
-                out.println("<h2>"+anlage[j]+"</h2>");
+                Vector vecAnlagen=db.getAllAnlagen();
+                
+            //String[] anlage = { "P2p", "ETF", "Fonds" };
+            for (int j = 0; j < vecAnlagen.size(); j++) {
+                Hashtable anlage = (Hashtable) vecAnlagen.get(j);
+                if (anlage.get("rendite").equals("N"))
+                {
+                    continue;
+                }
+                
+                Vector kontos = db.getAllKonto((String)anlage.get("name"));
+                out.println("<h2>"+anlage.get("name")+"</h2>");
                 out.println("<table border=\"1\"  bgcolor=\"#CCEECC\">");
                 // out.println("<table border=\"1\">");
                 out.println("<thead>");
@@ -200,13 +208,28 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     {
                     rule=" AND "+db.getRuleCommand(new Integer(rule_id));
                     }
-                    String where = rule; // TODO Hier muss die Rule rein.
+                    
+                    String ruleErtrag="";
+                    if ((Integer)konto.get("rule_id") == null ||  (Integer)konto.get("rule_id") == -1 || (Integer)konto.get("rule_id") == 0 )
+                    {
+                        ruleErtrag= db.getRuleCommand((Integer)anlage.get("rule_id"));
+                        System.out.println("Rule_id von Anlage");
+                        System.out.println("Rule_id =" +anlage.get("rule_id"));
+                    }
+                    else
+                    {
+                        ruleErtrag=db.getRuleCommand((Integer)konto.get("rule_id"));
+                        System.out.println("Rule_id von Konto");
+                        System.out.println("Rule_id =" +konto.get("rule_id"));
+                    }
+                   
+                    String where = rule; 
                     Double sum = 0.0;
                     while (cal_end.after(cal_begin)) {
                         Double kontostand = db.getAktuellerKontostand((String) konto.get("name"),
                                 (String) formatter.format(cal_end.getTime()), where);
                         // System.out.println("Kontostand: "+ kontostand);
-                        if (kontostand ==0.0 )
+                        if (kontostand > -0.001 &&  kontostand < 0.001 )
                         {
                             cal_end.add(Calendar.DATE, -1);
                             continue;
@@ -223,15 +246,23 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         continue;
                     }
                     Double dayAvg = sum / sumcount;
-
-                    where = "konto_id=" + konto.get("id") + " and name ='Ertrag'" + where;
+                    if (! ruleErtrag.contains("konto_id"))
+                    {
+                        where = "konto_id=" + konto.get("id") +" AND " + ruleErtrag + where;
+                    }
+                    else
+                    {
+                    where = ruleErtrag + where;
+                    }
+                    System.out.println(where);
                     Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
                     // Ertrag hochrechnen auf Jahr
                     Double ertragProjahr = ertrag * (365.0 / count);
                     /*
-                     * System.out.println("Ertrag " + ertrag);
+                     System.out.println("Ertrag " + ertrag);
                     System.out.println("Ertrag pro Jahr  " + ertragProjahr);
                     System.out.println("Durchschnitt Tag = " + dayAvg);
+                    System.out.println("Count = " + count);
                     */
                     if (dayAvg != 0.0) {
                         Double rendite = (ertragProjahr * 100) / dayAvg;

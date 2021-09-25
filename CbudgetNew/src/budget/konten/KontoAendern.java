@@ -118,6 +118,38 @@ import budget.HeaderFooter;
 				
 				out.println("</fieldset>");
 				out.println("<p>");
+				out.println("<p>Welche Regel soll für den Ertrag verwendet werden? (Wenn keine, dann bitte leer lassen <br>");
+                out.println("Regel: <select name=\"rule_id\" size=\"1\">");
+                //out.println("<option>   </option>");
+                Vector rules=db.onlyValidRules(db.getAllRules());
+                String select="";
+                String rule_id= Integer.toString((Integer)(kontosatz.get("rule_id")));
+                if (rule_id.equals("-1"))
+                {
+                    select=" selected";
+                }
+                else
+                {
+                    select="";
+                }
+                out.println("<option"+select+" value=\"-1\"> </option>");
+                
+                for (int i=0;i<rules.size();i++)
+                {
+                    //System.out.println("RULE_ID: "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
+                    //System.out.println("RULE_ID_: "+rule_id);
+                    if (((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString().equals(rule_id))
+                    {
+                        select=" selected";
+                    }
+                    else
+                    {
+                        select="";
+                    }
+                    out.println("<option"+select+" value=\""+ ((Hashtable)rules.elementAt(i)).get("rule_id") +"\">"+((Hashtable)rules.elementAt(i)).get("name")+ "</option>");
+                }
+                out.println("</select>");
+				out.println("<p>");
 				
 				out.println("<input type=\"checkbox\" name=\"loeschen\" value=\"ja\"> Konto komplett löschen <br>");
 				out.println("<p>Aktueller Stand:<br><input name=\"newValue\" type=\"text\" size=\"40\" maxlength=\"50\"></p>");

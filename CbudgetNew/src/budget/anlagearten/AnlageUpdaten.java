@@ -52,11 +52,14 @@ import budget.HeaderFooter;
                 String loeschen = request.getParameter("loeschen");
                 String name = request.getParameter("Name");
                 String beschreibung = request.getParameter("Beschreibung");
+                String rendite = request.getParameter("rendite");
+                Integer rule_id = new Integer(request.getParameter("rule_id"));
                
                 
                 hash.put("name",name);
                 hash.put("description",beschreibung);
- 
+                hash.put("rendite",rendite); 
+                hash.put("rule_id",rule_id); 
                 
                 HeaderFooter hf = new HeaderFooter();
                 out.println("<html>");

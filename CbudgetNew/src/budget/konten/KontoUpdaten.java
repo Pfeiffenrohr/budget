@@ -57,13 +57,13 @@ import budget.HeaderFooter;
 				String name = request.getParameter("Name");
 				String beschreibung = request.getParameter("Beschreibung");
 				String versteckt = request.getParameter("versteckt");
+				Integer rule_id = new Integer (request.getParameter("rule_id"));
 				String aktStand = request.getParameter("newValue");
 				if (aktStand.contains(",") && aktStand.contains("."))
 				{
 					aktStand=aktStand.replace(".", "");
 				}
 				aktStand=aktStand.replace(',', '.');
-				System.out.println("AktStand = "+aktStand);
 				if (! aktStand.equals(""))
 				{
 					try {
@@ -107,6 +107,7 @@ import budget.HeaderFooter;
 				hash.put("description",beschreibung);
 				hash.put("versteckt",versteckt.trim());
 				hash.put("mode",mode);
+				hash.put("rule_id",rule_id);
 				HeaderFooter hf = new HeaderFooter();
 				out.println("<html>");
 				out.println("<body>");

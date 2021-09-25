@@ -36,6 +36,11 @@ import cbudgetbase.DB;
 				try {
 				    HttpSession session = request.getSession(true);
 				    DB db = (DB)session.getAttribute("db"); 
+				    String rule_id=request.getParameter("rule_id");
+				    if (rule_id==null)
+				    {
+				        rule_id="-1";
+				    }
 	                //Hashtable settings = (Hashtable) session.getAttribute("settings");
 	                String auth=(String)session.getAttribute("auth"); if (db==null || ! auth.equals("ok") )
 	                {
@@ -77,6 +82,36 @@ import cbudgetbase.DB;
 					out.println("<input type=\"radio\" id=\"3\" name=\"mode\" value=\"Verbindlichkeit\"><label for=\"mc\"> Verbindlichkeit</label><br>");
 					*/
 					out.println("</fieldset>");
+					out.println("<p>");
+					out.println("<p>Welche Regel soll für den Ertrag verwendet werden?  (Wenn keien, dann bitte leer lassen) <br>");
+		            out.println("Regel: <select name=\"rule_id\" size=\"1\">");
+					Vector rules=db.onlyValidRules(db.getAllRules());
+		            String select="";
+		            if (rule_id.equals("-1"))
+		            {
+		                select=" selected";
+		            }
+		            else
+		            {
+		                select="";
+		            }
+		            out.println("<option"+select+" value=\"-1\"> </option>");
+		            
+		            for (int i=0;i<rules.size();i++)
+		            {
+		                //System.out.println("RULE_ID: "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
+		                //System.out.println("RULE_ID_: "+rule_id);
+		                if (((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString().equals(rule_id))
+		                {
+		                    select=" selected";
+		                }
+		                else
+		                {
+		                    select="";
+		                }
+		                out.println("<option"+select+" value=\""+ ((Hashtable)rules.elementAt(i)).get("rule_id") +"\">"+((Hashtable)rules.elementAt(i)).get("name")+ "</option>");
+		            }
+		            out.println("</select>");
 					out.println("<p>");
 					out.println("<input type=\"checkbox\" name=\"versteckt\" value=\"ja\"> Verstecktes Konto <br>");
 					out.println("<input type=\"submit\" value=\" Absenden \">");
