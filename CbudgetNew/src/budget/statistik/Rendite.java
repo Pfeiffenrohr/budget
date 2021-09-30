@@ -257,7 +257,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     {
                     where = ruleErtrag + where;
                     }
-                    System.out.println(where);
+                   // System.out.println(where);
                     Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
                     // Ertrag hochrechnen auf Jahr
                     Double ertragProjahr = ertrag * (365.0 / count);
