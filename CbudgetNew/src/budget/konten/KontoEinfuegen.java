@@ -52,6 +52,7 @@ import budget.HeaderFooter;
 				String beschreibung = request.getParameter("Beschreibung");
 				String versteckt = request.getParameter("versteckt");
 				String mode =  request.getParameter("mode");
+				Integer rule_id =  new Integer(request.getParameter("rule_id"));
 				if (versteckt == null)
 				{
 					versteckt="nein";
@@ -64,7 +65,7 @@ import budget.HeaderFooter;
 				out.println("<p>");
 				out.println("Konto wird erstellt...");
 				out.println("<p>");
-				if (db.insertKonto(name,beschreibung,versteckt,mode))
+				if (db.insertKonto(name,beschreibung,versteckt,mode,rule_id))
 				{
 				out.println("Konto erfolgreich erstellt");
 				}

@@ -98,7 +98,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,kontoname,hidden,upperlimit,lowerlimit,description,mode from konten order by kontoname");
+					.prepareStatement("select id,kontoname,hidden,upperlimit,lowerlimit,description,mode,rule_id from konten order by kontoname");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -109,6 +109,7 @@ public class DB {
 				hash.put("lowaerlimit", new Float(res.getFloat("lowerlimit")));
 				hash.put("description", (String) res.getString("description"));
 				hash.put("mode", (String) res.getString("mode"));
+				hash.put("rule_id", (Integer) res.getInt("rule_id"));
 				
 				vec.addElement(hash);
 			}
@@ -127,7 +128,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,kontoname,hidden,upperlimit,lowerlimit,description,mode from konten where mode='"+mode+"' order by kontoname");
+					.prepareStatement("select id,kontoname,hidden,upperlimit,lowerlimit,description,mode,rule_id from konten where mode='"+mode+"' order by kontoname");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -135,9 +136,10 @@ public class DB {
 				hash.put("name", (String) res.getString("kontoname"));
 				hash.put("versteckt", (String) res.getString("hidden"));
 				hash.put("upperlimit", new Float(res.getFloat("upperlimit")));
-				hash.put("lowaerlimit", new Float(res.getFloat("lowerlimit")));
+				hash.put("lowerlimit", new Float(res.getFloat("lowerlimit")));
 				hash.put("description", (String) res.getString("description"));
 				hash.put("mode", (String) res.getString("mode"));
+				hash.put("rule_id", (Integer) res.getInt("rule_id"));
 				
 				vec.addElement(hash);
 			}
@@ -149,7 +151,7 @@ public class DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return vec;
 	}
-	public boolean insertKonto(String name,String beschreibung,String versteckt,String mode) {
+	public boolean insertKonto(String name,String beschreibung,String versteckt,String mode,Integer rule_id) {
 		try {
 
 			PreparedStatement stmt;
@@ -157,7 +159,7 @@ public class DB {
 			//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
 			String stm= "insert into konten values(default,'" 
 				+ name + "','"
-				+ versteckt + "',0,1000,'" + beschreibung +"','"+ mode + "')";
+				+ versteckt + "',0,1000,'" + beschreibung +"','"+ mode + "',"+rule_id+")";
 			stmt = con.prepareStatement(stm);
 			
 			 if (debug) System.out.println(stm);
@@ -181,10 +183,13 @@ public class DB {
 			String beschreibung= (String)hash.get("description");
 			String versteckt= (String)hash.get("versteckt");
 			String mode= (String)hash.get("mode");
+			Integer rule_id= (Integer)hash.get("rule_id");
 			String str= "update konten set kontoname = '"
 				+ name + "',description = '"
 				+beschreibung+"',hidden = '"  
-				+ versteckt + "', mode = '"+mode +"' where id='" + id+ "'";
+				+ versteckt + "', mode = '"
+				+mode +"', rule_id = "
+				+rule_id +" where id='" + id+ "'";
 			if (debug) System.out.println(str);
 			PreparedStatement stmt;
 			stmt = con.prepareStatement(str);
@@ -238,7 +243,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,kontoname,hidden,upperlimit,lowerlimit,description,mode from konten where id='"+id+"' order by kontoname");
+					.prepareStatement("select id,kontoname,hidden,upperlimit,lowerlimit,description,mode,rule_id from konten where id='"+id+"' order by kontoname");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				
@@ -249,6 +254,7 @@ public class DB {
 				hash.put("lowaerlimit", new Float(res.getFloat("lowerlimit")));
 				hash.put("description", (String) res.getString("description"));
 				hash.put("mode", (String) res.getString("mode"));
+				hash.put("rule_id", (Integer) res.getInt("rule_id"));
 				
 				
 			}
@@ -810,6 +816,33 @@ public class DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return map;
 	}
+	
+	   public Vector getKategorienAlleSummeWhereAsVectorPerDay(String startdatum, String enddatum,String where) {
+	        double sum=0.0;
+	     Vector vec = new Vector();
+	        try {
+	            PreparedStatement stmt;
+	            ResultSet res = null;
+	         
+	            //String str_stm="select sum(wert) as summe from transaktionen where datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum+"'"+" and "+where;
+	            String str_stm = "select sum (wert) as summe ,date_trunc('day', transaktionen.datum) as d from transaktionen where datum >=  '"+startdatum+"' and datum <=  '"+enddatum+"'"+" and "+ where + " group by date_trunc('day', transaktionen.datum)";
+	            if (debug)System.out.println(str_stm);
+	            stmt = con
+	            .prepareStatement(str_stm);
+	          
+	           res = stmt.executeQuery();
+	        while (res.next()) {
+	            sum=(res.getDouble("summe"));
+	             vec.addElement(sum);
+	        }
+	        } catch (SQLException e) {
+	            System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+	            return vec;
+	        }
+	        if (debug) System.out.println("Select-Anweisung ausgeführt");
+	        // return summe/(float)getAnz(tag,monat,year);
+	        return vec;
+	    }
 	
 	public double getKategorienSummeKontoart(String mode ,String startdatum, String rule) {
 		double sum=0.0;
@@ -2370,12 +2403,13 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select datum,zeit from plan_aktuell where plan_id="+plan_id+" and kategorie="+kategorie);
+					.prepareStatement("select datum,zeit,duration from plan_aktuell where plan_id="+plan_id+" and kategorie="+kategorie);
 			res = stmt.executeQuery();
 			while (res.next()) {
 				
 				hash.put("datum", (Date) res.getDate("datum"));
 				hash.put("zeit", (Date) res.getTime("zeit"));
+				hash.put("duration", (Integer) res.getInt("duration"));
 				
 				
 			}
@@ -2452,7 +2486,7 @@ public class DB {
 			}
 			else
 			{
-				str="insert into settings values(null,'"+parameter+"','"+wert+"')";
+				str="insert into settings values(default,'"+parameter+"','"+wert+"')";
 				if (debug) System.out.println(str);
 				stmt = con.prepareStatement(str);
 				stmt.executeUpdate();
@@ -2932,12 +2966,14 @@ public class DB {
 	            PreparedStatement stmt;
 	            ResultSet res = null;
 	            stmt = con
-	                    .prepareStatement("select id,name from anlagen order by name");
+	                    .prepareStatement("select id,name,rendite,rule_id from anlagen order by name");
 	            res = stmt.executeQuery();
 	            while (res.next()) {
 	                Hashtable hash = new Hashtable();
 	                hash.put("id", new Integer(res.getInt("id")));
 	                hash.put("name", (String) res.getString("name"));
+	                hash.put("rendite", (String) res.getString("rendite"));
+	                hash.put("rule_id", (Integer) res.getInt("rule_id"));
 	                vec.addElement(hash);
 	            }
 	        } catch (SQLException e) {
@@ -2974,8 +3010,10 @@ public class DB {
 
 	            PreparedStatement stmt;
 	            String stm= "insert into anlagen values(default,'" 
-	                    + hash.get("name") + "','" 
-	                    + hash.get("beschreibung") + "')";
+	                    + hash.get("name") + "','"
+	                    + hash.get("beschreibung") + "','"
+	                    + hash.get("rendite") + "',"
+	                    + hash.get("rule_id") + ")";
 	                
 	            if (debug) System.out.println(stm);
 	            stmt = con.prepareStatement(stm);
@@ -3008,10 +3046,14 @@ public class DB {
 	            String id= ((Integer)hash.get("id")).toString();
 	            String name= (String)hash.get("name");
 	            String beschreibung= (String)hash.get("description");
+	            String rendite= (String)hash.get("rendite");
+	            Integer rule_id= (Integer)hash.get("rule_id");
 	            
-	            String str= "update kategorien set " +
+	            String str= "update anlagen set " +
 	                    "name = '"+ name + "'," +
-	                    "description = '"+beschreibung+"',"+
+	                    "beschreibung = '"+beschreibung+"',"+
+	                    "rendite = '"+rendite+"',"+
+	                    "rule_id = "+rule_id+
 	                    " where id = '"+id+"'";
 	                    
 	            updateAllParents(name,id);
@@ -3027,6 +3069,46 @@ public class DB {
 	        return true;
 	    }
 		
+		 public Integer getAnstehendePlanungsJobs() {
+            Integer result=0;
+              try {                  
+                  PreparedStatement stmt;
+                  ResultSet res = null;
+                  stmt = con
+                          .prepareStatement("select count (id) as anz from tmpplanningjobs t");
+                  res = stmt.executeQuery();
+                  while (res.next()) {
+                      result = res.getInt("anz");              
+                  }
+              } catch (SQLException e) {
+                  System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+                  return result;
+              }
+              if (debug) System.out.println("Select-Anweisung ausgeführt");
+              // return summe/(float)getAnz(tag,monat,year);
+              return result;
+          }
+		
+		 public Integer getAvgCumputaionTimeForPlanningJobs(String planID) {
+	            Integer result=0;
+	              try {                  
+	                  PreparedStatement stmt;
+	                  ResultSet res = null;
+	                  stmt = con
+	                          .prepareStatement("select avg(duration) as dur from plan_aktuell pa where plan_id = "+planID);
+	                  res = stmt.executeQuery();
+	                  while (res.next()) {
+	                      result = res.getInt("dur");              
+	                  }
+	              } catch (SQLException e) {
+	                  System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+	                  return result;
+	              }
+	              if (debug) System.out.println("Select-Anweisung ausgeführt");
+	              // return summe/(float)getAnz(tag,monat,year);
+	              return result;
+	          }
+		 
 		private String convDatum(String dat)
 		{
 			

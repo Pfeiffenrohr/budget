@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import cbudgetbatch.DBBatch;
+import cbudgetbatch.forecastnew.OverAllTable;
+import cbudgetbatch.forecastnew.YearTable;
 
 public class ForecastNew {
 	static String user;
@@ -62,15 +64,15 @@ public class ForecastNew {
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				  double inflation=0.0;
 			        double inflationDay=0.0;
-				/*
-				if (!((String) kategorie.get("name")).equals("Laufende Kosten")) {
+				
+				if (!((String) kategorie.get("name")).equals("Zinsen Dividenden")) {
 					continue;
 				}
                 
-				if (!((String) konto.get("name")).equals("Paypal")) {
+				if (!((String) konto.get("name")).equals("Mintos")) {
 					continue;
 				}
-				*/
+				
 				 System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
@@ -137,15 +139,17 @@ public class ForecastNew {
 				
 				
 			
-				Double wertMapungewichtet = yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear();
 				oat.setSummeUngewichtet(yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear()); ;
-				oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+				
+				//oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+				oat.gewichteWert(yt1, yt2, yt3);
+				
 				for (int k=1; k< 366; k++ )
 				{
 					if (mapYear1.get(k)==null ) mapYear1.put(k,0.0);
 					if (mapYear2.get(k)==null ) mapYear2.put(k,0.0);
 					if (mapYear3.get(k)==null ) mapYear3.put(k,0.0);
-					oat.computeProzentDay(k, mapYear1.get(k), mapYear2.get(k), mapYear3.get(k));
+					oat.computeProzentDay(k, mapYear1.get(k), mapYear2.get(k), mapYear3.get(k),yt1.getAnzOfDaysNotZero(),yt2.getAnzOfDaysNotZero(),yt3.getAnzOfDaysNotZero());
 				}
 				//oat.printSumProzent();
 				oat.computeDayGewichtet();
@@ -174,7 +178,7 @@ public class ForecastNew {
 					cal_end.add(Calendar.YEAR, 30);
 					Calendar calstart = Calendar.getInstance();
 					//calstart.add(Calendar.MONTH, 1);
-					//calstart.add(Calendar.DATE, 6);
+					calstart.add(Calendar.DATE, 1);
 					oat.printSumProzent();
 					//System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
 					while (calstart.before(cal_end))

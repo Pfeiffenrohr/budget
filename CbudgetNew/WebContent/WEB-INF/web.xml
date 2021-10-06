@@ -124,6 +124,10 @@
     <servlet-name>auswertungart</servlet-name>
     <servlet-class>budget.statistik.StatistikArtanalyse</servlet-class>
   </servlet>
+   <servlet>
+    <servlet-name>rendite</servlet-name>
+    <servlet-class>budget.statistik.Rendite</servlet-class>
+  </servlet> 
   <servlet>
     <servlet-name>klonePlanung</servlet-name>
     <servlet-class>budget.planung.KlonePlanung</servlet-class>
@@ -187,7 +191,7 @@
     <servlet>
     <servlet-name>anlageaendern</servlet-name>
     <servlet-class>budget.anlagearten.AnlageAendern</servlet-class>
-  </servlet> 
+  </servlet>   
   <servlet-mapping>
     <servlet-name>startseite</servlet-name>
     <url-pattern>/startseite</url-pattern>
@@ -375,6 +379,10 @@
   <servlet-mapping>
     <servlet-name>anlageupdaten</servlet-name>
     <url-pattern>/anlageupdaten</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>rendite</servlet-name>
+    <url-pattern>/rendite</url-pattern>
   </servlet-mapping>  
   <context-param>
     <param-name>DBusername</param-name>
