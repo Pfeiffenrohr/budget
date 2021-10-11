@@ -77,7 +77,7 @@ public class Forecast {
 				 System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
-				//db.deleteTransaktionWithWhere(where);
+				db.deleteTransaktionWithWhere(where);
 				if (kategorie.get("forecast").equals(0)) {
 					// System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
 					// berechnet werden");
@@ -237,7 +237,7 @@ public class Forecast {
 						// System.out.println("Transwert "+trans.get("wert"));
 						if (oat.getDayGewichtet(dayOfYear) > 0.001 || oat.getDayGewichtet(dayOfYear) < -0.001) {
 						//    System.out.println("Wert :"+myWert );
-						//	db.insertTransaktionZycl(trans);
+							db.insertTransaktionZycl(trans);
 						}
 						//calstart.add(Calendar.MONTH, 1);
 						calstart.add(Calendar.DATE, 1);
