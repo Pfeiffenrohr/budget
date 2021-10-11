@@ -46,7 +46,7 @@ public class OverAllTable {
          *Hier haben wir eine Besonderheit. Wenn der Wert in den vorigen Jahren nicht vor kam,
          *aber in diesen Jahr schon mehrmals vorkam, dann soll der Wert an allen Tagen gleich gewichtet werden. 
          */
-	    System.out.println("notzero1 "+notzeroY1+ " notzero2 "+notzeroY2 + " notzero3 "+notzeroY3);
+	   // System.out.println("notzero1 "+notzeroY1+ " notzero2 "+notzeroY2 + " notzero3 "+notzeroY3);
 	    if (notzeroY1 > 4 && notzeroY2 == 0 && notzeroY3 == 0)
 	    {
 	     //   System.out.println("Found To compute monthly");
@@ -61,8 +61,20 @@ public class OverAllTable {
 	        }
 	    }
 	    else
-	    {
-		Double prozentTag = (y1+y2+y3) / this.summeUngewichtet;
+	    { 
+	        Double prozentTag =0.0;
+	        if (this.summeUngewichtet != 0.0) 
+	        {
+		      prozentTag = (y1+y2+y3) / this.summeUngewichtet;
+	        }
+		/*
+		 * Es können große Ausreisser entstehen, wenn die Schwankungen nach oben und unten groß sind, 
+		 * aber der Andwert klein. Deshalb werden die Prozentwerte gedeckelt:
+		 */
+		if (prozentTag > 1 ) prozentTag=1.0;
+		if (prozentTag < -1 ) prozentTag=-1.0;
+		//System.out.println("Year1 = " + y1 + "Year2 = " + y2 + "Year3 = " + y3);
+		//System.out.println("Prozent Tag = " + prozentTag);
 		prozentDayOfYear.put(dayOfYear, prozentTag);
 	    }
 	}
@@ -73,6 +85,8 @@ public class OverAllTable {
 		this.dayGewichtet = new HashMap<Integer, Double>();
 		for (Map.Entry<Integer, Double> entry : prozentDayOfYear.entrySet()) {
 			Double wertGewichtet = summeGewichtet*entry.getValue();
+			//System.out.println("Summe Gewichtet = " + summeGewichtet);
+			//System.out.println("ProzentDayOfYear= " +  entry.getValue());
 			dayGewichtet.put(entry.getKey() , wertGewichtet);
 		}
 		
@@ -88,13 +102,17 @@ public class OverAllTable {
 		for (Map.Entry<Integer, Double> entry : prozentDayOfYear.entrySet()) {
 			sumProzent+= entry.getValue();
 		}
-		//System.out.println("Summe Prozent = "+sumProzent);
+		System.out.println("Summe Prozent = "+sumProzent);
 	}
 	
 	public void gewichteWert(YearTable yt1,YearTable yt2, YearTable yt3 )
 	
 	{
 		setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+	}
+	
+	public void printSummeGewichtet() {
+	    System.out.println("Summe Gewichtet: "+summeGewichtet );
 	}
 
 }
