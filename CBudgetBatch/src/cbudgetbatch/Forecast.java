@@ -64,12 +64,13 @@ public class Forecast {
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				  double inflation=0.0;
 			        double inflationDay=0.0;
-				/*
-				if (!((String) kategorie.get("name")).equals("Markus Essen")) {
+				
+			        /*
+				if (!((String) kategorie.get("name")).equals("Handy")) {
 					continue;
 				}
                 
-				if (!((String) konto.get("name")).equals("Bargeld")) {
+				if (!((String) konto.get("name")).equals("Deka Bank Zinsdifferenz-Anleihe")) {
 					continue;
 				}
 				*/
@@ -100,11 +101,12 @@ public class Forecast {
 				mapYear3=db.getKategorienAlleSummeWhereAsMapPerDay(formatter.format(calThreeYearBack.getTime()),
 						formatter.format(calTowYearBack.getTime()), where);
 				yt3.setMapYear(mapYear3);
+				
 				yt3.computeSum();
 				
-				Double wertYear3 = db.getKategorienAlleSummeWhere(formatter.format(calThreeYearBack.getTime()),
-						formatter.format(calTowYearBack.getTime()), where);
-
+				//Double wertYear3 = db.getKategorienAlleSummeWhere(formatter.format(calThreeYearBack.getTime()),
+				//		formatter.format(calTowYearBack.getTime()), where);
+				//System.out.println("Wert 3 = "+wertYear3);
 				Calendar calmonth_start = (Calendar) calThreeYearBack.clone();
 				Calendar calmonth_end = (Calendar) calmonth_start.clone();
 				calmonth_end.add(Calendar.MONTH, 1);
@@ -140,7 +142,7 @@ public class Forecast {
 				
 			
 				oat.setSummeUngewichtet(yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear()); ;
-				
+			
 				//oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
 				oat.gewichteWert(yt1, yt2, yt3);
 				
@@ -179,7 +181,8 @@ public class Forecast {
 					Calendar calstart = Calendar.getInstance();
 					//calstart.add(Calendar.MONTH, 1);
 					calstart.add(Calendar.DATE, 1);
-					oat.printSumProzent();
+					//oat.printSumProzent();
+				//	 oat.printSummeGewichtet();
 					//System.out.println("Wert gewichtet = " +oat.getSummeGewichtet());
 					while (calstart.before(cal_end))
 					// TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
@@ -197,6 +200,7 @@ public class Forecast {
                         {
                         	dayOfYear = dayOfYear -1;
                         }
+                        //System.out.println("Day Gewichtet "+ oat.getDayGewichtet(dayOfYear));
                         double myWert=oat.getDayGewichtet(dayOfYear) + (oat.getDayGewichtet(dayOfYear) *inflation);
                         inflation=inflation+ inflationDay;
                         /*
@@ -232,6 +236,7 @@ public class Forecast {
 						trans.put("planed", "j");
 						// System.out.println("Transwert "+trans.get("wert"));
 						if (oat.getDayGewichtet(dayOfYear) > 0.001 || oat.getDayGewichtet(dayOfYear) < -0.001) {
+						//    System.out.println("Wert :"+myWert );
 							db.insertTransaktionZycl(trans);
 						}
 						//calstart.add(Calendar.MONTH, 1);
