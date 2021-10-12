@@ -184,7 +184,9 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 out.println("</tr>");
                 out.println("</thead>");
                 out.println("<tbody>");
-
+                Double summeErtrag = 0.0;
+                Double summedayAvg = 0.0;
+                Double summeErtragProJahr = 0.0;
                 for (int i = 0; i < kontos.size(); i++) {
                     Hashtable konto = (Hashtable) kontos.get(i);
                     
@@ -267,6 +269,9 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     System.out.println("Durchschnitt Tag = " + dayAvg);
                     System.out.println("Count = " + count);
                     */
+                    summeErtrag += ertrag;
+                    summedayAvg += dayAvg;
+                    summeErtragProJahr += ertragProjahr;
                     if (dayAvg != 0.0) {
                         Double rendite = (ertragProjahr * 100) / dayAvg;
                         //System.out.println((String) konto.get("name") + " " + rendite);
@@ -276,7 +281,11 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         out.println("</tr>");
                     }
                 }
-
+                Double summeRendite = (summeErtragProJahr * 100) / summedayAvg;
+                out.println("<tr>");
+                out.println("<td><td><b>Durchschnitt:</b></td><td><b>" + formater(summedayAvg)
+                        + "</td></td><td><b>" + formater(summeErtrag) + "</td></td><td><b>" + formater(summeRendite) + "% </b></td>");
+                out.println("</tr>");
                 out.println("</tbody>");
                 out.println("</table>");
                 out.println("</td><td valign=top>");
