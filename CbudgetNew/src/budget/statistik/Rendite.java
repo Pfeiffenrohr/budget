@@ -283,8 +283,8 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 }
                 Double summeRendite = (summeErtragProJahr * 100) / summedayAvg;
                 out.println("<tr>");
-                out.println("<td><td><b>Durchschnitt:</b></td><td>" + formater(summedayAvg)
-                        + "</td><td>" + formater(summeErtrag) + "</td><td>" + formater(summeRendite) + "%</td>");
+                out.println("<td><td><b>Durchschnitt:</b></td><td><b>" + formater(summedayAvg)
+                        + "</td></td><td><b>" + formater(summeErtrag) + "</td></td><td><b>" + formater(summeRendite) + "% </b></td>");
                 out.println("</tr>");
                 out.println("</tbody>");
                 out.println("</table>");
