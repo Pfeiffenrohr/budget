@@ -123,7 +123,7 @@ import budget.HeaderFooter;
 					}
 					else
 					{
-						out.println("<font color=\"red\">!!!Konto konte nicht gelöscht werden!!!</font>");
+						out.println("<font color=\"red\">!!!Konto konte nicht gelöscht werden!!! Es gibt noch Transaktionen mit disem Konto</font>");
 					}
 				}
 				else
