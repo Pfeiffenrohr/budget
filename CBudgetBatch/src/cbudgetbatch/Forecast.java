@@ -65,11 +65,11 @@ public class Forecast {
 				  double inflation=0.0;
 			        double inflationDay=0.0;
 				
-			        
+			    /*   
 				if (!((String) kategorie.get("name")).equals("Zinsen Dividenden")) {
 					continue;
 				}
-                /*
+                
 				if (!((String) konto.get("name")).equals("Bondora")) {
 					continue;
 				}
