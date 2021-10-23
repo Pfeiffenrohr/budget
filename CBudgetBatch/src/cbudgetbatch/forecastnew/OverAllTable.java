@@ -53,7 +53,7 @@ public class OverAllTable {
 	     //   System.out.println("Summe ungewichtet: " +this.summeUngewichtet);
 	        if (dayOfYear % 30 == 0)
 	        {
-	            prozentDayOfYear.put(dayOfYear, 0.0833333); //Ein zwölftel des Jahres = 1/12
+	            prozentDayOfYear.put(dayOfYear, 0.833333); //Ein zwölftel des Jahres = 1/12
 	        }
 	        else
 	        {
