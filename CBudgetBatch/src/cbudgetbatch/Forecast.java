@@ -63,7 +63,7 @@ public class Forecast {
 				Hashtable kategorie = (Hashtable) kategories.elementAt(i);
 				Hashtable konto = (Hashtable) konten.elementAt(j);
 				  double inflation=0.0;
-			        double inflationDay=0.0;
+			        double inflationDay=0.0; 
 				
 			    /*   
 				if (!((String) kategorie.get("name")).equals("Zinsen Dividenden")) {
