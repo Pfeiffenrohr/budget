@@ -221,8 +221,18 @@ public class DB {
 
 			PreparedStatement stmt;
 			String id = ((Integer)hash.get("id")).toString();
-			// ResultSet res = null;
-			//if (debug) System.out.println("insert into genre values(null,'"+genre+"') ");
+			/*
+			 * Falls das konto Einträge hat, darf es nicht gelöscht werden 
+			 */
+			String where = " where konto_id ='" + id +"'";
+			Vector vec = getAllTransaktionenWithWhere(where);
+			if (vec.size() > 0 )
+			{
+			    System.out.println("!!Es gibt noch Transaktionen mit diesen Konto. Kann Konto nicht löschen!!!");
+			    return false;
+			}
+			
+			
 			if (debug) System.out.println("delete from konten where id=" + id);
 			stmt = con.prepareStatement("delete from konten where id="+id );
 			// if (debug) System.out.println("update data_"+jahr+" set temp_out="+temp+
@@ -3031,7 +3041,15 @@ public class DB {
 	    
 	            PreparedStatement stmt;
 	            ResultSet res = null;
-	            
+	            /*
+	             * Prüfe erstmal, ob es noch Konten mit dieser Anlage gibt
+	             */
+	            Vector vec = getAllKonto(name);
+	            if (vec.size() > 0)
+	            {
+	                System.out.println("!!Es gibt noch Konten in dieser Anlage. Ich kann die Anlage nicht Löschen!!!");
+	                return false;
+	            }
 	            stmt = con.prepareStatement("delete from anlagen where name ='" +name+"'" );
 	            stmt.executeUpdate();	           
 	        } catch (SQLException e) {

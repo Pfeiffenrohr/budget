@@ -70,7 +70,7 @@ public class Forecast {
                  * if (!((String) konto.get("name")).equals("Deka Bank Zinsdifferenz-Anleihe"))
                  * { continue; }
                  */
-                System.out.println(
+                System.out.println(  
                         "Berechne Forecast: Kategorie " + kategorie.get("name") + " Konto = " + konto.get("name"));
                 String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
                         + " and planed = 'j' and name like 'Forecast%' ";

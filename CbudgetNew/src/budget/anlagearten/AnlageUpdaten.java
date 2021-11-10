@@ -76,7 +76,7 @@ import budget.HeaderFooter;
                     }
                     else
                     {
-                        out.println("<font color=\"red\">!!Anlage konte nicht gelöscht werden!!!</font>");
+                        out.println("<font color=\"red\">!!Es gibt noch Konten in dieser Anlage. Ich kann die Anlage nicht Löschen!!! </font>");
                     }
                 }
                 else
