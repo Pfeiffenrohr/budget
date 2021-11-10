@@ -4,12 +4,17 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import cbudgetbase.DB;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
+
+import org.jfree.data.time.TimeSeries;
 
 import budget.HeaderFooter;
 
@@ -81,6 +86,7 @@ import budget.HeaderFooter;
                 out.println("<td>");
 				Vector allAnlagen = db.getAllAnlagen();
 				Vector anlageGroup = new Vector();
+				Map <Integer,String >nullKonten = new HashMap<Integer, String>();
 				for (int j=0; j<allAnlagen.size(); j++ )
 				{
 				    Hashtable anlageGroupHash = new Hashtable();
@@ -114,11 +120,17 @@ import budget.HeaderFooter;
 				
 				for (int i=0; i<vec.size();i++)
 				{
+				    akt_stand=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
+				    if ( akt_stand <  0.01 && akt_stand > -0.01 )
+				    {
+				        nullKonten.put((Integer)((Hashtable)vec.elementAt(i)).get("id"),((String)((Hashtable)vec.elementAt(i)).get("name")));
+				        continue;
+				    }
 				//	Double summe=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
 				//out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Integer)((Hashtable)vec.elementAt(i)).get("id")).toString()+"\"></td>");
 			     out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+((Hashtable)vec.elementAt(i)).get("id")+"\"></td>");
 				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("name")+"</td>");
-				akt_stand=db.getAktuellerKontostand((String)((Hashtable)vec.elementAt(i)).get("name"), formatter.format(cal.getTime()),"");
+				
 				out.println("<td><font color=\"green\">"+formater(akt_stand,3)+"</font></td>");
 				out.println("<td>"+((Hashtable)vec.elementAt(i)).get("versteckt")+"</td>");
 				out.println("</tr>");
@@ -144,7 +156,7 @@ import budget.HeaderFooter;
 					//-------------------------------------------------------
 				out.println("</td>");
 				out.println("</table>");
-				out.println("</form>");
+				//Hierwar Form zu Ende
 				out.println("<td></td><td><font size=\"5\"> Summe gesamt: </font></td><td>"+formater(gesamtsumme,5)+"</td><td></td>");
 				
 				out.println("<p>");
@@ -202,7 +214,29 @@ import budget.HeaderFooter;
                 out.println("<td></td><td><font size=\"5\">Summe:</font></td><td>"+formater(summe)+"</td><td>"+formater(100.0)+"%</td>");
                 out.println("</tbody>");
                 out.println("</table>");
-				
+                
+                out.println("<table border=\"1\" rules=\"groups\">");
+                //out.println("<table border=\"1\">");
+                out.println("<thead>");
+                out.println("<tr>");
+                out.println("<th></th>");
+                out.println("<p>");
+                out.println("<th>Alte Konten</th>");
+                out.println("</tr>");
+                out.println("</thead>");
+                out.println("<tbody>");
+                out.println("<tr>");
+                Iterator it = nullKonten.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<Integer, String> entry = (Map.Entry)it.next();
+                
+                out.println("<td><input type=\"checkbox\" name=\"loeschen\" value=\""+entry.getKey() +"\"></td>");
+                out.println("<td>"+entry.getValue()+"</td>");
+                out.println("</tr>");
+                }
+                out.println("</tbody>");
+                out.println("</table>");
+                out.println("</form>");
 				out.println("</body>");
 				out.println("</html>");
 				out.close();
