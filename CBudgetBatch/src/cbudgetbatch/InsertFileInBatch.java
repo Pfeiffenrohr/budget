@@ -79,14 +79,14 @@ public class InsertFileInBatch {
 			}
 			
 			
-			if (db.isAlreadyInsert(hash))
+			/*if (db.isAlreadyInsert(hash))
 			{
 				System.out.println(timestamp+"Eintrag ist schon vorhanden");
 			}
 			else
-			{
+			{*/
 				db.insertTransaktion(hash,0);
-			}
+			//}
 				
 		}
 	}
@@ -113,6 +113,7 @@ public class InsertFileInBatch {
 	{
 		try  {
 		String wert=(String)hash.get("wert");
+		System.out.println("Wert bevor "+wert);
 		wert.replaceAll(",",".");
 		System.out.println("Wert "+wert);
 		Double d = new Double(wert);
