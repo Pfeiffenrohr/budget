@@ -220,7 +220,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         */
                     }
                     else
-                    {
+                    { 
                         ruleErtrag=db.getRuleCommand((Integer)konto.get("rule_id"));
                         /*
                         System.out.println("Rule_id von Konto");
