@@ -123,6 +123,20 @@ public class GenerateChart extends HttpServlet {
 			ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
 		}
 		
+		if (mode.equals("rendite")) {
+            //System.err.println("Create Chart Kontoarten");
+            XYDataset dataset = createDatasetKontoart(chartVec);
+            //TimeTableXYDataset dataset1 =  createDatasetKontoart1(chartVec);
+            //System.err.println("Create Dataset");
+            //System.err.println(chartVec);
+            JFreeChart chart = createChartRendite(dataset);
+            //JFreeChart chart = createAreaChart(dataset1);
+            //System.err.println("Chart fertig");
+            int width = 500;
+            int height = 350;
+            ChartUtils.writeChartAsPNG(outputStream, chart, width, height);
+        }
+		
 		
 		
 		if(mode.equals("monat"))
@@ -226,7 +240,7 @@ public class GenerateChart extends HttpServlet {
             
                 TimeSeries s =  timeSeries.get(key);
                 double value= (Double) ((Hashtable) vec.elementAt(i)).get(key);
-                s.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                s.addOrUpdate(new Day(new SimpleDateFormat("yyyy-MM-dd").parse ((String)((Hashtable) vec.elementAt(i)).get("datum"))),
                         (Double) ((Hashtable) vec.elementAt(i)).get(key)); 
               
              
@@ -252,6 +266,73 @@ public class GenerateChart extends HttpServlet {
 		*/
 		return dataset;
 	}
+	
+	
+	private static XYDataset createDatasetRendite(Vector vec) {
+
+
+        /*
+        TimeSeries s1 = new TimeSeries("Geldkonto");
+        TimeSeries s2 = new TimeSeries("Geldanlage");
+        TimeSeries s3 = new TimeSeries("Sachanlage");
+        TimeSeries s4 = new TimeSeries("Verbindlichkeit");
+        */
+        Map <String,TimeSeries >timeSeries = new HashMap<String, TimeSeries>();
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+        Hashtable hashinit = (Hashtable)vec.get(0);
+        
+        Set<String> setKeys = hashinit.keySet();
+        
+        for (String key : setKeys) {
+           
+            if (key.equals("datum"))
+            {
+                continue;
+            }
+            TimeSeries s = new TimeSeries(key);
+            timeSeries.put(key, s);
+            
+        }
+        
+        
+        for (int i=0; i<vec.size();i++)
+        {
+            try{
+           // Hashtable hash = (Hashtable)vec.get(i);
+            
+            
+            Set<String> setOfKeys = timeSeries.keySet();
+        
+            for (String key : setOfKeys) {
+            
+                TimeSeries s =  timeSeries.get(key);
+                double value= (Double) ((Hashtable) vec.elementAt(i)).get(key);
+                s.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
+                        (Double) ((Hashtable) vec.elementAt(i)).get(key)); 
+              
+             
+            }
+            
+            
+        
+            } catch (Exception ex) {
+                System.err.println("Exception " + ex);
+            }
+
+        }
+        Set<String> setmyKeys = timeSeries.keySet();
+        for (String key : setmyKeys) {
+            
+            dataset.addSeries(timeSeries.get(key)); 
+        }
+        /*
+        dataset.addSeries(s1);
+        dataset.addSeries(s2);
+        dataset.addSeries(s3);
+        dataset.addSeries(s4);
+        */
+        return dataset;
+    }
 	
 	private static TimeTableXYDataset createDatasetKontoart1(Vector vec) {
 
@@ -570,7 +651,9 @@ public class GenerateChart extends HttpServlet {
 			  chart.setBackgroundPaint(Color.white);
 
 		      XYPlot plot = (XYPlot) chart.getPlot();
-		     XYItemRenderer render = plot.getRenderer();
+		      XYItemRenderer render = plot.getRenderer();
+		     // int seriesCount = plot.getSeriesCount();
+		    //  plot.getRenderer().setSeriesStroke(3, new BasicStroke(4));
 		      plot.setRenderer(render);
 		      plot.setBackgroundPaint(Color.lightGray);
 		      plot.setDomainGridlinePaint(Color.white);
@@ -597,6 +680,52 @@ public class GenerateChart extends HttpServlet {
 		      return chart;
 
 		  }
+	 
+	 private static JFreeChart createChartRendite(XYDataset dataset) {
+         JFreeChart chart = ChartFactory.createTimeSeriesChart(
+    
+                 "Rendite",  // title
+                 "Datum",             // x-axis label
+                 "Wert",   // y-axis label
+                 dataset,            // data
+                 true,               // create legend?
+                 true,               // generate tooltips?
+                 false               // generate URLs?
+             );
+         // XYItemRenderer render = new XYAreaRenderer();
+         
+           chart.setBackgroundPaint(Color.white);
+
+           XYPlot plot = (XYPlot) chart.getPlot();
+           XYItemRenderer render = plot.getRenderer();
+           int seriesCount = plot.getSeriesCount();
+           plot.getRenderer().setSeriesStroke(3, new BasicStroke(4));
+           plot.setRenderer(render);
+           plot.setBackgroundPaint(Color.lightGray);
+           plot.setDomainGridlinePaint(Color.white);
+           plot.setRangeGridlinePaint(Color.white);
+           //plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+           plot.setDomainCrosshairVisible(true);
+           plot.setRangeCrosshairVisible(true);
+           Calendar calendar = Calendar.getInstance();
+           double millis = calendar.getTimeInMillis();
+             final Marker today = new ValueMarker(millis);
+             today.setPaint(Color.blue);
+             today.setLabel("Heute");
+             plot.addDomainMarker(today);
+           XYItemRenderer r = plot.getRenderer();
+           if (r instanceof XYLineAndShapeRenderer) {
+               XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
+               //renderer.setShapesVisible(true);
+               //renderer.setShapesFilled(true);
+           }
+           
+           DateAxis axis = (DateAxis) plot.getDomainAxis();
+           axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+           
+           return chart;
+
+       }
 	 
 	 public JFreeChart getPieChart(Vector kat) {
 			try{

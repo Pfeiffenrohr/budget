@@ -31,6 +31,7 @@ public class HeaderFooter {
 		out.println("<a href='auswertungmonat'>Monatsvergleich</a>");
 		out.println("<a href='auswertungart'>Anlageart</a>");
 		out.println("<a href='rendite'>Rendite</a>");
+		out.println("<a href='renditeoverview'>Rendite Übersicht</a>");
 	}
 	
 	public void searchSub (Vector all, String kat,Vector allkat,int tiefe)

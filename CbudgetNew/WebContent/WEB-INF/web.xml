@@ -129,6 +129,10 @@
     <servlet-class>budget.statistik.Rendite</servlet-class>
   </servlet> 
   <servlet>
+    <servlet-name>renditeoverview</servlet-name>
+    <servlet-class>budget.statistik.RenditeUebersicht</servlet-class>
+  </servlet> 
+  <servlet>
     <servlet-name>klonePlanung</servlet-name>
     <servlet-class>budget.planung.KlonePlanung</servlet-class>
   </servlet>
@@ -383,7 +387,11 @@
    <servlet-mapping>
     <servlet-name>rendite</servlet-name>
     <url-pattern>/rendite</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
+   <servlet-mapping>
+    <servlet-name>renditeoverview</servlet-name>
+    <url-pattern>/renditeoverview</url-pattern>
+  </servlet-mapping>    
   <context-param>
     <param-name>DBusername</param-name>
     <param-value>budget</param-value>
@@ -394,6 +402,6 @@
   </context-param>
   <context-param>
     <param-name>DBconnectstring</param-name>
-    <param-value>jdbc:postgresql://myapp-db:5432/budget</param-value>
+    <param-value>jdbc:postgresql://192.168.2.29:5432/budget</param-value>
   </context-param> 
 </web-app> 
