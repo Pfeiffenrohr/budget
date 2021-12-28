@@ -955,9 +955,10 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			
-			String str_stm=("select trans.datum as datum, trans.wert as wert, (select mode from konten where id=trans.konto_id) AS mode from transaktionen trans where datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"'"+ rule +" order by datum");
+			String str_stm=("select trans.datum as datum, trans.wert as wert, (select mode from konten where id=trans.konto_id) AS mode from transaktionen trans where datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"'"+ rule +"  order by datum ");
+			debug=true;
 			if (debug) System.out.println(str_stm);
-			
+			debug=false;
 			stmt = con
 					.prepareStatement(str_stm);
 			res = stmt.executeQuery();
@@ -3126,6 +3127,29 @@ public class DB {
 	              // return summe/(float)getAnz(tag,monat,year);
 	              return result;
 	          }
+		  public Vector getRenditeByKonto(int konto, String startdate, String enddate, String rule) {
+               Vector vec = new Vector();
+		       String result="";
+                try {                  
+                    PreparedStatement stmt;
+                    ResultSet res = null;
+                    stmt = con
+                            .prepareStatement("select value,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"'"+ rule +" order by datum");
+                    res = stmt.executeQuery();
+                        while (res.next()) {
+                            Hashtable hash = new Hashtable();
+                            hash.put("value", new Double(res.getDouble("value")));
+                            hash.put("datum", (Date)( res.getDate("datum")));
+                            vec.add(hash);
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+                    return vec;
+                }
+                if (debug) System.out.println("Select-Anweisung ausgeführt");
+                // return summe/(float)getAnz(tag,monat,year);
+                return vec;
+            }
 		 
 		private String convDatum(String dat)
 		{

@@ -698,8 +698,8 @@ public class GenerateChart extends HttpServlet {
 
            XYPlot plot = (XYPlot) chart.getPlot();
            XYItemRenderer render = plot.getRenderer();
-           int seriesCount = plot.getSeriesCount();
-           plot.getRenderer().setSeriesStroke(3, new BasicStroke(4));
+           //int seriesCount = plot.getSeriesCount();
+           //plot.getRenderer().setSeriesStroke(3, new BasicStroke(4));
            plot.setRenderer(render);
            plot.setBackgroundPaint(Color.lightGray);
            plot.setDomainGridlinePaint(Color.white);
