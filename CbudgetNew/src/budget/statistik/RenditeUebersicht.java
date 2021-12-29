@@ -221,7 +221,7 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                 }
                  //System.out.println(chartvec);
                 session.setAttribute("chart_vec", chartvec);
-                out.println("<img src=chart?mode=rendite width'600' height='400'>");
+                out.println("<img src=chart?mode=rendite width'600' height='800'>");
             }
             out.println("<td></tr>");
 

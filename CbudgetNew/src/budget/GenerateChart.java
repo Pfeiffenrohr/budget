@@ -2,6 +2,7 @@ package budget;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -24,6 +25,7 @@ import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.chart.ui.TextAnchor;
 import org.jfree.ui.RectangleInsets;
@@ -695,7 +697,9 @@ public class GenerateChart extends HttpServlet {
          // XYItemRenderer render = new XYAreaRenderer();
          
            chart.setBackgroundPaint(Color.white);
-
+           LegendTitle legend = (LegendTitle)chart.getLegend();
+           Font font = new Font("Serif", Font.PLAIN, 6);
+           legend.setItemFont(font);
            XYPlot plot = (XYPlot) chart.getPlot();
            XYItemRenderer render = plot.getRenderer();
            //int seriesCount = plot.getSeriesCount();
