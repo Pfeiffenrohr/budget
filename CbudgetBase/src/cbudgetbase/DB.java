@@ -3127,14 +3127,14 @@ public class DB {
 	              // return summe/(float)getAnz(tag,monat,year);
 	              return result;
 	          }
-		  public Vector getRenditeByKonto(int konto, String startdate, String enddate, String rule) {
+		  public Vector getRenditeByKonto(int konto, String startdate, String enddate) {
                Vector vec = new Vector();
 		       String result="";
                 try {                  
                     PreparedStatement stmt;
                     ResultSet res = null;
                     stmt = con
-                            .prepareStatement("select value,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"'"+ rule +" order by datum");
+                            .prepareStatement("select value,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"' order by datum");
                     res = stmt.executeQuery();
                         while (res.next()) {
                             Hashtable hash = new Hashtable();

@@ -86,20 +86,20 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                 }
             settings.put("renditeUebersichtEnddatum", enddatum);
             db.updatesetting("renditeUebersichtEnddatum", enddatum);
-            String rule_id = request.getParameter("rule_id");
-            if (rule_id == null) {
-                if (settings.containsKey("renditeUebersichtRuleId")) {
-                    rule_id = (String) settings.get("renditeUebersichtRuleId");
+            String anlagen_id = request.getParameter("anlagen_id");
+            if (anlagen_id == null) {
+                if (settings.containsKey("renditeUebersichtAnlagen")) {
+                    anlagen_id = (String) settings.get("renditeUebersichtAnlagen");
                 } else {
-                    rule_id = "";
+                    anlagen_id = "";
 
                 }
             }
-            settings.put("renditeUebersichtRuleId", rule_id);
-            db.updatesetting("renditeUebersichtRuleId", rule_id);
+            settings.put("renditeUebersichtAnlagen", anlagen_id);
+            db.updatesetting("renditeUebersichtAnlagen", anlagen_id);
 
             session.setAttribute("settings", settings);
-            Vector rules = db.onlyValidRules(db.getAllRules());
+            Vector rulesAnlagen = db.getAllAnlagen();
 
             out.println("<html>");
             out.println("<head>");
@@ -118,27 +118,28 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
             out.println("<table>");
             out.println("<tr><td border=\"1\" bgcolor=\"#E0FFFF\">");
             out.println("<form action=renditeoverview method=post>");
-            out.println("Regel: <select name=\"rule_id\" size=\"1\">");
+            out.println("Anlage: <select name=\"anlagen_id\" size=\"1\">");
             // out.println("<option> </option>");
             String select = "";
-            if (rule_id.equals("-1")) {
+            if (anlagen_id.equals("-1")) {
                 select = " selected";
             } else {
                 select = "";
             }
             out.println("<option" + select + " value=\"-1\"> </option>");
 
-            for (int i = 0; i < rules.size(); i++) {
+            for (int i = 0; i < rulesAnlagen.size(); i++) {
+                
                 // System.out.println("RULE_ID:
                 // "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
                 // System.out.println("RULE_ID_: "+rule_id);
-                if (((Integer) ((Hashtable) rules.elementAt(i)).get("rule_id")).toString().equals(rule_id)) {
+                if (((Integer) ((Hashtable) rulesAnlagen.elementAt(i)).get("id")).toString().equals(anlagen_id)) {
                     select = " selected";
                 } else {
                     select = "";
                 }
-                out.println("<option" + select + " value=\"" + ((Hashtable) rules.elementAt(i)).get("rule_id") + "\">"
-                        + ((Hashtable) rules.elementAt(i)).get("name") + "</option>");
+                out.println("<option" + select + " value=\"" + ((Hashtable) rulesAnlagen.elementAt(i)).get("id") + "\">"
+                        + ((Hashtable) rulesAnlagen.elementAt(i)).get("name") + "</option>");
             }
             out.println("</select>");
             out.println("<p>");
@@ -166,18 +167,17 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                 Vector allAnlagen = db.getAllAnlagen();
                 String wherestring = "";
                 boolean first = true;
-                String rule;
-                if (rule_id.equals("-1")) {
-                    // dummy
-
-                    rule = "";
-                } else {
-                    rule = " AND " + db.getRuleCommand(new Integer(rule_id));
-                }
+               
 
                 Map<String, Map<String, Double>> mapRendite = new HashMap<String, Map<String, Double>>();
                 for (int i = 0; i < allAnlagen.size(); i++) {
                     Hashtable hash = (Hashtable) allAnlagen.get(i);
+
+                    if (!((Integer) ((Hashtable) rulesAnlagen.elementAt(i)).get("id")).toString().equals(anlagen_id) && ! anlagen_id.equals("-1") )
+                    {
+                      
+                        continue;
+                    }
                     if (hash.get("rendite").equals("Y")) {
 
                         Vector allKonten = db.getAllKonto((String) hash.get("name"));
@@ -185,7 +185,7 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                             Hashtable konto = (Hashtable) allKonten.get(j);
                             Hashtable hash_chart = new Hashtable();
                             Vector allRendite = db.getRenditeByKonto((Integer) konto.get("id"),
-                                    startdatum.replaceAll("-", ""), enddatum.replaceAll("-", ""), rule);
+                                    startdatum.replaceAll("-", ""), enddatum.replaceAll("-", ""));
 
                             for (int k = 0; k < allRendite.size(); k++) {
                                 Hashtable rend = (Hashtable) allRendite.get(k);
@@ -199,7 +199,7 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                                 }
                             }
 
-                            System.out.println("Get all");
+                         
                         }
 
                     }
@@ -219,9 +219,9 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                     hash.put("datum", key);
                     chartvec.addElement(hash);
                 }
-                 //System.out.println(chartvec);
+               //  System.out.println(chartvec);
                 session.setAttribute("chart_vec", chartvec);
-                out.println("<img src=chart?mode=rendite width'600' height='800'>");
+                out.println("<img src=chart?mode=rendite width'600' height='600'>");
             }
             out.println("<td></tr>");
 

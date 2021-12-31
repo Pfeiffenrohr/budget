@@ -127,7 +127,7 @@ public class GenerateChart extends HttpServlet {
 		
 		if (mode.equals("rendite")) {
             //System.err.println("Create Chart Kontoarten");
-            XYDataset dataset = createDatasetKontoart(chartVec);
+            XYDataset dataset = createDatasetRendite(chartVec);
             //TimeTableXYDataset dataset1 =  createDatasetKontoart1(chartVec);
             //System.err.println("Create Dataset");
             //System.err.println(chartVec);
@@ -271,7 +271,7 @@ public class GenerateChart extends HttpServlet {
 	
 	
 	private static XYDataset createDatasetRendite(Vector vec) {
-
+        System.out.println("Start createDatasetRendite");
 
         /*
         TimeSeries s1 = new TimeSeries("Geldkonto");
@@ -282,9 +282,9 @@ public class GenerateChart extends HttpServlet {
         Map <String,TimeSeries >timeSeries = new HashMap<String, TimeSeries>();
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         Hashtable hashinit = (Hashtable)vec.get(0);
-        
+        TimeSeries se = new TimeSeries("Mittelwert");
+        timeSeries.put("Mittelwert", se);
         Set<String> setKeys = hashinit.keySet();
-        
         for (String key : setKeys) {
            
             if (key.equals("datum"))
@@ -295,38 +295,46 @@ public class GenerateChart extends HttpServlet {
             timeSeries.put(key, s);
             
         }
-        
-        
+             
         for (int i=0; i<vec.size();i++)
         {
             try{
            // Hashtable hash = (Hashtable)vec.get(i);
-            
+           // System.out.println("Create Chart " +(Hashtable)vec.get(i) );
             
             Set<String> setOfKeys = timeSeries.keySet();
-        
+            double count=0;
+            double sum=0;
             for (String key : setOfKeys) {
-            
+                if (key.contentEquals("Mittelwert"))
+                {
+                    continue;
+                }
                 TimeSeries s =  timeSeries.get(key);
                 double value= (Double) ((Hashtable) vec.elementAt(i)).get(key);
-                s.addOrUpdate(new Day((Date) ((Hashtable) vec.elementAt(i)).get("datum")),
-                        (Double) ((Hashtable) vec.elementAt(i)).get(key)); 
-              
-             
+                s.addOrUpdate(new Day(new SimpleDateFormat("yyyy-MM-dd").parse ((String)((Hashtable) vec.elementAt(i)).get("datum"))),
+                        (Double) ((Hashtable) vec.elementAt(i)).get(key));
+                count ++;
+                sum +=  (Double) ((Hashtable) vec.elementAt(i)).get(key);
             }
-            
-            
-        
+            TimeSeries s =  timeSeries.get("Mittelwert");
+            s.addOrUpdate(new Day(new SimpleDateFormat("yyyy-MM-dd").parse ((String)((Hashtable) vec.elementAt(i)).get("datum"))),
+                    sum/count);
             } catch (Exception ex) {
                 System.err.println("Exception " + ex);
             }
 
         }
+        dataset.addSeries(timeSeries.get("Mittelwert"));
         Set<String> setmyKeys = timeSeries.keySet();
         for (String key : setmyKeys) {
-            
+            if (key.equals("Mittelwert"))
+                {
+                continue;
+                }
             dataset.addSeries(timeSeries.get(key)); 
         }
+       
         /*
         dataset.addSeries(s1);
         dataset.addSeries(s2);
@@ -698,12 +706,12 @@ public class GenerateChart extends HttpServlet {
          
            chart.setBackgroundPaint(Color.white);
            LegendTitle legend = (LegendTitle)chart.getLegend();
-           Font font = new Font("Serif", Font.PLAIN, 6);
+           Font font = new Font("Helvetica", Font.PLAIN, 6);
            legend.setItemFont(font);
            XYPlot plot = (XYPlot) chart.getPlot();
            XYItemRenderer render = plot.getRenderer();
-           //int seriesCount = plot.getSeriesCount();
-           //plot.getRenderer().setSeriesStroke(3, new BasicStroke(4));
+           int seriesCount = plot.getSeriesCount();
+           plot.getRenderer().setSeriesStroke(0, new BasicStroke(3));
            plot.setRenderer(render);
            plot.setBackgroundPaint(Color.lightGray);
            plot.setDomainGridlinePaint(Color.white);
