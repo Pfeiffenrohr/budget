@@ -97,6 +97,18 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
             }
             settings.put("renditeUebersichtAnlagen", anlagen_id);
             db.updatesetting("renditeUebersichtAnlagen", anlagen_id);
+            
+            String einzeln = request.getParameter("einzeln");
+            String exactSelected="";
+            if (einzeln == null)
+            {
+                //System.out.println("SetExact Nein");
+                einzeln="nein";
+            }
+            else
+            {
+                exactSelected = "checked";
+            }
 
             session.setAttribute("settings", settings);
             Vector rulesAnlagen = db.getAllAnlagen();
@@ -157,6 +169,8 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                     "<div id=\"chooserSpan\" class=\"dateChooser select-free\" style=\"display: none; visibility: hidden; width: 160px;\">");
             out.println("</div>");
             out.println("<p>");
+            out.println("<input type=\"checkbox\" name=\"einzeln\" value=\"yes\" "+exactSelected+"> Durchschnitt der einzelnen Anlagen <br>");
+            out.println("<p>");
             out.println("<input type=\"hidden\" name=\"mode\" value=\"rendite\">");
             out.println("<input type=\"submit\" value=\"Absenden\";>");
             out.println("</form>");
@@ -165,10 +179,6 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
             if (mode.equals("rendite")) {
                 Vector chartvec = new Vector();
                 Vector allAnlagen = db.getAllAnlagen();
-                String wherestring = "";
-                boolean first = true;
-               
-
                 Map<String, Map<String, Double>> mapRendite = new HashMap<String, Map<String, Double>>();
                 for (int i = 0; i < allAnlagen.size(); i++) {
                     Hashtable hash = (Hashtable) allAnlagen.get(i);
@@ -201,7 +211,33 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
 
                          
                         }
-
+                        if (einzeln.equals("yes")) {
+                            Set<String> setKeys = mapRendite.keySet();
+                            for (String key : setKeys) {
+                                Map<String, Double> tmp = mapRendite.get(key);
+                                // System.out.println("Key ist " + key);
+                                Set<String> setAnlage = tmp.keySet();
+                                Double sum=0.0;
+                                int count=0;
+                                Vector toRemove = new Vector();
+                                for (String keyAnlage : setAnlage) {
+                                    if (keyAnlage.startsWith("Anlage_"))
+                                    {
+                                        continue;
+                                    }
+                                    sum = sum + tmp.get(keyAnlage);
+                                    count ++;
+                                    toRemove.add(keyAnlage);
+                                    //setAnlage.remove(keyAnlage);
+                                }
+                                for (int l=0; l<toRemove.size(); l++ )
+                                {
+                                    setAnlage.remove(toRemove.get(l));
+                                }
+                               tmp.put("Anlage_"+hash.get("name"), sum/count);
+                            }
+                        }
+                            
                     }
                 }
                 
@@ -219,7 +255,7 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                     hash.put("datum", key);
                     chartvec.addElement(hash);
                 }
-               //  System.out.println(chartvec);
+                 System.out.println(chartvec);
                 session.setAttribute("chart_vec", chartvec);
                 out.println("<img src=chart?mode=rendite width'600' height='600'>");
             }
