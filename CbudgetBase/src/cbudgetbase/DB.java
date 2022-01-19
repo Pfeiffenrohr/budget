@@ -3075,7 +3075,7 @@ public class DB {
 	                    "rule_id = "+rule_id+
 	                    " where id = '"+id+"'";
 	                    
-	            updateAllParents(name,id);
+	            //updateAllParents(name,id);
 	            if (debug) System.out.println(str);
 	            PreparedStatement stmt;
 	            stmt = con.prepareStatement(str);
