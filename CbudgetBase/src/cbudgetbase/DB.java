@@ -3075,7 +3075,7 @@ public class DB {
 	                    "rule_id = "+rule_id+
 	                    " where id = '"+id+"'";
 	                    
-	            updateAllParents(name,id);
+	           // updateAllParents(name,id);
 	            if (debug) System.out.println(str);
 	            PreparedStatement stmt;
 	            stmt = con.prepareStatement(str);
@@ -3134,11 +3134,12 @@ public class DB {
                     PreparedStatement stmt;
                     ResultSet res = null;
                     stmt = con
-                            .prepareStatement("select value,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"' order by datum");
+                            .prepareStatement("select value,amount,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"' order by datum");
                     res = stmt.executeQuery();
                         while (res.next()) {
                             Hashtable hash = new Hashtable();
                             hash.put("value", new Double(res.getDouble("value")));
+                            hash.put("amount", new Double(res.getDouble("amount")));
                             hash.put("datum", (Date)( res.getDate("datum")));
                             vec.add(hash);
                     }
