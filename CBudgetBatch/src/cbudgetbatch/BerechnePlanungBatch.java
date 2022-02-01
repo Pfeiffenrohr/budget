@@ -205,6 +205,7 @@ public class BerechnePlanungBatch {
 			//System.out.println("berechneTriggerPlan ..");
 		
 		DBBatch db = new DBBatch();
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
     	cleanOldCacheEntries(db);
@@ -254,8 +255,10 @@ public class BerechnePlanungBatch {
         			parents(kat,db,vec,(Integer)((Hashtable)tmp.elementAt(i)).get("kategorie"));
         			plan_todo.put(((Integer)((Hashtable)allplan.elementAt(j)).get("plan_id")).toString(),vec);
         		}
+        		
         	}
-       
+        	Calendar cal_akt= Calendar.getInstance();
+        	db.setRenditeDirty((Integer)((Hashtable)tmp.elementAt(i)).get("konto"),formatter.format((Date)((Hashtable)tmp.elementAt(i)).get("datum")));
             db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
         }
        

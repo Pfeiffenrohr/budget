@@ -219,7 +219,7 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                                 Set<String> setAnlage = tmp.keySet();
                                 Double sum=0.0;
                                 int count=0;
-                                Vector toRemove = new Vector();
+                                Vector<String> toRemove = new Vector<String>();
                                 for (String keyAnlage : setAnlage) {
                                     if (keyAnlage.startsWith("Anlage_"))
                                     {
@@ -230,6 +230,7 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                                     toRemove.add(keyAnlage);
                                     //setAnlage.remove(keyAnlage);
                                 }
+                                //Lösche die einzelnen Anlagen raus
                                 for (int l=0; l<toRemove.size(); l++ )
                                 {
                                     setAnlage.remove(toRemove.get(l));
