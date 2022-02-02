@@ -243,13 +243,14 @@ public class DBBatch extends DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,datum,kategorie from tmp_update order by kategorie");
+					.prepareStatement("select id,datum,kategorie,konto from tmp_update order by kategorie");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
 				hash.put("id", new Integer(res.getInt("id")));
 				hash.put("datum", (Date) res.getDate("datum"));		
-				hash.put("kategorie", (Integer) res.getInt("kategorie"));				
+				hash.put("kategorie", (Integer) res.getInt("kategorie"));
+				hash.put("konto", (Integer) res.getInt("konto"));   
 				vec.addElement(hash);
 			}
 		} catch (SQLException e) {
@@ -283,6 +284,45 @@ public class DBBatch extends DB {
 		return true;
 	}
 	
+	public boolean deleteRendite(Integer konto,String datum )
+	{
+            try {
+        
+                PreparedStatement stmt;
+                ResultSet res = null;
+                /*
+                 * Pr¸fe erstmal, ob es noch Konten mit dieser Anlage gibt
+                 */
+                String str_stm = "delete from rendite  where konto ="+ konto + " and datum > '"+datum+"'";
+                System.out.println(str_stm);
+                stmt = con.prepareStatement(str_stm);
+                stmt.executeUpdate();              
+            } catch (SQLException e) {
+                System.err.println("Konnte Delete-Anweisung nicht ausf√ºhren" + e);
+                 return false;
+            }
+        return true;        
+        }
+	
+	public boolean setRenditeDirty(Integer konto,String datum )
+    {
+            try {
+        
+                PreparedStatement stmt;
+                ResultSet res = null;
+                /*
+                 * Pr¸fe erstmal, ob es noch Konten mit dieser Anlage gibt
+                 */
+                String str_stm = "update rendite set dirty = 1 where konto ="+ konto + " and datum > '"+datum+"'";
+                //System.out.println(str_stm);
+                stmt = con.prepareStatement(str_stm);
+                stmt.executeUpdate();              
+            } catch (SQLException e) {
+                System.err.println("Konnte Delete-Anweisung nicht ausf√ºhren" + e);
+                 return false;
+            }
+        return true;        
+        }
 	
 	public boolean deleteOldtransHistorie() {
 		try {
