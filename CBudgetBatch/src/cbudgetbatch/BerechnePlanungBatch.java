@@ -8,6 +8,12 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 import cbudgetbase.DB;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import budget.HeaderFooter;
 
 
@@ -17,13 +23,14 @@ public class BerechnePlanungBatch {
 	static String datenbank;
 	boolean debug=false;
 	
+	
+	   private static final Logger LOG = LoggerFactory.getLogger(BerechnePlanungBatch.class);
 	/**
 	 * Schmeisst die alten Cache Jobs raus, die Alt sind und nicht mehr gebraucht werden.
 	 */
 	private void cleanOldCacheEntries(DBBatch dbbatch)
 	{
 		long intervall = 3; //Anzahl der Tage nachdem gelöscht wird.
-		
 		Vector allPlan = dbbatch.getAllCachePlanAktuell();
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar cal= Calendar.getInstance();
@@ -57,10 +64,14 @@ public class BerechnePlanungBatch {
 			}
 			
 		}
+		LOG.info("Start cleanunusedCaches ..");
 		dbbatch.cleanunusedCaches();
+		LOG.info("CleanunusedCaches done!");
 		
 		//Säubert alle alten Transaktion_historie Einträge, die keineRefernnz mehr haben
+	 LOG.info("Start deleteOldtransHistorie ..");	
 	 dbbatch.deleteOldtransHistorie();
+	 LOG.info("DeleteOldtransHistorie done!");  
 		
 	}
 	
@@ -208,9 +219,13 @@ public class BerechnePlanungBatch {
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
+    	LOG.info("Start cleaning old entries ..");
     	cleanOldCacheEntries(db);
+    	LOG.info("Cleaning old entries done!");
     	UpdateZyklischeTransaktion uzt = new UpdateZyklischeTransaktion();
+    	LOG.info("Start update zyklische Transaktionen ..");
     	uzt.update(db);
+    	LOG.info("Update zyklische Transaktionen done!");
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
         //Alle Kategorien ermitteln,für die Planungen berechnet werden müssen
@@ -220,7 +235,7 @@ public class BerechnePlanungBatch {
         Calendar cal_end= Calendar.getInstance(); 
         if (tmp.size() > 0)
         	{
-        	System.out.println("Gefunden "+ tmp.size()+" Einträge");
+            LOG.info("Gefunden "+ tmp.size()+" Eintr�ge");
         	}
         for (int i=0;i<tmp.size();i++)
         {
@@ -261,7 +276,7 @@ public class BerechnePlanungBatch {
         	db.setRenditeDirty((Integer)((Hashtable)tmp.elementAt(i)).get("konto"),formatter.format((Date)((Hashtable)tmp.elementAt(i)).get("datum")));
             db.deleteTmpUpdate((Integer)((Hashtable)tmp.elementAt(i)).get("id"));
         }
-       
+      
         Enumeration<String> keys = plan_todo.keys();
         while(keys.hasMoreElements()){
             String key = keys.nextElement();
@@ -412,7 +427,8 @@ String buildWhere(DB db,String mode,String plan_id,String rule)
 		datenbank = args [2];
 		String mode =args [3];
        BerechnePlanungBatch batch = new BerechnePlanungBatch();
-       
+       //BasicConfigurator.configure();
+       PropertyConfigurator.configure("log4j.properties");
        if (mode.equals("trigger"))
        {
         batch.berechneTriggerPlan();

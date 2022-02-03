@@ -12,12 +12,18 @@ import cbudgetbatch.DBBatch;
 import cbudgetbatch.forecastnew.OverAllTable;
 import cbudgetbatch.forecastnew.YearTable;
 
+import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Forecast {
 	static String user;
 	static String pass;
 	static String datenbank;
 	DBBatch db = new DBBatch();
 
+    private static final Logger LOG = LoggerFactory.getLogger(Forecast.class);
+	
 	public static void main(String[] args) {
 
 		if (args.length != 3) {
@@ -29,6 +35,7 @@ public class Forecast {
 		datenbank = args[2];
 		// Server example = new Server();
 		DBBatch db = new DBBatch();
+	    PropertyConfigurator.configure("log4j.properties");
 		if (!db.dataBaseConnect(user, pass, datenbank)) {
 			System.err.println("Konnte mich nicht mit der Datenbank verbinden");
 			System.exit(1);
@@ -39,6 +46,7 @@ public class Forecast {
 	}
 
 	private void getAllKategoriesWithForecast(DBBatch db) {
+        LOG.info("Starte Berechung Forecast ...");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calOneYearBack = Calendar.getInstance();
 		Calendar calTowYearBack = Calendar.getInstance();
@@ -74,7 +82,7 @@ public class Forecast {
 					continue;
 				}
 				*/
-				 System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
+				// System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
 				db.deleteTransaktionWithWhere(where);
@@ -245,7 +253,7 @@ public class Forecast {
 					// --------------------------Eintag in kategorien
 				}
 			}
-
+		   LOG.info("Forcast Berechnet :)");
 		}
 
 

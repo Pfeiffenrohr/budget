@@ -313,12 +313,12 @@ public class DBBatch extends DB {
                 /*
                  * Pr�fe erstmal, ob es noch Konten mit dieser Anlage gibt
                  */
-                String str_stm = "update rendite set dirty = 1 where konto ="+ konto + " and datum > '"+datum+"'";
-                //System.out.println(str_stm);
+                String str_stm = "update rendite set dirty = 1 where konto ="+ konto + " and datum >= '"+datum+"'";
+               // System.out.println(str_stm);
                 stmt = con.prepareStatement(str_stm);
-                stmt.executeUpdate();              
+                stmt.executeUpdate();   
             } catch (SQLException e) {
-                System.err.println("Konnte Delete-Anweisung nicht ausführen" + e);
+                //System.err.println("Konnte Delete-Anweisung nicht ausführen" + e);
                  return false;
             }
         return true;        
