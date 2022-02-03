@@ -4,15 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Vector;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.spi.LoggerFactory;
 
 import cbudgetbase.DB;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 //import budget.HeaderFooter;
 
@@ -24,8 +24,9 @@ public class BerechnePlanungBatch {
 	boolean debug=false;
 	
 	
-	   private static final Logger LOG = LoggerFactory.getLogger(BerechnePlanungBatch.class);
-	/**
+	 private static final Logger logger = LogManager.getLogger(BerechnePlanungBatch.class);  
+	
+	 /**
 	 * Schmeisst die alten Cache Jobs raus, die Alt sind und nicht mehr gebraucht werden.
 	 */
 	private void cleanOldCacheEntries(DBBatch dbbatch)
@@ -64,14 +65,14 @@ public class BerechnePlanungBatch {
 			}
 			
 		}
-		LOG.info("Start cleanunusedCaches ..");
+		logger.info("Start cleanunusedCaches ..");
 		dbbatch.cleanunusedCaches();
-		LOG.info("CleanunusedCaches done!");
+		logger.info("CleanunusedCaches done!");
 		
 		//Säubert alle alten Transaktion_historie Einträge, die keineRefernnz mehr haben
-	 LOG.info("Start deleteOldtransHistorie ..");	
+	 logger.info("Start deleteOldtransHistorie ..");	
 	 dbbatch.deleteOldtransHistorie();
-	 LOG.info("DeleteOldtransHistorie done!");  
+	 logger.info("DeleteOldtransHistorie done!");  
 		
 	}
 	
@@ -219,13 +220,13 @@ public class BerechnePlanungBatch {
 	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		//System.out.println("Open Connection");
     	db.dataBaseConnect(user, pass, datenbank);
-    	LOG.info("Start cleaning old entries ..");
+    	logger.info("Start cleaning old entries ..");
     	cleanOldCacheEntries(db);
-    	LOG.info("Cleaning old entries done!");
+    	logger.info("Cleaning old entries done!");
     	UpdateZyklischeTransaktion uzt = new UpdateZyklischeTransaktion();
-    	LOG.info("Start update zyklische Transaktionen ..");
+    	logger.info("Start update zyklische Transaktionen ..");
     	uzt.update(db);
-    	LOG.info("Update zyklische Transaktionen done!");
+    	logger.info("Update zyklische Transaktionen done!");
         Vector allplan = db.getAllPlanungen();
         Vector tmp = db.getAllTmpUpdate();
         //Alle Kategorien ermitteln,für die Planungen berechnet werden müssen
@@ -235,7 +236,7 @@ public class BerechnePlanungBatch {
         Calendar cal_end= Calendar.getInstance(); 
         if (tmp.size() > 0)
         	{
-            LOG.info("Gefunden "+ tmp.size()+" Eintr�ge");
+            logger.info("Gefunden "+ tmp.size()+" Eintr�ge");
         	}
         for (int i=0;i<tmp.size();i++)
         {

@@ -12,9 +12,11 @@ import cbudgetbatch.DBBatch;
 import cbudgetbatch.forecastnew.OverAllTable;
 import cbudgetbatch.forecastnew.YearTable;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.spi.LoggerFactory;
+
 
 public class Forecast {
 	static String user;
@@ -22,7 +24,7 @@ public class Forecast {
 	static String datenbank;
 	DBBatch db = new DBBatch();
 
-    private static final Logger LOG = LoggerFactory.getLogger(Forecast.class);
+	 private static final Logger logger = LogManager.getLogger(Forecast.class);  
 	
 	public static void main(String[] args) {
 
@@ -46,7 +48,7 @@ public class Forecast {
 	}
 
 	private void getAllKategoriesWithForecast(DBBatch db) {
-        LOG.info("Starte Berechung Forecast ...");
+        logger.info("Starte Berechung Forecast ...");
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Calendar calOneYearBack = Calendar.getInstance();
 		Calendar calTowYearBack = Calendar.getInstance();
@@ -253,7 +255,7 @@ public class Forecast {
 					// --------------------------Eintag in kategorien
 				}
 			}
-		   LOG.info("Forcast Berechnet :)");
+		   logger.info("Forcast Berechnet :)");
 		}
 
 
