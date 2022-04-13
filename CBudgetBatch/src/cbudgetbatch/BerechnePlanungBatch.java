@@ -234,6 +234,10 @@ public class BerechnePlanungBatch {
         	{
             logger.log("Gefunden "+ tmp.size()+" Einträge");
         	}
+        else
+        {
+            logger.log("Keine Einträge für Update gefunden");
+        }
         for (int i=0;i<tmp.size();i++)
         {
         	cal.setTime((Date)((Hashtable)tmp.elementAt(i)).get("datum"));
