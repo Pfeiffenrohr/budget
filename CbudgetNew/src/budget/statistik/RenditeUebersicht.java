@@ -112,7 +112,22 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
 
             session.setAttribute("settings", settings);
             Vector rulesAnlagen = db.getAllAnlagen();
-
+            String rule_id=request.getParameter("rule_id");
+            if (rule_id==null)
+            {
+                if (settings.containsKey("renditeRuleId"))
+                {
+                    rule_id=(String)settings.get("renditeRuleId");
+                }
+                else
+                {
+                    rule_id="";
+                    
+                }                   
+            }
+            settings.put("renditeRuleId",rule_id);
+            db.updatesetting("renditeRuleId",rule_id);
+            
             out.println("<html>");
             out.println("<head>");
             out.println(" <title>Rendite Uebersicht</title>");
@@ -130,9 +145,40 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
             out.println("<table>");
             out.println("<tr><td border=\"1\" bgcolor=\"#E0FFFF\">");
             out.println("<form action=renditeoverview method=post>");
+            /// 
+            out.println("Regel: <select name=\"rule_id\" size=\"1\">");
+            //out.println("<option>   </option>");
+            String select="";
+            if (rule_id.equals("-1"))
+            {
+                select=" selected";
+            }
+            else
+            {
+                select="";
+            }
+            out.println("<option"+select+" value=\"-1\"> </option>");
+            Vector rules=db.renditeRules(db.getAllRules());
+            for (int i=0;i<rules.size();i++)
+            {
+                //System.out.println("RULE_ID: "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
+                //System.out.println("RULE_ID_: "+rule_id);
+                if (((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString().equals(rule_id))
+                {
+                    select=" selected";
+                }
+                else
+                {
+                    select="";
+                }
+                out.println("<option"+select+" value=\""+ ((Hashtable)rules.elementAt(i)).get("rule_id") +"\">"+((Hashtable)rules.elementAt(i)).get("name")+ "</option>");
+            }
+            out.println("</select>");
+            out.println("<p>");
+            ///
             out.println("Anlage: <select name=\"anlagen_id\" size=\"1\">");
             // out.println("<option> </option>");
-            String select = "";
+            select = "";
             if (anlagen_id.equals("-1")) {
                 select = " selected";
             } else {
@@ -191,11 +237,23 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                     if (hash.get("rendite").equals("Y")) {
 
                         Vector allKonten = db.getAllKonto((String) hash.get("name"));
+                        String rule="";
                         for (int j = 0; j < allKonten.size(); j++) {
+                            if (rule_id.equals("-1"))
+                            {
+                                //dummy
+                                
+                            rule="";
+                            }
+                            else
+                            {
+                            rule=" AND "+db.getRuleCommand(new Integer(rule_id));
+                            }
                             Hashtable konto = (Hashtable) allKonten.get(j);
                             Hashtable hash_chart = new Hashtable();
                             Vector allRendite = db.getRenditeByKonto((Integer) konto.get("id"),
-                                    startdatum.replaceAll("-", ""), enddatum.replaceAll("-", ""));
+                                    startdatum.replaceAll("-", ""), enddatum.replaceAll("-", ""),
+                                    rule);
 
                             for (int k = 0; k < allRendite.size(); k++) {
                                 Hashtable rend = (Hashtable) allRendite.get(k);
