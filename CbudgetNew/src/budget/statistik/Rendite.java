@@ -215,17 +215,17 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     if ((Integer)konto.get("rule_id") == null ||  (Integer)konto.get("rule_id") == -1 || (Integer)konto.get("rule_id") == 0 )
                     {
                         ruleErtrag= db.getRuleCommand((Integer)anlage.get("rule_id"));
-                     /*   System.out.println("Rule_id von Anlage");
-                        System.out.println("Rule_id =" +anlage.get("rule_id"));
-                        */
+                     //  System.out.println("Rule_id von Anlage");
+                     //   System.out.println("Rule_id =" +anlage.get("rule_id"));
+                        
                     }
                     else
                     { 
                         ruleErtrag=db.getRuleCommand((Integer)konto.get("rule_id"));
-                        /*
-                        System.out.println("Rule_id von Konto");
-                        System.out.println("Rule_id =" +konto.get("rule_id"));
-                        */
+                        
+                     //   System.out.println("Rule_id von Konto");
+                     //   System.out.println("Rule_id =" +konto.get("rule_id"));
+                        
                     }
                    
                     String where = rule; 
@@ -259,7 +259,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     {
                     where = ruleErtrag + where;
                     }
-                   // System.out.println(where);
+                    //System.out.println(where);
                     Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
                     // Ertrag hochrechnen auf Jahr
                     Double ertragProjahr = ertrag * (365.0 / count);
