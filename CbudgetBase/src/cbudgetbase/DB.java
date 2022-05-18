@@ -2680,6 +2680,22 @@ public class DB {
 			return newRules;
 		}
 		
+		public Vector renditeRules (Vector rules)
+        {
+            Vector newRules= new Vector();
+            for (int i=0; i<rules.size();i++)
+            {
+                if ( ((String)((Hashtable) rules.get(i)).get("name")).startsWith("_Rendite_")) 
+                {
+                    System.out.println("Rendite Rules only!!");
+                    //System.out.println("Remove "+((String)((Hashtable) rules.get(i)).get("name")));
+                 //rules.remove(i);
+                    newRules.addElement(rules.get(i));
+                }
+            }
+            return newRules;
+        }
+		
 		/**
 		 * 
 		 * @param rule_id
@@ -3127,14 +3143,24 @@ public class DB {
 	              // return summe/(float)getAnz(tag,monat,year);
 	              return result;
 	          }
-		  public Vector getRenditeByKonto(int konto, String startdate, String enddate) {
+		  public Vector getRenditeByKonto(int konto, String startdate,String enddate, String command) {
                Vector vec = new Vector();
 		       String result="";
+		       
+		       /*  Dadurch, dass bei den Regeln konto_id verwendet wird, hier aber konto, muessen wir eine Substitution machen.
+		        * */		     
+		        command=command.replace("konto_id", "konto"); 
+	
                 try {                  
                     PreparedStatement stmt;
                     ResultSet res = null;
+                    String query = "select value,amount,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"' "+command+" order by datum";
+                    if ( debug )
+                    {
+                        System.out.println(query);
+                    }
                     stmt = con
-                            .prepareStatement("select value,amount,datum from rendite  where konto = "+konto +" and datum > '"+convDatum(startdate)+"' and datum <= '"+convDatum(enddate)+"' order by datum");
+                            .prepareStatement(query);
                     res = stmt.executeQuery();
                         while (res.next()) {
                             Hashtable hash = new Hashtable();
