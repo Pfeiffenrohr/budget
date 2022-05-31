@@ -179,7 +179,6 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     out.println("<tr>");
                     out.println("<th>Nr.</th>");
                     out.println("<th>Konto</th>");
-                    out.println("<th>Wert pro Tag</th>");
                     out.println("<th>Ertrag</th>");
                     out.println("<th>Prozent</th>");
                     out.println("</tr>");
@@ -309,7 +308,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     sumProzent = (sumProzent / gesamtKontostandHash.size()) * 365 * 100;
 
                     out.println("<tr>");
-                    out.println("<td><td><b>Durchschnitt:</b></td><td><b>" + formater(0.0) + "</td></td><td><b>"
+                    out.println("<td><td><b>Durchschnitt:</b></td></td><td><b>"
                             + formater(sumErtrag) + "</td></td><td><b>" + formater(sumProzent) + "% </b></td>");
                     out.println("</tr>");
                     out.println("</tbody>");
