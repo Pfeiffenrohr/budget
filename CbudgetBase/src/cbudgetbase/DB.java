@@ -2687,7 +2687,7 @@ public class DB {
             {
                 if ( ((String)((Hashtable) rules.get(i)).get("name")).startsWith("_Rendite_")) 
                 {
-                    System.out.println("Rendite Rules only!!");
+                    //System.out.println("Rendite Rules only!!");
                     //System.out.println("Remove "+((String)((Hashtable) rules.get(i)).get("name")));
                  //rules.remove(i);
                     newRules.addElement(rules.get(i));

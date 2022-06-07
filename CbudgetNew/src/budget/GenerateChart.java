@@ -306,10 +306,10 @@ public class GenerateChart extends HttpServlet {
             double count=0;
             double sum=0;
             for (String key : setOfKeys) {
-                if (key.contentEquals("Mittelwert"))
+               /* if (key.contentEquals("Mittelwert"))
                 {
                     continue;
-                }
+                }*/
                 TimeSeries s =  timeSeries.get(key);
                 double value= (Double) ((Hashtable) vec.elementAt(i)).get(key);
                 s.addOrUpdate(new Day(new SimpleDateFormat("yyyy-MM-dd").parse ((String)((Hashtable) vec.elementAt(i)).get("datum"))),
@@ -317,9 +317,9 @@ public class GenerateChart extends HttpServlet {
                 count ++;
                 sum +=  (Double) ((Hashtable) vec.elementAt(i)).get(key);
             }
-            TimeSeries s =  timeSeries.get("Mittelwert");
+          /*  TimeSeries s =  timeSeries.get("Mittelwert");
             s.addOrUpdate(new Day(new SimpleDateFormat("yyyy-MM-dd").parse ((String)((Hashtable) vec.elementAt(i)).get("datum"))),
-                    sum/count);
+                    sum/count);*/
             } catch (Exception ex) {
                 System.err.println("Exception " + ex);
             }
@@ -328,10 +328,10 @@ public class GenerateChart extends HttpServlet {
         dataset.addSeries(timeSeries.get("Mittelwert"));
         Set<String> setmyKeys = timeSeries.keySet();
         for (String key : setmyKeys) {
-            if (key.equals("Mittelwert"))
+           /* if (key.equals("Mittelwert"))
                 {
                 continue;
-                }
+                }*/
             dataset.addSeries(timeSeries.get(key)); 
         }
        
