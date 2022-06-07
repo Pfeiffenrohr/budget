@@ -3,10 +3,12 @@ package budget.statistik;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
@@ -225,7 +227,8 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
             if (mode.equals("rendite")) {
                 Vector chartvec = new Vector();
                 Vector allAnlagen = db.getAllAnlagen();
-                Map<String, Map<String, Double>> mapRendite = new HashMap<String, Map<String, Double>>();
+                Map<String, Map<String, TupelAmount>> mapRendite = new HashMap<String, Map<String, TupelAmount>>();
+               // List <TupelDatum> itemList = new ArrayList<TupelDatum>();
                 for (int i = 0; i < allAnlagen.size(); i++) {
                     Hashtable hash = (Hashtable) allAnlagen.get(i);
 
@@ -254,17 +257,26 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                             Vector allRendite = db.getRenditeByKonto((Integer) konto.get("id"),
                                     startdatum.replaceAll("-", ""), enddatum.replaceAll("-", ""),
                                     rule);
-
+                            Double sumKontostand=0.0;
                             for (int k = 0; k < allRendite.size(); k++) {
                                 Hashtable rend = (Hashtable) allRendite.get(k);
+                                
                                 if (mapRendite.containsKey(formatter.format(rend.get("datum")))) {
-                                    Map<String, Double> tmp = mapRendite.get(formatter.format(rend.get("datum")));
-                                    tmp.put((String) konto.get("name"), (Double) rend.get("value"));
+                                    TupelAmount tupel = new TupelAmount();
+                                    tupel.setValue((Double) rend.get("value"));
+                                    tupel.setAmount((Double) rend.get("amount"));
+                                    Map<String, TupelAmount> tmp = mapRendite.get(formatter.format(rend.get("datum")));
+                                    tmp.put((String) konto.get("name"), tupel);
                                 } else {
-                                    Map<String, Double> tmp = new HashMap<String, Double>();
-                                    tmp.put((String) konto.get("name"), (Double) rend.get("value"));
+                                    Map<String,TupelAmount > tmp = new HashMap<String, TupelAmount>();
+                                    TupelAmount tupel = new TupelAmount();
+                                    tupel.setValue((Double) rend.get("value"));
+                                    tupel.setAmount((Double) rend.get("amount"));
+                                    tmp.put((String) konto.get("name"), tupel);
+                                    
                                     mapRendite.put(formatter.format(rend.get("datum")), tmp);
                                 }
+                               // sumKontostand=sumKontostand+ (Double)rend.get("amount");
                             }
 
                          
@@ -272,10 +284,11 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                         if (einzeln.equals("yes")) {
                             Set<String> setKeys = mapRendite.keySet();
                             for (String key : setKeys) {
-                                Map<String, Double> tmp = mapRendite.get(key);
+                                Map<String, TupelAmount> tmp = mapRendite.get(key);
                                 // System.out.println("Key ist " + key);
                                 Set<String> setAnlage = tmp.keySet();
                                 Double sum=0.0;
+                                Double sumKontostand=0.0;
                                 int count=0;
                                 Vector<String> toRemove = new Vector<String>();
                                 for (String keyAnlage : setAnlage) {
@@ -283,7 +296,9 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                                     {
                                         continue;
                                     }
-                                    sum = sum + tmp.get(keyAnlage);
+                                    TupelAmount tupel = tmp.get(keyAnlage);
+                                    sum = sum + tupel.getValue();
+                                    sumKontostand = sumKontostand + tupel.getAmount();
                                     count ++;
                                     toRemove.add(keyAnlage);
                                     //setAnlage.remove(keyAnlage);
@@ -293,28 +308,50 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                                 {
                                     setAnlage.remove(toRemove.get(l));
                                 }
-                               tmp.put("Anlage_"+hash.get("name"), sum/count);
+                                TupelAmount tupel = new TupelAmount();
+                                tupel.setValue(sum/count);
+                                tupel.setAmount(sumKontostand);
+                                //TODO hier muss noch der amount gesetzt wereden!!!
+                               tmp.put("Anlage_"+hash.get("name"), tupel);
                             }
                         }
                             
                     }
                 }
-                
                 Set<String> setKeys = mapRendite.keySet();
 
                 for (String key : setKeys) {
                     Hashtable hash = new Hashtable();
-                    Map<String, Double> tmp = mapRendite.get(key);
+                    Map<String, TupelAmount> tmp = mapRendite.get(key);
                     // System.out.println("Key ist " + key);
                     Set<String> setAnlage = tmp.keySet();
-                    for (String keyAnlage : setAnlage) {
-
-                        hash.put(keyAnlage, tmp.get(keyAnlage));
+                    // Brerechne Gewichte
+                    
+                    Double summeAmount = 0.0;
+                    Double summeKontostand = 0.0;
+                    Double gesamtrendite= 0.0;
+                    for (String keyAnlage : setAnlage) {                     
+                        summeKontostand=summeKontostand+tmp.get(keyAnlage).getAmount();
                     }
+                    for (String keyAnlage : setAnlage) {
+                        Double gewicht = tmp.get(keyAnlage).getAmount() /summeKontostand;
+                        //System.out.println("Gewicht "+keyAnlage + " = " +gewicht);
+                        Double rendite= gewicht * tmp.get(keyAnlage).getValue();
+                        //System.out.println("Rendite "+keyAnlage + " = " +rendite);
+                        gesamtrendite = gesamtrendite + rendite;
+                        summeAmount=summeAmount+tmp.get(keyAnlage).getValue();
+                        hash.put(keyAnlage, tmp.get(keyAnlage).getValue());
+                    }
+                    //System.out.println("SummeAmount = " +summeAmount);
+                    //System.out.println("SummeKontostand = " +summeKontostand);
+                    //System.out.println("Gesamtrendite = " +gesamtrendite);
+                    Double avg = summeAmount/ setAnlage.size();
+                    //System.out.println("Durchschnitt = " +avg);
+                    hash.put("Mittelwert", gesamtrendite);
                     hash.put("datum", key);
                     chartvec.addElement(hash);
                 }
-                 System.out.println(chartvec);
+                System.out.println(chartvec);
                 session.setAttribute("chart_vec", chartvec);
                 out.println("<img src=chart?mode=rendite width'600' height='600'>");
             }
