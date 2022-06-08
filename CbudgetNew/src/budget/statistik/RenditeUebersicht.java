@@ -291,25 +291,50 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                                 Double sumKontostand=0.0;
                                 int count=0;
                                 Vector<String> toRemove = new Vector<String>();
+                                for (String keyAnlage : setAnlage) { 
+                                    if (keyAnlage.startsWith("Anlage_"))
+                                    {
+                                        continue;
+                                    }
+                                    //System.out.println("Einzel sumKontostand for Anlage "+keyAnlage+ " "+sumKontostand);
+                                    sumKontostand=sumKontostand+tmp.get(keyAnlage).getAmount();
+                                }
+                                //System.out.println("Einzel sumKontostand = " +sumKontostand );
+                                Double summeAmount = 0.0;
+                               // Double summeKontostand = 0.0;
+                                Double gesamtrendite= 0.0;
                                 for (String keyAnlage : setAnlage) {
                                     if (keyAnlage.startsWith("Anlage_"))
                                     {
                                         continue;
                                     }
                                     TupelAmount tupel = tmp.get(keyAnlage);
-                                    sum = sum + tupel.getValue();
-                                    sumKontostand = sumKontostand + tupel.getAmount();
+                                   //System.out.println("Einzel keyAnlage = " +keyAnlage);
+                                    //System.out.println("Einzel amount = " + tmp.get(keyAnlage).getAmount() );
+                                    //System.out.println("Einzel sumKontostand = " +sumKontostand );
+                                    Double gewicht = tmp.get(keyAnlage).getAmount() /sumKontostand;
+                                    //System.out.println("Einzel Gewicht "+keyAnlage + " = " +gewicht);
+                                    Double rendite= gewicht * tmp.get(keyAnlage).getValue();
+                                    //System.out.println("Einzel Rendite "+keyAnlage + " = " +rendite);
+                                    gesamtrendite = gesamtrendite + rendite;
+                                    summeAmount=summeAmount+tmp.get(keyAnlage).getValue();
+                                    //sum = sum + tupel.getValue();
+                                    //sumKontostand = sumKontostand + tupel.getAmount();
                                     count ++;
                                     toRemove.add(keyAnlage);
                                     //setAnlage.remove(keyAnlage);
                                 }
+                               //Double avg = summeAmount/ setAnlage.size();
                                 //Lösche die einzelnen Anlagen raus
                                 for (int l=0; l<toRemove.size(); l++ )
                                 {
                                     setAnlage.remove(toRemove.get(l));
                                 }
+                               
                                 TupelAmount tupel = new TupelAmount();
-                                tupel.setValue(sum/count);
+                                tupel.setValue(gesamtrendite);
+                                //System.out.println("Einzel AVG = " + gesamtrendite);
+                                //System.out.println("Einzel sumKontostand = " +sumKontostand );
                                 tupel.setAmount(sumKontostand);
                                 //TODO hier muss noch der amount gesetzt wereden!!!
                                tmp.put("Anlage_"+hash.get("name"), tupel);
@@ -345,13 +370,13 @@ public class RenditeUebersicht extends javax.servlet.http.HttpServlet {
                     //System.out.println("SummeAmount = " +summeAmount);
                     //System.out.println("SummeKontostand = " +summeKontostand);
                     //System.out.println("Gesamtrendite = " +gesamtrendite);
-                    Double avg = summeAmount/ setAnlage.size();
+                   // Double avg = summeAmount/ setAnlage.size();
                     //System.out.println("Durchschnitt = " +avg);
                     hash.put("Mittelwert", gesamtrendite);
                     hash.put("datum", key);
                     chartvec.addElement(hash);
                 }
-                System.out.println(chartvec);
+               // System.out.println(chartvec);
                 session.setAttribute("chart_vec", chartvec);
                 out.println("<img src=chart?mode=rendite width'600' height='600'>");
             }
