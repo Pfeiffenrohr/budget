@@ -3,11 +3,8 @@ package budget.statistik;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
@@ -164,7 +161,6 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 Vector vecAnlagen = db.getAllAnlagen();
 
                 // String[] anlage = { "P2p", "ETF", "Fonds" };
-
                 for (int j = 0; j < vecAnlagen.size(); j++) {
                     Hashtable anlage = (Hashtable) vecAnlagen.get(j);
                     if (anlage.get("rendite").equals("N")) {
@@ -179,14 +175,14 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     out.println("<tr>");
                     out.println("<th>Nr.</th>");
                     out.println("<th>Konto</th>");
+                    out.println("<th>Wert pro Tag</th>");
                     out.println("<th>Ertrag</th>");
                     out.println("<th>Prozent</th>");
                     out.println("</tr>");
                     out.println("</thead>");
                     out.println("<tbody>");
-                    Hashtable<Integer, Double> gesamtKontostandHash = new Hashtable<Integer, Double>();
-                    Hashtable<Integer, Double> gesamtErtragHash = new Hashtable<Integer, Double>();
-                    Double gesamtProzent = 0.0;
+                    Double summeErtrag = 0.0;
+                    Double summedayAvg = 0.0;
                     Double summeErtragProJahr = 0.0;
                     for (int i = 0; i < kontos.size(); i++) {
                         Hashtable konto = (Hashtable) kontos.get(i);
@@ -198,7 +194,8 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         cal_begin.setTime(formatter.parse(startdatum));
                         Calendar cal_end = Calendar.getInstance();
                         cal_end.setTime(formatter.parse(enddatum));
-                        int count = 0;
+                        int count = 1;
+                        int sumcount = 0;
                         String rule;
                         if (rule_id.equals("-1")) {
                             // dummy
@@ -224,92 +221,65 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         }
 
                         String where = rule;
-                        //System.out.println("where = " + where);
                         Double sum = 0.0;
-                        Double sumProzent = 0.0;
-                        Double sumErtrag = 0.0;
-                        String whereErtrag = "";
-                        Boolean toView=false;
-                        if (!ruleErtrag.contains("konto_id")) {
-                            whereErtrag = "konto_id=" + konto.get("id") + " AND " + ruleErtrag + where;
-                        } else {
-                            whereErtrag = ruleErtrag + where;
-                        }
                         while (cal_end.after(cal_begin)) {
                             Double kontostand = db.getAktuellerKontostand((String) konto.get("name"),
                                     (String) formatter.format(cal_end.getTime()), where);
-
-                            if (!gesamtKontostandHash.containsKey(count)) {
-                                gesamtKontostandHash.put(count, kontostand);
-                            } else {
-                                gesamtKontostandHash.put(count, gesamtKontostandHash.get(count) + kontostand);
-                            }
+                            // System.out.println("Kontostand: "+ kontostand);
                             if (kontostand > -0.001 && kontostand < 0.001) {
                                 cal_end.add(Calendar.DATE, -1);
-                                count++;
                                 continue;
                             }
-                            toView=true;
-                            // Berechne Ertrag
 
-                            // System.out.println("Where = " +where);
-                            Double ertrag = db.getKategorienAlleSummeWhere((String) formatter.format(cal_end.getTime()),
-                                    (String) formatter.format(cal_end.getTime()), whereErtrag);
-                            //System.out.println("Tag: " + formatter.format(cal_end.getTime()));
-                            //System.out.println("Kontostand: " + kontostand);
-                            //System.out.println("Ertrag = " + ertrag);
-                            if (!gesamtErtragHash.containsKey(count)) {
-                                gesamtErtragHash.put(count, ertrag);
-                            } else {
-                                gesamtErtragHash.put(count, gesamtErtragHash.get(count) + ertrag);
-                            }
-                            sumErtrag = sumErtrag + ertrag;
-                            Double prozent = ertrag / kontostand;
-                            //System.out.println("Prozent = " + prozent);
-                            sumProzent = sumProzent + prozent;
+                            sum = sum + (kontostand * count);
+
+                            sumcount = sumcount + count;
                             count++;
                             cal_end.add(Calendar.DATE, -1);
                         }
-                        //System.out.println("sumProzent = " + sumProzent);
-                        //System.out.println("count = " + count);
-                        sumProzent = (sumProzent / count) * 365 * 100;
-                        if (toView) {
-                        out.println("<tr>");
-                        out.println("<td>" + i + "<td>" + konto.get("name") + "</td><td>" 
-                                + formater(sumErtrag) + "</td><td>" + formater(sumProzent) + "%</td>");
-                        out.println("</tr>");
+                        if (count == 1) {
+                            continue;
                         }
-                    } // for konto
-                    Double sumProzent = 0.0;
-                    Double sumErtrag = 0.0;
-
-                    Enumeration allEntries = gesamtKontostandHash.keys();
-
-                    while (allEntries.hasMoreElements()) {
-                        Integer key = (Integer) allEntries.nextElement();
-                        Double gesamtKontostand = gesamtKontostandHash.get(key);
-                        //System.out.println("gesamt Kontostand =" + gesamtKontostand);
-                        Double gesamtErtrag = gesamtErtragHash.get(key);
-                        if (gesamtErtrag == null) {
-                            gesamtErtrag = 0.0;
-                        }
-                        //System.out.println("gesamt Ertrag =" + gesamtErtrag);
-                        Double prozent = 0.0;
-                        if (gesamtKontostand > -0.001 && gesamtKontostand < 0.001) {
-                            prozent = 0.0;
+                        Double dayAvg = sum / sumcount;
+                        if (!ruleErtrag.contains("konto_id")) {
+                            where = "konto_id=" + konto.get("id") + " AND " + ruleErtrag + where;
                         } else {
-                            prozent = gesamtErtrag / gesamtKontostand;
+                            where = ruleErtrag + where;
                         }
-                        //System.out.println("gesamt Prozent =" + prozent);
-                        sumProzent = sumProzent + prozent;
-                        sumErtrag = sumErtrag + gesamtErtrag;
+                        // System.out.println(where);
+                        Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
+                        // Ertrag hochrechnen auf Jahr
+                        Double ertragProjahr = 0.0;
+                        /*
+                         * TODO Hack hardcoded. sollte besser gemacht werden!!!
+                         */
+                        if (anlage.get("name").equals("P2p")) {
+                            ertragProjahr = ertrag * (365.0 / count);
+                        } else {
+                            ertragProjahr = ertrag;
+                        }
+                        /*
+                         * System.out.println("Ertrag " + ertrag);
+                         * System.out.println("Ertrag pro Jahr  " + ertragProjahr);
+                         * System.out.println("Durchschnitt Tag = " + dayAvg);
+                         * System.out.println("Count = " + count);
+                         */
+                        summeErtrag += ertrag;
+                        summedayAvg += dayAvg;
+                        summeErtragProJahr += ertragProjahr;
+                        if (dayAvg != 0.0) {
+                            Double rendite = (ertragProjahr * 100) / dayAvg;
+                            // System.out.println((String) konto.get("name") + " " + rendite);
+                            out.println("<tr>");
+                            out.println("<td>" + i + "<td>" + konto.get("name") + "</td><td>" + formater(dayAvg)
+                                    + "</td><td>" + formater(ertrag) + "</td><td>" + formater(rendite) + "%</td>");
+                            out.println("</tr>");
+                        }
                     }
-                    //System.out.println("gesamt sumProzent =" + sumProzent);
-                    sumProzent = (sumProzent / gesamtKontostandHash.size()) * 365 * 100;
-
+                    Double summeRendite = (summeErtragProJahr * 100) / summedayAvg;
                     out.println("<tr>");
-                    out.println("<td><td><b>Durchschnitt:</b></td></td><td><b>"
-                            + formater(sumErtrag) + "</td></td><td><b>" + formater(sumProzent) + "% </b></td>");
+                    out.println("<td><td><b>Durchschnitt:</b></td><td><b>" + formater(summedayAvg) + "</td></td><td><b>"
+                            + formater(summeErtrag) + "</td></td><td><b>" + formater(summeRendite) + "% </b></td>");
                     out.println("</tr>");
                     out.println("</tbody>");
                     out.println("</table>");
@@ -317,21 +287,18 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 }
             }
             out.println("<td></tr>");
-
             out.println("</table>");
             out.println("</body>");
             out.println("</html>");
             out.close();
-        } catch (
-
-        Throwable theException) {
+        } catch (Throwable theException) {
             theException.printStackTrace();
         }
 
     }
 
     private Vector eliminateZeroValues(Vector vec) {
-        //System.out.println("Size before " + vec.size());
+        System.out.println("Size before " + vec.size());
         Vector newvec = new Vector();
         Double sum = 0.0;
         for (int i = 0; i < vec.size(); i++) {
@@ -341,8 +308,8 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 newvec.addElement(vec.elementAt(i));
             }
         }
-        //System.out.println("Size after " + newvec.size());
-        //System.out.println(newvec);
+        System.out.println("Size after " + newvec.size());
+        System.out.println(newvec);
         return newvec;
     }
 
