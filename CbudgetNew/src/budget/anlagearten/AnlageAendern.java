@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import budget.HeaderFooter;
 
 
-    //Aufruf http://localhost:8080/filme/MainFrame
+    //Aufruf http://localhost:8080/CbudgetNew/startseite
 
     public class AnlageAendern extends javax.servlet.http.HttpServlet {
 
