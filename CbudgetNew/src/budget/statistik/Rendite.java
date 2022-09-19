@@ -209,22 +209,29 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         if ((Integer) konto.get("rule_id") == null || (Integer) konto.get("rule_id") == -1
                                 || (Integer) konto.get("rule_id") == 0) {
                             ruleErtrag = db.getRuleCommand((Integer) anlage.get("rule_id"));
-                            // System.out.println("Rule_id von Anlage");
-                            // System.out.println("Rule_id =" +anlage.get("rule_id"));
+                             System.out.println("Rule_id von Anlage");
+                             System.out.println("Rule_id =" +anlage.get("rule_id"));
 
                         } else {
                             ruleErtrag = db.getRuleCommand((Integer) konto.get("rule_id"));
 
-                            // System.out.println("Rule_id von Konto");
-                            // System.out.println("Rule_id =" +konto.get("rule_id"));
+                             System.out.println("Rule_id von Konto");
+                             System.out.println("Rule_id =" +konto.get("rule_id"));
 
                         }
 
                         String where = rule;
                         Double sum = 0.0;
+                        Double kontostand =0.0;
                         while (cal_end.after(cal_begin)) {
-                            Double kontostand = db.getAktuellerKontostand((String) konto.get("name"),
-                                    (String) formatter.format(cal_end.getTime()), where);
+                            if (konto.get("name").equals("Haus Wiesengrund 17")){
+                                kontostand = 260000.0;
+                            }
+                            else
+                            {
+                                kontostand = db.getAktuellerKontostand((String) konto.get("name"),
+                                        (String) formatter.format(cal_end.getTime()), where);
+                            }
                             // System.out.println("Kontostand: "+ kontostand);
                             if (kontostand > -0.001 && kontostand < 0.001) {
                                 cal_end.add(Calendar.DATE, -1);
@@ -246,7 +253,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         } else {
                             where = ruleErtrag + where;
                         }
-                        // System.out.println(where);
+                         System.out.println(where);
                         Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
                         // Ertrag hochrechnen auf Jahr
                         Double ertragProjahr = 0.0;
