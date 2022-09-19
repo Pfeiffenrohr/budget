@@ -65,14 +65,14 @@ import budget.HeaderFooter;
 				// out.println(" Rootpfad = " +rootPath);
 				out.println("<html>");
 				out.println("<body bgcolor=\"#EEFFBB\">");
-				out.println("<h1>Hi! Wilkommen zur Kontoübersicht</h1>");
+				out.println("<h1>Hi! Wilkommen zur KontoÃ¼bersicht</h1>");
 				
 				if (db.getUnknownBons() > 0) {
 					out.println("Achtung!! Du hast noch unknown Bons");	
 					}
 				hf.writeHeader(out,(String)((Hashtable)session.getAttribute("settings")).get("instance"));
 				out.println("<p>");
-			//Übersicht über die Konten
+			//ï¿½bersicht ï¿½ber die Konten
 			out.println("<table border=\"1\" rules=\"groups\" bgcolor=\"#CCEECC\">");
 			//out.println("<table border=\"1\">");
 			out.println("<thead>");

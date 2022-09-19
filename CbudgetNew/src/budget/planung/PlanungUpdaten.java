@@ -55,6 +55,7 @@ import budget.HeaderFooter;
 				String name = request.getParameter("Name");
 				String beschreibung =request.getParameter("beschreibung");
 				String batch =request.getParameter("batch");
+				String prio =request.getParameter("prio");
 				String forecast =request.getParameter("forecast");
 				
 				if (batch==null)
@@ -86,6 +87,7 @@ import budget.HeaderFooter;
 				hash.put("plan_id",hash.get("plan_id"));
 				hash.put("batch",batch);
 				hash.put("rule_id",new Integer(rule_id));
+				hash.put("prio",new Integer(prio));
 				
 				for (int i=0;i<allAusgaben.size();i++)
 				{

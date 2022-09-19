@@ -86,6 +86,7 @@ import budget.HeaderFooter;
 					out.println("</div>");
 					//out.println("<option>   </option>");
 					String select="";
+					out.println("<p>");
 					out.println("Regel: <select name=\"rule_id\" size=\"1\">");
 					out.println("<option"+select+" value=\"-1\"> </option>");
 					
@@ -93,6 +94,16 @@ import budget.HeaderFooter;
 					{
 						//System.out.println("RULE_ID: "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
 						out.println("<option"+select+" value=\""+ ((Hashtable)rules.elementAt(i)).get("rule_id") +"\">"+((Hashtable)rules.elementAt(i)).get("name")+ "</option>");
+					}
+					out.println("</select>");
+					out.println("<p>");
+
+					out.println("Priorität: <select name=\"prio\" size=\"1\">");
+					out.println("<option value=\"-1\"> </option>");
+					for (int i=0;i<11;i++)
+					{
+						//System.out.println("RULE_ID: "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
+						out.println("<option  value=\""+ i +"\">"+i+ "</option>");
 					}
 					out.println("</select>");
 					out.println("<p>");

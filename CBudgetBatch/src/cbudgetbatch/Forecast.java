@@ -1,17 +1,11 @@
 package cbudgetbatch;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Vector;
-
-import cbudgetbatch.DBBatch;
 import cbudgetbatch.forecastnew.OverAllTable;
 import cbudgetbatch.forecastnew.YearTable;
 import sonstiges.MyLogger;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 

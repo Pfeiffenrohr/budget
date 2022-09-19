@@ -367,7 +367,31 @@ public class DBBatch extends DB {
 		}
 		return true;
 	}
-	
+
+	public int getMaxPrio() {
+		int prio =0;
+		try {
+
+			PreparedStatement stmt;
+			ResultSet res = null;
+
+			stmt = con
+					.prepareStatement("select max(prio) as maxprio from tmpplanningjobs");
+			res = stmt.executeQuery();
+			while (res.next()) {
+				 prio = res.getInt("maxprio");
+			}
+
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return 0;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+
+		return prio;
+	}
+
 	public Hashtable getJob() {
 		Hashtable hash = new Hashtable();
 		try {
@@ -375,8 +399,9 @@ public class DBBatch extends DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			ResultSet delres = null;
+			int prio = getMaxPrio();
 			stmt = con
-					.prepareStatement("select id,plan_id,kategorie from tmpplanningjobs order by id limit 1");
+					.prepareStatement("select id,plan_id,kategorie from tmpplanningjobs where prio =" + prio + " order by id limit 1");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Vector vec = new Vector();

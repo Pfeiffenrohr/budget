@@ -130,6 +130,38 @@ import budget.HeaderFooter;
 				}
 				out.println("</select>");
 				out.println("<p>");
+
+				out.println("Priorität: <select name=\"prio\" size=\"1\">");
+				//out.println("<option>   </option>");
+				select="";
+				String prio=((Integer)hash.get("prio")).toString();
+				if (prio.equals("-1"))
+				{
+					select=" selected";
+				}
+				else
+				{
+					select="";
+				}
+				out.println("<option"+select+" value=\"-1\"> </option>");
+
+				for (int i=0;i<11;i++)
+				{
+					//System.out.println("RULE_ID: "+((Integer)((Hashtable)rules.elementAt(i)).get("rule_id")).toString());
+					//System.out.println("RULE_ID_: "+rule_id);
+					if (hash.get("prio").toString().equals(new Integer(i).toString()))
+					{
+						select=" selected";
+					}
+					else
+					{
+						select="";
+					}
+					out.println("<option"+select+" value=\""+ i +"\">"+i+ "</option>");
+				}
+				out.println("</select>");
+				out.println("<p>");
+
 				out.println("<p><h2>Ausgaben:</h2>");
 				out.println("<p>");
 				Double value;
