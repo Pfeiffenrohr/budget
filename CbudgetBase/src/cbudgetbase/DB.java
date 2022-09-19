@@ -7,7 +7,8 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 
 
-public class DB { 
+@SuppressWarnings("LossyEncoding")
+public class DB {
 	public Connection con = null;
     public boolean debug=false;
 	/**
@@ -75,7 +76,7 @@ public class DB {
    		return true;
    	}
 	/**
-	 * SchlieÃt die Verbindung zum Server. Das Objekt ist danach unbrauchbar.
+	 * Schlieï¿½t die Verbindung zum Server. Das Objekt ist danach unbrauchbar.
 	 */
 
 	public boolean closeConnection() {
@@ -222,13 +223,13 @@ public class DB {
 			PreparedStatement stmt;
 			String id = ((Integer)hash.get("id")).toString();
 			/*
-			 * Falls das konto Einträge hat, darf es nicht gelöscht werden 
+			 * Falls das konto Eintrï¿½ge hat, darf es nicht gelï¿½scht werden 
 			 */
 			String where = " where konto_id ='" + id +"'";
 			Vector vec = getAllTransaktionenWithWhere(where);
 			if (vec.size() > 0 )
 			{
-			    System.out.println("!!Es gibt noch Transaktionen mit diesen Konto. Kann Konto nicht löschen!!!");
+			    System.out.println("!!Es gibt noch Transaktionen mit diesen Konto. Kann Konto nicht lï¿½schen!!!");
 			    return false;
 			}
 			
@@ -521,7 +522,7 @@ public class DB {
 			}
 			if (!fehler)
 			{
-				//Prüfe, ob noch Einträge existieren
+				//Prï¿½fe, ob noch Eintrï¿½ge existieren
 				String str_stm="select name from transaktionen where name='"+name+"'";
 				stmt = con.prepareStatement(str_stm);
 				res=stmt.executeQuery();
@@ -1900,7 +1901,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,name,beschreibung,startdate,enddate,plan_id,batch,rule_id from planung order by name DESC");
+					.prepareStatement("select id,name,beschreibung,startdate,enddate,plan_id,batch,rule_id,prio from planung order by name DESC");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
@@ -1912,6 +1913,7 @@ public class DB {
 				hash.put("plan_id", new Integer(res.getInt("plan_id")));
 				hash.put("batch", (String) res.getString("batch"));
 				hash.put("rule_id", new Integer(res.getInt("rule_id")));
+				hash.put("prio", new Integer(res.getInt("prio")));
 				
 				vec.addElement(hash);
 			}
@@ -1931,7 +1933,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,name,beschreibung,startdate,enddate,plan_id,batch,rule_id from planung where plan_id="+plan_id+ "order by name DESC");
+					.prepareStatement("select id,name,beschreibung,startdate,enddate,plan_id,batch,rule_id,prio from planung where plan_id="+plan_id+ "order by name DESC");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				
@@ -1943,6 +1945,7 @@ public class DB {
 				hash.put("plan_id", new Integer(res.getInt("plan_id")));
 				hash.put("batch", (String) res.getString("batch"));
 				hash.put("rule_id", new Integer(res.getInt("rule_id")));
+				hash.put("prio", new Integer(res.getInt("prio")));
 			}
 		} catch (SQLException e) {
 			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
@@ -1952,7 +1955,29 @@ public class DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return hash;
 	}
-	
+
+	public int getPlanungPrioWithplanId (String planid) {
+		int prio=0;
+		try {
+			PreparedStatement stmt;
+			ResultSet res = null;
+			String str_stm=("select prio from planung where plan_id =" +planid);
+			if (debug) System.out.println(str_stm);
+			stmt = con
+					.prepareStatement(str_stm);
+			res = stmt.executeQuery();
+			while (res.next()) {
+				prio=  new Integer (res.getInt("prio"));
+			}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausfÃ¼hren" + e);
+			return 0;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgefÃ¼hrt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return prio;
+	}
+
 	public boolean insertPlanung(Hashtable hash) {
 		try {
 
@@ -1964,7 +1989,8 @@ public class DB {
 				+ hash.get("enddatum") + "',"
 			    + hash.get("plan_id") +",'"
 			    + hash.get("batch") +"',"
-			    + hash.get("rule_id") + ")";
+					+ hash.get("rule_id") +","
+			    + hash.get("prio") + ")";
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -2005,6 +2031,7 @@ public class DB {
 			Integer plan_id =(Integer)hash.get("plan_id");
 			String batch= (String)hash.get("batch");
 			Integer rule_id =(Integer)hash.get("rule_id");
+			Integer prio =(Integer)hash.get("prio");
 			
 			String str= "update planung set " +
 					"name = '"+ name + "'," +
@@ -2013,7 +2040,8 @@ public class DB {
 					"enddate = '"+enddate+"',"+
 					"plan_id = "+plan_id+ "," +
 					"rule_id = "+rule_id+ "," +
-					"batch = '"+batch+"' where id = '"+id+"'";
+					"prio = "+prio+ "," +
+					"batch = '"+batch+"'   where id = '"+id+"'";
 					
 				
 			if (debug) System.out.println(str);
@@ -2048,7 +2076,7 @@ public class DB {
 	// return summe/(float)getAnz(tag,monat,year);
 	return false;
 }
-	public boolean insertJobs(String plan_id, Integer kategorie) {
+	public boolean insertJobs(String plan_id, Integer kategorie, Integer prio) {
 		try {
 
 			PreparedStatement stmt;
@@ -2059,7 +2087,8 @@ public class DB {
 			}
 			String stm= "insert into tmpplanningjobs values(default,'" 
 				+ plan_id + "',"
-			 + kategorie + ")";
+					+kategorie+","
+			 + prio + ")";
 			if (debug) System.out.println(stm);
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
@@ -2084,7 +2113,8 @@ public class DB {
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 			//Der Plan muss dann auch neu berechnet werden
-			insertJobs(plan_id.toString(),kategorie);
+			int prio = getPlanungPrioWithplanId(plan_id.toString());
+			insertJobs(plan_id.toString(),kategorie,prio);
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausfÃ¼hren" + e);
 			 return false;
@@ -2114,8 +2144,8 @@ public class DB {
 			stmt = con.prepareStatement(stm);
 			stmt.executeUpdate();
 			}
-			
-			insertJobs(plan_id.toString(),kategorie);
+			int prio = getPlanungPrioWithplanId(plan_id.toString());
+			insertJobs(plan_id.toString(),kategorie,prio);
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausfÃ¼hren" + e);
 			 return false;
@@ -2244,7 +2274,7 @@ public class DB {
 			{
 				sum=sum+getKategorienAlleRecursivPlanung(((String)allKats.elementAt(i)),plan_id,faktor);
 			}
-			// Hier erst mal schauen, ob die Kategorie zu den Parent dazugezäklt werden soll.
+			// Hier erst mal schauen, ob die Kategorie zu den Parent dazugezï¿½klt werden soll.
 			// Das ist nur der Fall, wenn der Planwert != 0 ist.
 			if (planwertGleichNull(plan_id, kategorie ))
 			{
@@ -3059,12 +3089,12 @@ public class DB {
 	            PreparedStatement stmt;
 	            ResultSet res = null;
 	            /*
-	             * Prüfe erstmal, ob es noch Konten mit dieser Anlage gibt
+	             * Prï¿½fe erstmal, ob es noch Konten mit dieser Anlage gibt
 	             */
 	            Vector vec = getAllKonto(name);
 	            if (vec.size() > 0)
 	            {
-	                System.out.println("!!Es gibt noch Konten in dieser Anlage. Ich kann die Anlage nicht Löschen!!!");
+	                System.out.println("!!Es gibt noch Konten in dieser Anlage. Ich kann die Anlage nicht Lï¿½schen!!!");
 	                return false;
 	            }
 	            stmt = con.prepareStatement("delete from anlagen where name ='" +name+"'" );

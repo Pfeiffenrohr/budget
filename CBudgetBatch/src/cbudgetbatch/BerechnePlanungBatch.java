@@ -67,7 +67,7 @@ public class BerechnePlanungBatch {
 		
 		//Säubert alle alten Transaktion_historie Einträge, die keineRefernnz mehr haben
 	 logger.log("Start deleteOldtransHistorie ..");	
-	 dbbatch.deleteOldtransHistorie();
+	 //dbbatch.deleteOldtransHistorie();
 	 logger.log("DeleteOldtransHistorie done!");  
 		
 	}
@@ -284,7 +284,8 @@ public class BerechnePlanungBatch {
             Vector vec = (Vector)plan_todo.get(key);
             for (int j=0; j< vec.size(); j++)
             {
-            	 db.insertJobs(key,(Integer)vec.elementAt(j));
+				 int prio= db.getPlanungPrioWithplanId(key);
+            	 db.insertJobs(key,(Integer)vec.elementAt(j),prio);
               // System.out.println("Value of "+key+" is: "+hm.get(key));
             }
         //System.out.println("Open Connection");
