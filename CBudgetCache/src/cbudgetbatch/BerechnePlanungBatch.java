@@ -2,10 +2,7 @@ package cbudgetbatch;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.*;
 
 import cbudgetbase.DB;
 //import budget.HeaderFooter;
@@ -162,6 +159,20 @@ public class BerechnePlanungBatch {
         String akt_datum = formatter.format(cal_akt.getTime());
         Hashtable hash = db.getJob();
         Timestamp timestampBegin = new Timestamp(System.currentTimeMillis());
+        Set<String> keys = hash.keySet();
+        String plan_id=null;
+        for(String key: keys){
+            plan_id = key;
+
+        }
+
+        Integer kategorie = (Integer)((Vector)hash.get(plan_id)).elementAt(0);
+        if (db.getPlanung_daten_wert( new Integer(plan_id) ,kategorie) < 0.001 &&
+                db.getPlanung_daten_wert( new Integer(plan_id) ,kategorie) > -0.001)
+                {
+            System.out.println("Wert ist gleich Null. muss nicht berechnet werden");
+            return;
+        }
 
         // System.out.println(hash);
         // System.out.println(vec);
