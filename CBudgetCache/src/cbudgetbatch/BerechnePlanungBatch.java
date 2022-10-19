@@ -170,7 +170,7 @@ public class BerechnePlanungBatch {
         if (kategorie != -1 && kategorie != -2) {
             if (db.getPlanung_daten_wert(new Integer(plan_id), kategorie) < 0.001 &&
                     db.getPlanung_daten_wert(new Integer(plan_id), kategorie) > -0.001) {
-                System.out.println("Wert ist gleich Null. muss nicht berechnet werden");
+                //System.out.println("Wert ist gleich Null. muss nicht berechnet werden");
                 return;
             }
         }
