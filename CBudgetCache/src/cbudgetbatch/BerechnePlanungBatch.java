@@ -167,13 +167,13 @@ public class BerechnePlanungBatch {
         }
 
         Integer kategorie = (Integer)((Vector)hash.get(plan_id)).elementAt(0);
-        if (db.getPlanung_daten_wert( new Integer(plan_id) ,kategorie) < 0.001 &&
-                db.getPlanung_daten_wert( new Integer(plan_id) ,kategorie) > -0.001)
-                {
-            System.out.println("Wert ist gleich Null. muss nicht berechnet werden");
-            return;
+        if (kategorie != -1 && kategorie != -2) {
+            if (db.getPlanung_daten_wert(new Integer(plan_id), kategorie) < 0.001 &&
+                    db.getPlanung_daten_wert(new Integer(plan_id), kategorie) > -0.001) {
+                System.out.println("Wert ist gleich Null. muss nicht berechnet werden");
+                return;
+            }
         }
-
         // System.out.println(hash);
         // System.out.println(vec);
 
