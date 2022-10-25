@@ -165,7 +165,10 @@ public class BerechnePlanungBatch {
             plan_id = key;
 
         }
-
+        if (hash.size() == 0 )
+        {
+            return;
+        }
         Integer kategorie = (Integer)((Vector)hash.get(plan_id)).elementAt(0);
         if (kategorie != -1 && kategorie != -2) {
             if (db.getPlanung_daten_wert(new Integer(plan_id), kategorie) < 0.001 &&
