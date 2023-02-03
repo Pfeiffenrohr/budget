@@ -3207,7 +3207,55 @@ public class DB {
                 // return summe/(float)getAnz(tag,monat,year);
                 return vec;
             }
-		 
+	public boolean insertOrderRendite(String startdatum, String enddatum, String ruleId) {
+		try {
+
+			PreparedStatement stmt;
+			String stm= "insert into orderrendite values(default,current_timestamp,"
+					+ " '" + startdatum +"','"
+					+ enddatum  + "',"
+					+ ruleId +","
+					+  " 0)";
+			debug = true;
+			if (debug) System.out.println(stm);
+			debug = false;
+			stmt = con.prepareStatement(stm);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
+			return false;
+		}
+		return true;
+
+	}
+	public Hashtable getOrderRendite() {
+		try {
+
+			PreparedStatement stmt;
+			ResultSet res = null;
+			String statement= "select id,datum, startdate, enddate, ruleid,finished from orderrendite limit 1";
+			stmt = con
+					.prepareStatement(statement);
+			res = stmt.executeQuery();
+			if (debug) System.out.println(statement);
+			while (res.next()) {
+				Hashtable hash = new Hashtable();
+				hash.put("id", new Integer(res.getInt("id")));
+				hash.put("datum", (Date) res.getTimestamp("datum"));
+				hash.put("startdate", (Date) res.getDate("startdate"));
+				hash.put("enddate", (Date) res.getDate("enddate"));
+				hash.put("ruleid", (Integer) res.getInt("ruleid"));
+				hash.put("finished", (Integer) res.getInt("finished"));
+				return (hash);
+			}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return null;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return null;
+	}
 		private String convDatum(String dat)
 		{
 			
