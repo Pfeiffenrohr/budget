@@ -194,6 +194,15 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     db.insertOrderRendite(startdatum, enddatum, rule_id);
                 }
             }
+            if (mode.equals("batchAuslesen"))
+            {
+                if ((Integer) orderrendite.get("finished") == 0 )
+                {
+                    out.println("!!!Der Batchauftrag ist noch nicht berechnet!!!!!!!!");
+                    out.println("<p>");
+                    mode="";
+                }
+            }
             out.println("<input type=\"submit\" value=\"Absenden\";>");
             out.println("</form>");
             out.println("</td>");
@@ -231,11 +240,13 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                         Double ertrag;
                         Double dayAvg;
                         Double rendite =0.0;
+                        int count = 1;
                         if (mode.equals("batchAuslesen")) {
                             Hashtable  renditeBatch = db.getRenditeBatch((Integer) konto.get("id"));
                             ertrag = (Double)renditeBatch.get("ertrag");
                             dayAvg=(Double)renditeBatch.get("wertProTag");
                             rendite = (Double)renditeBatch.get("ertragProzent");
+                            count=365;
                         }
                         else {
                             /*
@@ -245,7 +256,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                             cal_begin.setTime(formatter.parse(startdatum));
                             Calendar cal_end = Calendar.getInstance();
                             cal_end.setTime(formatter.parse(enddatum));
-                            int count = 1;
+
                             int sumcount = 0;
                             String rule;
                             if (rule_id.equals("-1")) {
@@ -304,6 +315,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                             }
                             //System.out.println(where);
                             ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
+                        }
                             // Ertrag hochrechnen auf Jahr
 
                             /*
@@ -323,7 +335,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                             if (dayAvg != 0.0) {
                                 rendite = (ertragProjahr * 100) / dayAvg;
                             }
-                        }
+
                         summeErtrag += ertrag;
                         summedayAvg += dayAvg;
                         summeErtragProJahr += ertragProjahr;
