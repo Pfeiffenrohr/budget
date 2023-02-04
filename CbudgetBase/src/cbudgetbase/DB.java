@@ -3207,20 +3207,59 @@ public class DB {
                 // return summe/(float)getAnz(tag,monat,year);
                 return vec;
             }
+		private boolean  checkOrderRendite() {
+		boolean result= false;
+		try {
+			PreparedStatement stmt;
+			ResultSet res = null;
+			stmt = con
+					.prepareStatement("select id from orderrendite");
+			res = stmt.executeQuery();
+			while (res.next()) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return result;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return result;
+	}
+
 	public boolean insertOrderRendite(String startdatum, String enddatum, String ruleId) {
 		try {
+			if (checkOrderRendite())
+			{
+				String str= "update orderrendite set " +
+						" datum = current_timestamp, "+
+						"startdate = '"+  startdatum + "'," +
+						"enddate = '"+enddatum+"',"+
+						"ruleid = "+ruleId+ ","+
+						"finished = 0";
 
-			PreparedStatement stmt;
-			String stm= "insert into orderrendite values(default,current_timestamp,"
-					+ " '" + startdatum +"','"
-					+ enddatum  + "',"
-					+ ruleId +","
-					+  " 0)";
-			debug = true;
-			if (debug) System.out.println(stm);
-			debug = false;
-			stmt = con.prepareStatement(stm);
-			stmt.executeUpdate();
+
+				// updateAllParents(name,id);
+				debug =true;
+				if (debug) System.out.println(str);
+				debug = false;
+				PreparedStatement stmt;
+				stmt = con.prepareStatement(str);
+				stmt.executeUpdate();
+			}
+			else {
+				PreparedStatement stmt;
+				String stm = "insert into orderrendite values(default,current_timestamp,"
+						+ " '" + startdatum + "','"
+						+ enddatum + "',"
+						+ ruleId + ","
+						+ " 0)";
+				debug = true;
+				if (debug) System.out.println(stm);
+				debug = false;
+				stmt = con.prepareStatement(stm);
+				stmt.executeUpdate();
+			}
 		} catch (SQLException e) {
 			System.err.println("Konnte Insert-Anweisung nicht ausführen" + e);
 			return false;
@@ -3255,6 +3294,43 @@ public class DB {
 		if (debug) System.out.println("Select-Anweisung ausgeführt");
 		// return summe/(float)getAnz(tag,monat,year);
 		return null;
+	}
+
+	public Hashtable getRenditeBatch(int konto) {
+
+		String result="";
+		Hashtable hash = new Hashtable();
+		/*  Dadurch, dass bei den Regeln konto_id verwendet wird, hier aber konto, muessen wir eine Substitution machen.
+		 * */
+
+		try {
+			PreparedStatement stmt;
+			ResultSet res = null;
+			String query = "select konto,ertrag,ertrag_prozent,id,wert_pro_tag from renditebatch  where konto = "+konto +" limit 1";
+			debug=true;
+			if ( debug )
+			{
+				System.out.println(query);
+			}
+			debug=false;
+			stmt = con
+					.prepareStatement(query);
+			res = stmt.executeQuery();
+			while (res.next()) {
+
+				hash.put("konto", new Integer(res.getInt("konto")));
+				hash.put("id", new Integer(res.getInt("id")));
+				hash.put("ertrag", new Double(res.getDouble("ertrag")));
+				hash.put("ertragProzent", new Double(res.getDouble("ertrag_prozent")));
+				hash.put("wertProTag", new Double(res.getDouble("wert_pro_tag")));
+			}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return hash;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return hash;
 	}
 		private String convDatum(String dat)
 		{

@@ -59,6 +59,30 @@ public class Rendite extends javax.servlet.http.HttpServlet {
             if (mode == null) {
                 mode = "";
             }
+            String imBatch = request.getParameter("imBatch");
+            {
+                if (imBatch == null) {
+                    imBatch = "";
+                }
+            }
+            String batchAuslesen = request.getParameter("batchAuslesen");
+            {
+                if (batchAuslesen == null) {
+                    batchAuslesen = "";
+                }
+            }
+            //System.out.println("ImBatch =" + imBatch);
+            if (imBatch.equals("imBatch"))
+            {
+                mode = "imBatch";
+                //insertInDatabase
+            }
+            if (batchAuslesen.equals("batchAuslesen"))
+            {
+                mode = "batchAuslesen";
+                //insertInDatabase
+            }
+
             String startdatum = request.getParameter("startdatum");
             // System.err.println("Stardatum = "+startdatum);
             // System.err.println(settings);
@@ -96,7 +120,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
 
             session.setAttribute("settings", settings);
             Vector rules = db.onlyValidRules(db.getAllRules());
-
+            Hashtable orderrendite = db.getOrderRendite();
             out.println("<html>");
             out.println("<head>");
             out.println(" <title>Rendite</title>");
@@ -152,12 +176,29 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     "<div id=\"chooserSpan\" class=\"dateChooser select-free\" style=\"display: none; visibility: hidden; width: 160px;\">");
             out.println("</div>");
             out.println("<p>");
+            out.println("<input type=\"checkbox\" name=\"imBatch\" value=\"imBatch\"> Im Batch berechnen <br>");
+            out.println("<p>");
+            out.println("<input type=\"checkbox\" name=\"batchAuslesen\" value=\"batchAuslesen\">Batch Berechnung auslesen <br>");
+            out.println("<p>");
             out.println("<input type=\"hidden\" name=\"mode\" value=\"rendite\">");
+            if (mode.equals("imBatch"))
+            {
+                if ((Integer) orderrendite.get("finished") == 0 )
+                {
+                    out.println("!!!Es wird schon ein Auftrag bearbeitet!!!");
+                    out.println("<p>");
+                }
+                else {
+                    out.println("Anfrage wurde entgegengenommen!");
+                    out.println("<p>");
+                    db.insertOrderRendite(startdatum, enddatum, rule_id);
+                }
+            }
             out.println("<input type=\"submit\" value=\"Absenden\";>");
             out.println("</form>");
             out.println("</td>");
             out.println("<td valign=top>");
-            if (mode.equals("rendite")) {
+            if (mode.equals("rendite") || mode.equals("batchAuslesen")) {
                 Vector vecAnlagen = db.getAllAnlagen();
 
                 // String[] anlage = { "P2p", "ETF", "Fonds" };
@@ -186,96 +227,108 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                     Double summeErtragProJahr = 0.0;
                     for (int i = 0; i < kontos.size(); i++) {
                         Hashtable konto = (Hashtable) kontos.get(i);
-
-                        /*
-                         * if (! konto.get("name").equals("Consors Depot")) { continue; }
-                         */
-                        Calendar cal_begin = Calendar.getInstance();
-                        cal_begin.setTime(formatter.parse(startdatum));
-                        Calendar cal_end = Calendar.getInstance();
-                        cal_end.setTime(formatter.parse(enddatum));
-                        int count = 1;
-                        int sumcount = 0;
-                        String rule;
-                        if (rule_id.equals("-1")) {
-                            // dummy
-
-                            rule = "";
-                        } else {
-                            rule = " AND " + db.getRuleCommand(new Integer(rule_id));
+                        Double ertragProjahr = 0.0;
+                        Double ertrag;
+                        Double dayAvg;
+                        Double rendite =0.0;
+                        if (mode.equals("batchAuslesen")) {
+                            Hashtable  renditeBatch = db.getRenditeBatch((Integer) konto.get("id"));
+                            ertrag = (Double)renditeBatch.get("ertrag");
+                            dayAvg=(Double)renditeBatch.get("wertProTag");
+                            rendite = (Double)renditeBatch.get("ertragProzent");
                         }
+                        else {
+                            /*
+                             * if (! konto.get("name").equals("Consors Depot")) { continue; }
+                             */
+                            Calendar cal_begin = Calendar.getInstance();
+                            cal_begin.setTime(formatter.parse(startdatum));
+                            Calendar cal_end = Calendar.getInstance();
+                            cal_end.setTime(formatter.parse(enddatum));
+                            int count = 1;
+                            int sumcount = 0;
+                            String rule;
+                            if (rule_id.equals("-1")) {
+                                // dummy
 
-                        String ruleErtrag = "";
-                        if ((Integer) konto.get("rule_id") == null || (Integer) konto.get("rule_id") == -1
-                                || (Integer) konto.get("rule_id") == 0) {
-                            ruleErtrag = db.getRuleCommand((Integer) anlage.get("rule_id"));
-                             System.out.println("Rule_id von Anlage");
-                             System.out.println("Rule_id =" +anlage.get("rule_id"));
-
-                        } else {
-                            ruleErtrag = db.getRuleCommand((Integer) konto.get("rule_id"));
-
-                             System.out.println("Rule_id von Konto");
-                             System.out.println("Rule_id =" +konto.get("rule_id"));
-
-                        }
-
-                        String where = rule;
-                        Double sum = 0.0;
-                        Double kontostand =0.0;
-                        while (cal_end.after(cal_begin)) {
-                            if (konto.get("name").equals("Haus Wiesengrund 17")){
-                                kontostand = 260000.0;
+                                rule = "";
+                            } else {
+                                rule = " AND " + db.getRuleCommand(new Integer(rule_id));
                             }
-                            else
-                            {
-                                kontostand = db.getAktuellerKontostand((String) konto.get("name"),
-                                        (String) formatter.format(cal_end.getTime()), where);
+
+                            String ruleErtrag = "";
+                            if ((Integer) konto.get("rule_id") == null || (Integer) konto.get("rule_id") == -1
+                                    || (Integer) konto.get("rule_id") == 0) {
+                                ruleErtrag = db.getRuleCommand((Integer) anlage.get("rule_id"));
+                                // System.out.println("Rule_id von Anlage");
+                                // System.out.println("Rule_id =" +anlage.get("rule_id"));
+
+                            } else {
+                                ruleErtrag = db.getRuleCommand((Integer) konto.get("rule_id"));
+
+                                //  System.out.println("Rule_id von Konto");
+                                //  System.out.println("Rule_id =" +konto.get("rule_id"));
+
                             }
-                            // System.out.println("Kontostand: "+ kontostand);
-                            if (kontostand > -0.001 && kontostand < 0.001) {
+
+                            String where = rule;
+                            Double sum = 0.0;
+                            Double kontostand = 0.0;
+                            while (cal_end.after(cal_begin)) {
+                                if (konto.get("name").equals("Haus Wiesengrund 17")) {
+                                    kontostand = 260000.0;
+                                } else {
+                                    kontostand = db.getAktuellerKontostand((String) konto.get("name"),
+                                            (String) formatter.format(cal_end.getTime()), where);
+                                }
+                                // System.out.println("Kontostand: "+ kontostand);
+                                if (kontostand > -0.001 && kontostand < 0.001) {
+                                    cal_end.add(Calendar.DATE, -1);
+                                    continue;
+                                }
+
+                                sum = sum + (kontostand * count);
+
+                                sumcount = sumcount + count;
+                                count++;
                                 cal_end.add(Calendar.DATE, -1);
+                            }
+                            if (count == 1) {
                                 continue;
                             }
+                            dayAvg = sum / sumcount;
+                            if (!ruleErtrag.contains("konto_id")) {
+                                where = "konto_id=" + konto.get("id") + " AND " + ruleErtrag + where;
+                            } else {
+                                where = ruleErtrag + where;
+                            }
+                            //System.out.println(where);
+                            ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
+                            // Ertrag hochrechnen auf Jahr
 
-                            sum = sum + (kontostand * count);
-
-                            sumcount = sumcount + count;
-                            count++;
-                            cal_end.add(Calendar.DATE, -1);
+                            /*
+                             * TODO Hack hardcoded. sollte besser gemacht werden!!!
+                             */
+                            if (anlage.get("name").equals("P2p")) {
+                                ertragProjahr = ertrag * (365.0 / count);
+                            } else {
+                                ertragProjahr = ertrag;
+                            }
+                            /*
+                             * System.out.println("Ertrag " + ertrag);
+                             * System.out.println("Ertrag pro Jahr  " + ertragProjahr);
+                             * System.out.println("Durchschnitt Tag = " + dayAvg);
+                             * System.out.println("Count = " + count);
+                             */
+                            if (dayAvg != 0.0) {
+                                rendite = (ertragProjahr * 100) / dayAvg;
+                            }
                         }
-                        if (count == 1) {
-                            continue;
-                        }
-                        Double dayAvg = sum / sumcount;
-                        if (!ruleErtrag.contains("konto_id")) {
-                            where = "konto_id=" + konto.get("id") + " AND " + ruleErtrag + where;
-                        } else {
-                            where = ruleErtrag + where;
-                        }
-                         System.out.println(where);
-                        Double ertrag = db.getKategorienAlleSummeWhere(startdatum, enddatum, where);
-                        // Ertrag hochrechnen auf Jahr
-                        Double ertragProjahr = 0.0;
-                        /*
-                         * TODO Hack hardcoded. sollte besser gemacht werden!!!
-                         */
-                        if (anlage.get("name").equals("P2p")) {
-                            ertragProjahr = ertrag * (365.0 / count);
-                        } else {
-                            ertragProjahr = ertrag;
-                        }
-                        /*
-                         * System.out.println("Ertrag " + ertrag);
-                         * System.out.println("Ertrag pro Jahr  " + ertragProjahr);
-                         * System.out.println("Durchschnitt Tag = " + dayAvg);
-                         * System.out.println("Count = " + count);
-                         */
                         summeErtrag += ertrag;
                         summedayAvg += dayAvg;
                         summeErtragProJahr += ertragProjahr;
                         if (dayAvg != 0.0) {
-                            Double rendite = (ertragProjahr * 100) / dayAvg;
+
                             // System.out.println((String) konto.get("name") + " " + rendite);
                             out.println("<tr>");
                             out.println("<td>" + i + "<td>" + konto.get("name") + "</td><td>" + formater(dayAvg)
@@ -305,7 +358,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
     }
 
     private Vector eliminateZeroValues(Vector vec) {
-        System.out.println("Size before " + vec.size());
+       // System.out.println("Size before " + vec.size());
         Vector newvec = new Vector();
         Double sum = 0.0;
         for (int i = 0; i < vec.size(); i++) {
@@ -315,8 +368,8 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 newvec.addElement(vec.elementAt(i));
             }
         }
-        System.out.println("Size after " + newvec.size());
-        System.out.println(newvec);
+      //  System.out.println("Size after " + newvec.size());
+      //  System.out.println(newvec);
         return newvec;
     }
 
