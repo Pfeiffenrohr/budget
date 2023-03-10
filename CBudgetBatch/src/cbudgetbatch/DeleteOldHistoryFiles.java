@@ -42,9 +42,7 @@ public class DeleteOldHistoryFiles {
 		user = args[0];
 		pass = args[1];
 		datenbank = args [2];
-		String mode =args [3];
        DeleteOldHistoryFiles batch = new DeleteOldHistoryFiles();
-       //BasicConfigurator.configure();
 		DBBatch db = new DBBatch();
 		db.dataBaseConnect(user, pass, datenbank);
         batch.cleanOldHistoryFiles(db);
