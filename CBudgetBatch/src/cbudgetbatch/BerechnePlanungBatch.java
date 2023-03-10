@@ -64,12 +64,6 @@ public class BerechnePlanungBatch {
 		logger.log("Start cleanunusedCaches ..");
 		dbbatch.cleanunusedCaches();
 		logger.log("CleanunusedCaches done!");
-		
-		//SÃ¤ubert alle alten Transaktion_historie EintrÃ¤ge, die keineRefernnz mehr haben
-	 logger.log("Start deleteOldtransHistorie ..");	
-	 dbbatch.deleteOldtransHistorie();
-	 logger.log("DeleteOldtransHistorie done!");  
-		
 	}
 	
 	private void berechnePlan(DBBatch db,Hashtable hash_plan,String kategorie_id)
