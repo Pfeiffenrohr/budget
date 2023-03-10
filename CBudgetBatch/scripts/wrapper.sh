@@ -53,7 +53,7 @@ while sleep 60; do
     echo "One of the processes has already exited."
     exit 1
   fi
-  if [ $PROCESS_3_STATUS -ne 0 -o PROCESS_4_STATUS -ne 0 ]; then
+  if [ $PROCESS_3_STATUS -ne 0 -o $PROCESS_4_STATUS -ne 0 ]; then
     echo "One of the processes has already exited."
     exit 1
   fi
