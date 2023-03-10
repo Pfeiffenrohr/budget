@@ -34,9 +34,9 @@ public class DeleteOldHistoryFiles {
 	
 
 	public static void main(String[] args) {
-		if (args.length != 4)
+		if (args.length != 3)
     	{
-    		System.out.println("usage: BerechnePlanungBatch <user> <password> <connectstring,z.B: jdbc:postgresql://192.168.2.28/> all|trigger  ");
+    		System.out.println("usage: DeleteOldHistoryFiles <user> <password> <connectstring,z.B: jdbc:postgresql://192.168.2.28/>   ");
     		System.exit(1);
     	}
 		user = args[0];
