@@ -65,7 +65,7 @@ import budget.HeaderFooter;
 				// out.println(" Rootpfad = " +rootPath);
 				out.println("<html>");
 				out.println("<body bgcolor=\"#EEFFBB\">");
-				out.println("<h1>Hi! Wilkommen zur Kontoübersicht</h1>");
+				out.println("<h1>Hi! Wilkommen zum Dashboard</h1>");
 				
 				if (db.getUnknownBons() > 0) {
 					out.println("Achtung!! Du hast noch unknown Bons");	
