@@ -367,19 +367,26 @@ public class DBBatch extends DB {
 		}
 		return true;
 	}
-	
+
 	public Hashtable getJob() {
 		Hashtable hash = new Hashtable();
 		try {
-			
+			int random = (int)(Math.random() * 10 + 1);
 			PreparedStatement stmt;
 			ResultSet res = null;
 			ResultSet delres = null;
-			stmt = con
-					.prepareStatement("select id,plan_id,kategorie from tmpplanningjobs order by id limit 1");
+			if ( random % 10 == 0 ) {
+				stmt = con
+						.prepareStatement("select id,plan_id,kategorie from tmpplanningjobs  order by id limit 1");
+			}
+				else {
+				stmt = con
+						.prepareStatement("select id,plan_id,kategorie from tmpplanningjobs  order by prio DESC, id limit 1");
+			}
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Vector vec = new Vector();
+				Integer id = (Integer) res.getInt("id");
 				Integer kategorie = (Integer) res.getInt("kategorie");
 				String plan_id=  (String) res.getString("plan_id");
 				vec.addElement(kategorie);				

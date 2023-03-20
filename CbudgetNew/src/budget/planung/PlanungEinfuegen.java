@@ -56,6 +56,7 @@ public class PlanungEinfuegen extends javax.servlet.http.HttpServlet {
 			String enddatum = request.getParameter("enddatum");
 			String batch = request.getParameter("batch");
 			String rule_id = request.getParameter("rule_id");
+			String prio = request.getParameter("prio");
 			if (batch==null)
 			{
 				batch="nein";
@@ -70,6 +71,7 @@ public class PlanungEinfuegen extends javax.servlet.http.HttpServlet {
 			hash.put("plan_id", db.getHighestId("planung", "plan_id") + 1);
 			hash.put("batch",batch);
 			hash.put("rule_id",new Integer(rule_id));
+			hash.put("prio",new Integer(prio));
 
 			for (int i = 0; i < allAusgaben.size(); i++) {
 
