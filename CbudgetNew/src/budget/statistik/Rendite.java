@@ -129,6 +129,7 @@ public class Rendite extends javax.servlet.http.HttpServlet {
                 startdatum = formatter.format((Date)orderrendite.get("startdate"));
                 enddatum = formatter.format((Date)orderrendite.get("enddate"));
             }
+
             out.println("<html>");
             out.println("<head>");
             out.println(" <title>Rendite</title>");
