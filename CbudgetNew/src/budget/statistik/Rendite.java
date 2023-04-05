@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -121,6 +122,14 @@ public class Rendite extends javax.servlet.http.HttpServlet {
             session.setAttribute("settings", settings);
             Vector rules = db.onlyValidRules(db.getAllRules());
             Hashtable orderrendite = db.getOrderRendite();
+
+            Im Mode batchAuslesen soll start- und enddatum aus der ausgeeseene orderrendite gesetzt werden.
+             */
+            if ( mode.equals("batchAuslesen")) {
+                startdatum = formatter.format((Date)orderrendite.get("startdate"));
+                enddatum = formatter.format((Date)orderrendite.get("enddate"));
+            }
+
             out.println("<html>");
             out.println("<head>");
             out.println(" <title>Rendite</title>");
