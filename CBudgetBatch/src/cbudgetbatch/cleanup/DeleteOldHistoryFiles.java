@@ -1,10 +1,7 @@
-package cbudgetbatch;
+package cbudgetbatch.cleanup;
 
-import cbudgetbase.DB;
+import cbudgetbatch.DBBatch;
 import sonstiges.MyLogger;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 //import budget.HeaderFooter;
 
@@ -28,7 +25,7 @@ public class DeleteOldHistoryFiles {
 		//SÃ¤ubert alle alten Transaktion_historie EintrÃ¤ge, die keineRefernnz mehr haben
 	 logger.log("Start deleteOldtransHistorie ..");	
 	 dbbatch.deleteOldtransHistorie();
-	 logger.log("DeleteOldtransHistorie done!");  
+	 logger.log("DeleteOldtransHistorie done!");
 		
 	}
 	
@@ -42,10 +39,16 @@ public class DeleteOldHistoryFiles {
 		user = args[0];
 		pass = args[1];
 		datenbank = args [2];
-       DeleteOldHistoryFiles batch = new DeleteOldHistoryFiles();
 		DBBatch db = new DBBatch();
 		db.dataBaseConnect(user, pass, datenbank);
-        batch.cleanOldHistoryFiles(db);
-		db.closeConnection();
+		ThreadDeleteForecast deleteForecast = new ThreadDeleteForecast();
+		deleteForecast.setDBBatch(db);
+		deleteForecast.start();
+		DBBatch dbHis = new DBBatch();
+		dbHis.dataBaseConnect(user, pass, datenbank);
+		ThreadDeleteOldHistoryFiles deleteOldHistoryFiles = new ThreadDeleteOldHistoryFiles();
+		deleteOldHistoryFiles.setDBBatch(dbHis);
+		deleteOldHistoryFiles.start();
+		//db.closeConnection();
     }
 }
