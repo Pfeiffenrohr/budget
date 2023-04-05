@@ -26,7 +26,6 @@ public class ThreadDeleteOldHistoryFiles  extends Thread{
         this.db = db;
     }
     public void run(){
-        System.out.println("ThreadDeleteOldHistoryFiles  running...");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
 
@@ -34,7 +33,7 @@ public class ThreadDeleteOldHistoryFiles  extends Thread{
 
             cleanOldHistoryFiles(db);
             try {
-                TimeUnit.MINUTES.sleep(3);
+                TimeUnit.MINUTES.sleep(600);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

@@ -15,7 +15,6 @@ public class ThreadDeleteForecast extends Thread {
         this.db = db;
     }
     public void run(){
-        System.out.println("ThreadDeleteForecast is running...");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
 
@@ -25,7 +24,7 @@ public class ThreadDeleteForecast extends Thread {
             db.deleteOldForecast(formatter.format(cal.getTime()));
             logger.log("End deleteOldForecast ..");
             try {
-                TimeUnit.MINUTES.sleep(3);
+                TimeUnit.MINUTES.sleep(60);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
