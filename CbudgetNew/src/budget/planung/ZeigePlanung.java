@@ -124,6 +124,7 @@ import budget.HeaderFooter;
 					out.println("<th>Kategorie</th>");
 					out.println("<th>Geplanter Wert</th>");
 					out.println("<th>Ist Wert</th>");
+					out.println("<th>Differenz</th>");
 					out.println("<th>Erreicht in %</th>");
 					out.println("<th>Graph</th>");
 					out.println("</tr>");
@@ -149,7 +150,10 @@ import budget.HeaderFooter;
 						if (wert_relativ !=0.0)
 						{
 						out.println("<tr>");
-						out.println("<td>"+kategorie+"</td><td>"+formater(wert_relativ)+"</td><td>"+formater(summe)+"</td><td>"
+						out.println("<td>"+kategorie+"</td><td>"
+								+formater(wert_relativ)+"</td><td>"
+								+formater(summe)+"</td><td>"
+								+formater((wert_relativ-summe)*-1)+"</td><td>"
 								+formaterProzentAusgabe(prozent)
 								+ "</td><td><a href='planChart?kategorie="
 								+(Integer)((Hashtable)kat_aus.elementAt(i)).get("id")
@@ -175,6 +179,7 @@ import budget.HeaderFooter;
 						out.println("<td>Alle Ausgaben</td><td>"
 								+formater(wert_relativ)+"</td><td>"
 								+formater(summe)+"</td><td>"
+								+formater((wert_relativ-summe)*-1)+"</td><td>"
 								+formaterProzentAusgabe(prozent)
 								+ "</td><td><a href='planChart?kategorie=-1&plan_id="+plan_id+"&batch="+batch+"'><img src=\"icons/statistik.jpg\" width'20' height='20'></a></td>");
 						out.println("</tr>");
@@ -182,7 +187,7 @@ import budget.HeaderFooter;
 					out.println("</tr>");	
 					out.println("</tbody>");
 					out.println("</table>");
-				//Einnahmen ---------------------------------------------	
+				//Einnahmen ---------------------------------------------------
 					out.println("<h2>Einnahmen</h2>");
 					out.println("<table border=\"1\"  bgcolor=\"#CCEECC\">");
 					//out.println("<table border=\"1\">");
@@ -191,6 +196,7 @@ import budget.HeaderFooter;
 					out.println("<th>Kategorie</th>");
 					out.println("<th>Geplanter Wert</th>");
 					out.println("<th>Ist Wert</th>");
+					out.println("<th>Differenz</th>");
 					out.println("<th>Erreicht in %</th>");
 					out.println("<th>Graph</th>");
 					out.println("</tr>");
@@ -214,8 +220,11 @@ import budget.HeaderFooter;
 						if (wert_relativ !=0.0)
 						{
 						out.println("<tr>");
-						out.println("<td>"+kategorie+"</td><td>"+formater(wert_relativ)+"</td><td>"
-								+formater(summe)+"</td><td>"+formaterProzentEinnahme(prozent)
+						out.println("<td>"+kategorie
+								+"</td><td>"+formater(wert_relativ)
+								+"</td><td>"+formater(summe)
+								+"</td><td>"+formater((wert_relativ-summe)*-1)
+								+"</td><td>" +formaterProzentEinnahme(prozent)
 								+ "</td><td><a href='planChart?kategorie="+(Integer)((Hashtable)kat_ein.elementAt(i)).get("id")
 								+"&plan_id="+plan_id+"&batch="+batch+"'><img src=\"icons/statistik.jpg\" width'20' height='20'></a></td>");
 						out.println("</tr>");
@@ -240,6 +249,7 @@ import budget.HeaderFooter;
 						out.println("<td>Alle Einnahmen</td><td>"
 								+formater(wert_relativ)+"</td><td>"
 								+formater(summe)+"</td><td>"
+								+formater((wert_relativ-summe)*-1)+"</td><td>"
 								+formaterProzentEinnahme(prozent)
 								+ "</td><td><a href='planChart?kategorie=-2&plan_id="+plan_id+"&batch="+batch+"'><img src=\"icons/statistik.jpg\" width'20' height='20'></a></td>");
 						out.println("</tr>");
