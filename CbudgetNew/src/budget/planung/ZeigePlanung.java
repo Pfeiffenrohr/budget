@@ -104,8 +104,12 @@ import budget.HeaderFooter;
 					}
 					if (zeit.equals("monat"))
 					{
-						cal_akt.set(Calendar.DAY_OF_MONTH, cal_akt.getActualMaximum(Calendar.DAY_OF_MONTH));
+						//Get last Date of Plan
+						Date lastDate = (Date)hash_plan.get("enddatum");
+						cal_akt.setTime(lastDate);
+						//cal_akt.set(Calendar.DAY_OF_MONTH, cal_akt.getActualMaximum(Calendar.DAY_OF_MONTH));
 						akt_datum=formatter.format(cal_akt.getTime());
+						System.out.println("Akt_datum = "+ akt_datum);
 					}
 					Long akt_zeit= cal_akt.getTimeInMillis();
 					Long begin_zeit=cal_begin.getTimeInMillis();
@@ -114,7 +118,7 @@ import budget.HeaderFooter;
 					long gesamte_tage=(end_zeit -begin_zeit)/(3600000*24);
 					//double faktor=((double)vergangene_tage*100)/(double)gesamte_tage;
 					double faktor=((double)vergangene_tage)/(double)gesamte_tage;
-					
+					System.out.println("faktor = "+ faktor);
 					out.println("<p><font size=\"-2\">(Durchschnittliche Berechunngsdauer: "+computeDuration(avgDuration)+ ")</font><p>");
 					out.println("<h2>Ausgaben</h2>");
 					out.println("<table border=\"1\"  bgcolor=\"#CCEECC\">");
