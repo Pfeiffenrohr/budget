@@ -3,6 +3,7 @@ FROM ubuntu:latest
 RUN apt-get update && \
     apt-get install -y openjdk-8-jdk && \
     apt-get install -y ant && \
+    apt-get install -y resolvconf && \
     apt-get clean;
 
 # Fix certificate issues
@@ -16,6 +17,8 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 RUN export JAVA_HOME
 
 RUN apt-get update && apt-get install -y dos2unix
+
+RUN echo "nameserver 192.168.188.1" > /etc/resolvconf/resolv.conf.d/tail
 
 RUN mkdir /var/lib/cbudgetbatch
 WORKDIR /var/lib/cbudgetbatch/
