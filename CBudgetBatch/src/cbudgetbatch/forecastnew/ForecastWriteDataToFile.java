@@ -36,8 +36,140 @@ public class ForecastWriteDataToFile {
             System.exit(1);
         }
         ForecastWriteDataToFile forecast = new ForecastWriteDataToFile();
-        forecast.getAllKategoriesWithForecast(db);
+        //forecast.getAllKategoriesWithForecast(db);
+        forecast.startCalculateWeights(db);
         db.closeConnection();
+    }
+
+    private void startCalculateWeights(DBBatch db) {
+        logger.log("Starte CalculateWeights ...");
+        //Calendar sehen so aus [2023,2022,2021,2020,2019,2018]
+        Calendar []  calendars = new Calendar[8];
+        for (int i =0 ; i < calendars.length; i++ ) {
+            calendars [i] = Calendar.getInstance();
+            calendars [i].add(Calendar.YEAR, -i);
+        }
+        calculateYears (db, calendars);
+        logger.log("Ende CalculateWeights ...");
+    }
+
+    private void calculateYears (DBBatch db,Calendar []  calendars ) {
+        Vector kategories = db.getAllKategorien();
+        Vector konten = db.getAllKonto();
+        Hashtable settings = db.getSettings();
+        for (int i = 0; i < kategories.size(); i++) {
+
+
+            for (int j = 0; j < konten.size(); j++) {
+
+                Hashtable kategorie = (Hashtable) kategories.elementAt(i);
+                Hashtable konto = (Hashtable) konten.elementAt(j);
+                if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+                    continue;
+                }
+
+                if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
+                    continue;
+                }
+                if (kategorie.get("forecast").equals(0)) {
+                    // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
+                    // berechnet werden");
+                    continue;
+                }
+                String  where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
+
+                Map<Integer, YearTable>  maps =  getMapsAllYear( db, calendars, where);
+                calculateWeights(maps);
+
+            }
+        }
+    }
+
+    private void calculateWeights( Map<Integer, YearTable>  maps) {
+        double differenzMax = 999999999;
+        Double targetSum ;
+       /* if (targetSum * targetSum< 0.001) {
+            continue;
+        }*/
+        Map<Integer, Double> mapComputedAvg = new HashMap<Integer, Double>();
+        Map<Integer, Double>   map2022=maps.get(2022).getMapYear();
+        Map<Integer, Double>   map2021=maps.get(2021).getMapYear();
+        Map<Integer, Double>   map2020=maps.get(2020).getMapYear();
+        Map<Integer, Double>   map2019=maps.get(2019).getMapYear();
+        Map<Integer, Double>   map2018=maps.get(2018).getMapYear();
+        // Ausgabe
+        /*String str="2018;2019;2020;2021;2022\n";
+        for (int k=0; k < 366;k++) {
+            str = str + map2018.get(k) + ";" + map2019.get(k) + ";" + map2020.get(k) + ";" + map2021.get(k) +";" + map2022.get(k)+ "\n";
+        }
+        str=str.replace(".",",");
+    //System.out.println("Write");
+                try {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("c:/temp/comp2.csv"));
+        writer.write(str);
+
+        writer.close();
+    } catch (Exception ex) {
+        System.out.println("!!Can not write file");
+    }   */
+        //Ausgabe Ende
+        System.out.println("Summme 2021 " +computeSumOfMap(map2021)+ " Summme 2020 " +computeSumOfMap(map2020) +" Summme 2019 " +computeSumOfMap(map2019));
+        for (int y1 =0; y1 < 100; y1++) {
+            for (int y2 =0; y2 < 100; y2++) {
+                for (int y3 =0; y3 < 100; y3++) {
+                    //String str ="";
+                    Double differenz [] = new Double[4];
+                    Double differenzAll ;
+                    for (int cycle = 2022; cycle > 2018; cycle --) {
+                        mapComputedAvg.clear();
+                        targetSum = computeSumOfMap(maps.get(cycle).getMapYear());
+                        for (int k = 0; k <= 366; k++) {
+                            double valueMonth = maps.get(cycle - 1).getMapYear().get(k) * (y1 / 50.0) + maps.get(cycle - 2).getMapYear().get(k) * (y2 / 50.0) + maps.get(cycle - 3).getMapYear().get(k) * (y3 / 50.0);
+                            mapComputedAvg.put(k, valueMonth);
+                            //str = str   + map2021.get(k) +";"+map2020.get(k) +";"+ map2019.get(k)+"; "+mapComputedAvg.get(k)  + "\n";
+                        }
+                        Double avgSum = computeSumOfMap(mapComputedAvg);
+                        differenz[2022 -cycle] = ((avgSum - targetSum) * (avgSum - targetSum));
+                    }
+                    differenzAll=sum(differenz);
+                        if (differenzAll < differenzMax) {
+                            differenzMax = differenzAll;
+                            System.out.println(" differnzMax = " + differenzMax + " y1 = " + y1 + " y2 = " + y2 + " y3 = " + y3 + " avgSum = " + differenzAll);
+                    }
+                }
+            }
+        }
+    }
+
+    private double sum (Double diff []) {
+        double mysum=0.0;
+        for (int i=0; i< diff.length; i++)
+        {
+            mysum=mysum+diff[i];
+        }
+        return mysum;
+    }
+    private Map<Integer, YearTable> getMapsAllYear( DBBatch db, Calendar []  calendars,String where) {
+        Map<Integer, YearTable > map = new HashMap<>();
+        for (int i = 1;  i< calendars.length; i++) {
+            map.put(calendars[i].get(Calendar.YEAR),getMapsYear(db,calendars[i],calendars[i-1],where));
+        }
+        return map;
+    }
+    private YearTable  getMapsYear (DBBatch db, Calendar start, Calendar end, String where) {
+        int limit = 366;
+        YearTable yt = new YearTable();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Map<Integer, Double> map=db.getKategorienAlleSummeWhereAsMapPerDay(formatter.format(start.getTime()),formatter.format(end.getTime()), where);
+        for (int k = 0; k <= limit; k++) {
+            if (map.get(k) == null) {
+                map.put(k, 0.0);
+            }
+        }
+        yt.setMapYear(map);
+        yt.computeSum();
+        return  yt;
+
     }
 
     private void getAllKategoriesWithForecast(DBBatch db) {
@@ -53,6 +185,7 @@ public class ForecastWriteDataToFile {
         calThreeYearBack.add(Calendar.YEAR, -3);
         calTowYearBack.add(Calendar.YEAR, -2);
         calOneYearBack.add(Calendar.YEAR, -1);
+        //calnow.add(Calendar.YEAR, -1);
         // Erst mal alle Kategorien holen.
         Vector kategories = db.getAllKategorien();
         // Dann alle Konten
@@ -70,7 +203,7 @@ public class ForecastWriteDataToFile {
                 double inflation = 0.0;
                 double inflationDay = 0.0;
 
-               /*
+
                 if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
                     continue;
                 }
@@ -78,7 +211,7 @@ public class ForecastWriteDataToFile {
                 if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
                     continue;
                 }
-                */
+
                 // System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
                 String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
                         + " and planed = 'j' and name like 'Forecast%' ";
@@ -136,7 +269,7 @@ public class ForecastWriteDataToFile {
                 }
                 //System.out.println("Write");
                 try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter("c:/temp/budgetBar1.csv"));
+                    BufferedWriter writer = new BufferedWriter(new FileWriter("c:/temp/budget4.csv"));
                     writer.write(str);
 
                     writer.close();
@@ -147,7 +280,7 @@ public class ForecastWriteDataToFile {
                 if (targetSum * targetSum< 0.001) {
                     continue;
                 }
-                //System.out.println("TargetSum = " + targetSum);
+                System.out.println("TargetSum = " + targetSum);
                 //compute middle
                 double minDiff = 999999999;
                 int targetY4 =1;
@@ -159,7 +292,7 @@ public class ForecastWriteDataToFile {
                             Map<Integer, Double> mapComputedAvg = new HashMap<Integer, Double>();
                             double teiler = y4 + y3 + y2;
                             for (int k = 0; k <= 366; k++) {
-                                double valueMonth = (mapYear4.get(k) * y4 + mapYear3.get(k) * y3 + mapYear2.get(k) * y2) / teiler;
+                                double valueMonth = (mapYear4.get(k) * y4/50 + mapYear3.get(k) * y3/50 + mapYear2.get(k) * y2)/50 ;
                                 mapComputedAvg.put(k, valueMonth);
                             }
                             Double avgSum = computeSumOfMap(mapComputedAvg);
