@@ -64,6 +64,7 @@ public class ForecastWriteDataToFile {
 
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
+                /*
                 if (!((String) kategorie.get("name")).equals("Bekleidung")) {
                     continue;
                 }
@@ -76,6 +77,8 @@ public class ForecastWriteDataToFile {
                     // berechnet werden");
                     continue;
                 }
+                */
+
                 String  where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
                 Map<Integer, YearTable>  maps =  getMapsAllYear( db, calendars, where);
@@ -149,7 +152,7 @@ public class ForecastWriteDataToFile {
         hash.put("konto",konto);
         hash.put("y1",y1max);
         hash.put("y2",y2max);
-        hash.put("y3",category);
+        hash.put("y3",y3max);
         hash.put("precision",differenzMax);
        db.insertForecastWeights(hash);
     }
