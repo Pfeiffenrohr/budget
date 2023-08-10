@@ -41,7 +41,7 @@ public class ForecastWriteDataToFile {
         db.closeConnection();
     }
 
-    private void startCalculateWeights(DBBatch db) {
+    public void startCalculateWeights(DBBatch db) {
         logger.log("Starte CalculateWeights ...");
         //Calendar sehen so aus [2023,2022,2021,2020,2019,2018]
         Calendar []  calendars = new Calendar[8];
