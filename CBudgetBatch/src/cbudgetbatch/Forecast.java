@@ -3,6 +3,7 @@ package cbudgetbatch;
 import cbudgetbatch.forecastnew.OverAllTable;
 import cbudgetbatch.forecastnew.YearTable;
 import sonstiges.MyLogger;
+import cbudgetbatch.forecastnew.ForecastWriteDataToFile;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -32,6 +33,8 @@ public class Forecast {
 			System.err.println("Konnte mich nicht mit der Datenbank verbinden");
 			System.exit(1);
 		}
+		ForecastWriteDataToFile fwdtf  = new ForecastWriteDataToFile();
+		fwdtf.startCalculateWeights(db);
 		Forecast forecast = new Forecast();
 		forecast.getAllKategoriesWithForecast(db);
 		db.closeConnection();
