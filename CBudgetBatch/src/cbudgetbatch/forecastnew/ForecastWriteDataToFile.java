@@ -64,7 +64,7 @@ public class ForecastWriteDataToFile {
 
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
-                if (!((String) kategorie.get("name")).equals("Lebensmittel")) {
+                if (!((String) kategorie.get("name")).equals("Bekleidung")) {
                     continue;
                 }
 
@@ -79,13 +79,14 @@ public class ForecastWriteDataToFile {
                 String  where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
                 Map<Integer, YearTable>  maps =  getMapsAllYear( db, calendars, where);
-                calculateWeights(maps);
+                logger.log("Bearbeite "+kategorie.get("name")+" Konto = "+ konto.get("name"));
+                calculateWeights(maps,(int)kategorie.get("id"),(int)konto.get("id"),db);
 
             }
         }
     }
 
-    private void calculateWeights( Map<Integer, YearTable>  maps) {
+    private void calculateWeights( Map<Integer, YearTable>  maps,int category,int konto, DBBatch db) {
         double differenzMax = 999999999;
         Double targetSum ;
        /* if (targetSum * targetSum< 0.001) {
@@ -113,14 +114,17 @@ public class ForecastWriteDataToFile {
         System.out.println("!!Can not write file");
     }   */
         //Ausgabe Ende
-        System.out.println("Summme 2021 " +computeSumOfMap(map2021)+ " Summme 2020 " +computeSumOfMap(map2020) +" Summme 2019 " +computeSumOfMap(map2019));
+       // System.out.println("Summme 2021 " +computeSumOfMap(map2021)+ " Summme 2020 " +computeSumOfMap(map2020) +" Summme 2019 " +computeSumOfMap(map2019));
+        int y1max=0;
+        int y2max=0;
+        int y3max=0;
         for (int y1 =0; y1 < 100; y1++) {
             for (int y2 =0; y2 < 100; y2++) {
                 for (int y3 =0; y3 < 100; y3++) {
                     //String str ="";
-                    Double differenz [] = new Double[4];
+                    Double differenz [] = new Double[2];
                     Double differenzAll ;
-                    for (int cycle = 2022; cycle > 2018; cycle --) {
+                    for (int cycle = 2022; cycle > 2020; cycle --) {
                         mapComputedAvg.clear();
                         targetSum = computeSumOfMap(maps.get(cycle).getMapYear());
                         for (int k = 0; k <= 366; k++) {
@@ -134,11 +138,20 @@ public class ForecastWriteDataToFile {
                     differenzAll=sum(differenz);
                         if (differenzAll < differenzMax) {
                             differenzMax = differenzAll;
-                            System.out.println(" differnzMax = " + differenzMax + " y1 = " + y1 + " y2 = " + y2 + " y3 = " + y3 + " avgSum = " + differenzAll);
                     }
                 }
             }
+
         }
+     logger.log(" y1 = " + y1max + " y2 = " + y2max + " y3 = " + y3max + " avgSum = " + differenzMax);
+       Hashtable hash = new Hashtable();
+       hash.put("category",category);
+        hash.put("konto",konto);
+        hash.put("y1",y1max);
+        hash.put("y2",y2max);
+        hash.put("y3",category);
+        hash.put("precision",differenzMax);
+       db.insertForecastWeights(hash);
     }
 
     private double sum (Double diff []) {
