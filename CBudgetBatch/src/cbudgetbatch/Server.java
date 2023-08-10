@@ -82,8 +82,10 @@ class ConnectionHandler implements Runnable {
 	            //
 	            // Read a message sent by client application
 	            //
-	            ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-	            String message = (String) ois.readObject();
+				try {
+					ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+					String message = (String) ois.readObject();
+
 	           // System.out.println("Server: Message Received: " + message);
 	
 	            //
@@ -129,12 +131,16 @@ class ConnectionHandler implements Runnable {
 	            ois.close();
 	            oos.close();
 	            socket.close();
-	 
+				} catch (java.io.StreamCorruptedException ex )
+				{
+					System.err.println("!!Inputstrem corrupt!!!!");
+				}
 	           // System.out.println("Waiting for client message...");
 	       } catch (IOException e) {
 	            e.printStackTrace();
 	        } catch (ClassNotFoundException e) {
 	            e.printStackTrace();
 	        }
+
 	    }
 	}
