@@ -64,14 +64,14 @@ public class ForecastWriteDataToFile {
 
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
-
+                /*
                 if (!((String) kategorie.get("name")).equals("Handy")) {
                     continue;
                 }
 
                 if (!((String) konto.get("name")).equals("Bargeld")) {
                     continue;
-                }
+                }*/
                 if (kategorie.get("forecast").equals(0)) {
                     // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
                     // berechnet werden");
