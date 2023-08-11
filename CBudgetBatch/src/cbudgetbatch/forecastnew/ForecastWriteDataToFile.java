@@ -65,19 +65,19 @@ public class ForecastWriteDataToFile {
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
                 /*
-                if (!((String) kategorie.get("name")).equals("Bekleidung")) {
+                if (!((String) kategorie.get("name")).equals("Handy")) {
                     continue;
                 }
 
-                if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
+                if (!((String) konto.get("name")).equals("Bargeld")) {
                     continue;
-                }
+                }*/
                 if (kategorie.get("forecast").equals(0)) {
                     // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
                     // berechnet werden");
                     continue;
                 }
-                */
+
 
                 String  where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
@@ -101,6 +101,19 @@ public class ForecastWriteDataToFile {
         Map<Integer, Double>   map2020=maps.get(2020).getMapYear();
         Map<Integer, Double>   map2019=maps.get(2019).getMapYear();
         Map<Integer, Double>   map2018=maps.get(2018).getMapYear();
+        /*
+        Wenn drei Jahre die Summe null war, dann ist die Wahrscheinlichkeit groß,
+        dass sie auch null wird
+        */
+
+        if (Math.abs(computeSumOfMap(map2021)) < 0.01  &&
+                Math.abs(computeSumOfMap(map2021)) < 0.01  &&
+                Math.abs(computeSumOfMap(map2021)) < 0.01)
+        {
+
+        return;
+        }
+
         // Ausgabe
         /*String str="2018;2019;2020;2021;2022\n";
         for (int k=0; k < 366;k++) {
@@ -140,6 +153,9 @@ public class ForecastWriteDataToFile {
                     }
                     differenzAll=sum(differenz);
                         if (differenzAll < differenzMax) {
+                            y1max=y1;
+                            y2max=y2;
+                            y3max=y3;
                             differenzMax = differenzAll;
                     }
                 }
