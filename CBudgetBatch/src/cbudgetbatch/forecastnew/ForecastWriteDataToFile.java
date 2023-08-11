@@ -65,11 +65,11 @@ public class ForecastWriteDataToFile {
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
                 /*
-                if (!((String) kategorie.get("name")).equals("Handy")) {
+                if (!((String) kategorie.get("name")).equals("Einrichtung Möbel")) {
                     continue;
                 }
 
-                if (!((String) konto.get("name")).equals("Bargeld")) {
+                if (!((String) konto.get("name")).equals("Kreditkarte Hypo")) {
                     continue;
                 }*/
                 if (kategorie.get("forecast").equals(0)) {
@@ -106,9 +106,9 @@ public class ForecastWriteDataToFile {
         dass sie auch null wird
         */
 
-        if (Math.abs(computeSumOfMap(map2021)) < 0.01  &&
+        if (Math.abs(computeSumOfMap(map2022)) < 0.01  &&
                 Math.abs(computeSumOfMap(map2021)) < 0.01  &&
-                Math.abs(computeSumOfMap(map2021)) < 0.01)
+                Math.abs(computeSumOfMap(map2020)) < 0.01)
         {
 
         return;
@@ -162,7 +162,12 @@ public class ForecastWriteDataToFile {
             }
 
         }
+        if (y1max==0 && y2max==0 && y3max==0 )
+        {
+            y1max=50;
+        }
      logger.log(" y1 = " + y1max + " y2 = " + y2max + " y3 = " + y3max + " avgSum = " + differenzMax);
+
        Hashtable hash = new Hashtable();
        hash.put("category",category);
         hash.put("konto",konto);
