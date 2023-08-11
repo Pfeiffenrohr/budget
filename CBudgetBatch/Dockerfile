@@ -17,6 +17,8 @@ RUN export JAVA_HOME
 
 RUN apt-get update && apt-get install -y dos2unix
 
+RUN echo "nameserver 192.168.188.1" >> /etc/resolv.conf
+
 RUN mkdir /var/lib/cbudgetbatch
 WORKDIR /var/lib/cbudgetbatch/
 ADD target/CBudgetBatch-3.0.0.jar /var/lib/cbudgetbatch/server.jar

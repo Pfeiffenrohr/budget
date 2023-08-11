@@ -86,7 +86,7 @@ import budget.HeaderFooter;
 				out.println("<th>Ausgaben</th>");
 				out.println("<th>Einnahmen</th>");
 				out.println("<th>Planung Stand heute</th>");
-				out.println("<th>Planung Stand Montsende</th>");
+				out.println("<th>Planung Stand Ende des Planungzeitraums</th>");
 				out.println("</tr>");
 				out.println("</thead>");
 				out.println("<tbody>");
