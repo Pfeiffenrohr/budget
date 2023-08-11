@@ -416,6 +416,34 @@ public class DBBatch extends DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return false;
 	}
+	public Hashtable getForecastWeihts(int category, int konto) {
+		Hashtable hash = new Hashtable();
+		try {
+
+			PreparedStatement stmt;
+			ResultSet res = null;
+			stmt = con
+					.prepareStatement("select id,category,konto,y1,y2,y3,precision from forecast_weights where category = "+category+" and konto =  "+konto);
+			res = stmt.executeQuery();
+			while (res.next()) {
+				hash.put("id", new Integer(res.getInt("id")));
+				hash.put("category", (Integer) res.getInt("category"));
+				hash.put("konto", (Integer) res.getInt("konto"));
+				hash.put("y1", (Double) res.getDouble("y1"));
+				hash.put("y2", (Double) res.getDouble("y2"));
+				hash.put("y3", (Double) res.getDouble("y3"));
+				hash.put("precision", (Double) res.getDouble("precision"));
+
+			}
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return hash;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return hash;
+	}
+
 }
 
 

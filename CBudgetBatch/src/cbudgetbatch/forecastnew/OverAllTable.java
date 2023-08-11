@@ -1,6 +1,7 @@
 package cbudgetbatch.forecastnew;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class OverAllTable {
@@ -105,10 +106,18 @@ public class OverAllTable {
 		System.out.println("Summe Prozent = "+sumProzent);
 	}
 	
-	public void gewichteWert(YearTable yt1,YearTable yt2, YearTable yt3 )
+	public void gewichteWert(YearTable yt1, YearTable yt2, YearTable yt3 , Hashtable weights)
 	
 	{
-		setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
+		if (weights.isEmpty())
+		{
+			weights.put("y1",0.0);
+			weights.put("y2",0.0);
+			weights.put("y3",0.0);
+		}
+		setSummeGewichtet(((double)weights.get("y1"))/50.0 * yt1.getSumOfYear() +
+				(((double)weights.get("y2")/50.0)) * yt2.getSumOfYear() +
+				(((double)weights.get("y3")/50.0)) * yt3.getSumOfYear());
 	}
 	
 	public void printSummeGewichtet() {
