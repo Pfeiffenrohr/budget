@@ -36,7 +36,7 @@ public class Forecast {
 			System.err.println("Konnte mich nicht mit der Datenbank verbinden");
 			System.exit(1);
 		}
-		if (computeWeights.equals("yes")) {
+		if (computeWeights.equals("ja")) {
 			ForecastWriteDataToFile fwdtf = new ForecastWriteDataToFile();
 			fwdtf.startCalculateWeights(db);
 		}
