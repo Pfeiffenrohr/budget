@@ -3,6 +3,7 @@ package cbudgetbatch;
 import cbudgetbatch.forecastnew.OverAllTable;
 import cbudgetbatch.forecastnew.YearTable;
 import sonstiges.MyLogger;
+import cbudgetbatch.forecastnew.ForecastWriteDataToFile;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -13,24 +14,31 @@ public class Forecast {
 	static String user;
 	static String pass;
 	static String datenbank;
+	static String computeWeights;
 	DBBatch db = new DBBatch();
 
     private static final MyLogger logger = new MyLogger(); 
 	
 	public static void main(String[] args) {
 
-		if (args.length != 3) {
-			System.out.println("usage: budget_server <user> <password> <datenbank>");
+		if (args.length != 4) {
+			System.out.println("usage: budget_server <user> <password> <datenbank> <computeWeights");
 			System.exit(1);
 		}
 		user = args[0];
 		pass = args[1];
 		datenbank = args[2];
+		computeWeights = args[3];
+
 		// Server example = new Server();
 		DBBatch db = new DBBatch();
 		if (!db.dataBaseConnect(user, pass, datenbank)) {
 			System.err.println("Konnte mich nicht mit der Datenbank verbinden");
 			System.exit(1);
+		}
+		if (computeWeights.equals("ja")) {
+			ForecastWriteDataToFile fwdtf = new ForecastWriteDataToFile();
+			fwdtf.startCalculateWeights(db);
 		}
 		Forecast forecast = new Forecast();
 		forecast.getAllKategoriesWithForecast(db);
@@ -142,9 +150,9 @@ public class Forecast {
 				
 			
 				oat.setSummeUngewichtet(yt3.getSumOfYear()+yt2.getSumOfYear()+yt1.getSumOfYear()); ;
-			
+			    Hashtable weights = db.getForecastWeihts( (int) kategorie.get("id"),(int)konto.get("id"));
 				//oat.setSummeGewichtet((3 * yt1.getSumOfYear() + 2 * yt2.getSumOfYear() + yt3.getSumOfYear()) / 6);
-				oat.gewichteWert(yt1, yt2, yt3);
+				oat.gewichteWert(yt1, yt2, yt3,weights);
 				
 				for (int k=1; k< 366; k++ )
 				{

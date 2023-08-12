@@ -87,14 +87,14 @@ import budget.HeaderFooter;
 					cal_begin.setTime((Date)hash_plan.get("startdatum"));
 					cal_end.setTime((Date)hash_plan.get("enddatum"));
 					//liegt ds jetzige Datum zwischenStart und Endzeit?
-					if (cal_akt.before(cal_begin))
+				/*	if (cal_akt.before(cal_begin))
 					{
 						out.println("<p>Datum liegt nicht im Planungszeitraum!!<p>");
 						out.println("</body>");
 						out.println("</html>");
 						out.close();
 						return;
-					}
+					}*/
 					
 					if (cal_akt.after(cal_end))
 					{
@@ -142,7 +142,7 @@ import budget.HeaderFooter;
 						String kategorie=(String)((Hashtable)kat_aus.elementAt(i)).get("name");
 						 wert_relativ=db.getKategorienAlleRecursivPlanung(kategorie,new Integer(plan_id),faktor);
 						 summe=db.getKategorienAlleRecursivSumme(kategorie,formatter.format(hash_plan.get("startdatum")),akt_datum,rule,new Integer(plan_id));
-						 prozent=0.0;
+						// prozent=0.0;
 						if ( wert_relativ ==0.0 )
 						{
 							prozent=0.0;
