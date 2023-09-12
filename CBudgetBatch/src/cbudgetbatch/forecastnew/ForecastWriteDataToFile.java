@@ -64,25 +64,25 @@ public class ForecastWriteDataToFile {
 
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
-                /*
-                if (!((String) kategorie.get("name")).equals("Einrichtung Möbel")) {
+/*
+                if (!((String) kategorie.get("name")).equals("Rentenversicherung")) {
                     continue;
                 }
 
-                if (!((String) konto.get("name")).equals("Kreditkarte Hypo")) {
+                if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
                     continue;
-                }*/
+                }
+                */
                 if (kategorie.get("forecast").equals(0)) {
                     // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
                     // berechnet werden");
                     continue;
                 }
 
-
                 String  where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
                 Map<Integer, YearTable>  maps =  getMapsAllYear( db, calendars, where);
-                logger.log("Bearbeite "+kategorie.get("name")+" Konto = "+ konto.get("name"));
+                //logger.log("Bearbeite "+kategorie.get("name")+" Konto = "+ konto.get("name"));
                 calculateWeights(maps,(int)kategorie.get("id"),(int)konto.get("id"),db);
 
             }
@@ -95,12 +95,13 @@ public class ForecastWriteDataToFile {
        /* if (targetSum * targetSum< 0.001) {
             continue;
         }*/
+        int currentYear =   Calendar.getInstance().get(Calendar.YEAR);
+        //System.out.println("current Year ="+currentYear);
         Map<Integer, Double> mapComputedAvg = new HashMap<Integer, Double>();
-        Map<Integer, Double>   map2022=maps.get(2022).getMapYear();
-        Map<Integer, Double>   map2021=maps.get(2021).getMapYear();
-        Map<Integer, Double>   map2020=maps.get(2020).getMapYear();
-        Map<Integer, Double>   map2019=maps.get(2019).getMapYear();
-        Map<Integer, Double>   map2018=maps.get(2018).getMapYear();
+        Map<Integer, Double>   map2022=maps.get(currentYear-1).getMapYear();
+        Map<Integer, Double>   map2021=maps.get(currentYear-2).getMapYear();
+        Map<Integer, Double>   map2020=maps.get(currentYear-3).getMapYear();
+
         /*
         Wenn drei Jahre die Summe null war, dann ist die Wahrscheinlichkeit groß,
         dass sie auch null wird
@@ -140,7 +141,7 @@ public class ForecastWriteDataToFile {
                     //String str ="";
                     Double differenz [] = new Double[2];
                     Double differenzAll ;
-                    for (int cycle = 2022; cycle > 2020; cycle --) {
+                    for (int cycle = currentYear-1; cycle > currentYear-3; cycle --) {
                         mapComputedAvg.clear();
                         targetSum = computeSumOfMap(maps.get(cycle).getMapYear());
                         for (int k = 0; k <= 366; k++) {
@@ -149,7 +150,11 @@ public class ForecastWriteDataToFile {
                             //str = str   + map2021.get(k) +";"+map2020.get(k) +";"+ map2019.get(k)+"; "+mapComputedAvg.get(k)  + "\n";
                         }
                         Double avgSum = computeSumOfMap(mapComputedAvg);
-                        differenz[2022 -cycle] = ((avgSum - targetSum) * (avgSum - targetSum));
+                    /*    if (y1==28 && y2==55 && y3 == 27)
+                        {
+                            System.out.println("break");
+                        }*/
+                        differenz[currentYear-1 -cycle] = ((avgSum - targetSum) * (avgSum - targetSum));
                     }
                     differenzAll=sum(differenz);
                         if (differenzAll < differenzMax) {
@@ -175,7 +180,7 @@ public class ForecastWriteDataToFile {
         hash.put("y2",y2max);
         hash.put("y3",y3max);
         hash.put("precision",differenzMax);
-       db.insertForecastWeights(hash);
+        db.insertForecastWeights(hash);
     }
 
     private double sum (Double diff []) {
@@ -258,11 +263,7 @@ public class ForecastWriteDataToFile {
                     // berechnet werden");
                     continue;
                 }
-                if ((Integer) kategorie.get("inflation") == 1) {
-                    inflationDay = new Double((String) settings.get("inflation"));
-                    inflationDay = inflationDay / 365;
-                    inflationDay = inflationDay / 100;
-                }
+
                 where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
                 double[][] montharry = new double[12][3];
@@ -348,10 +349,10 @@ public class ForecastWriteDataToFile {
                     }
                 }
                 System.out.println("In "+kategorie.get("name")+ " und Konto "+ konto.get("name") +" MinDifff = " + minDiff ) ;
-                System.out.println("y4 = " + targetY4 + " y3 = " + targetY3 + " y2 = " + targetY2);
+                System.out.println("kategorie = "+ kategorie.get("name") + " Konto = " +kategorie.get("name") +" y4 = " + targetY4 + " y3 = " + targetY3 + " y2 = " + targetY2);
             }
         }
-        logger.log("Forcast Berechnet :)");
+        logger.log("CalculateWeights beendet :)");
     }
 
     private Double computeSumOfMap(Map<Integer, Double> map) {
