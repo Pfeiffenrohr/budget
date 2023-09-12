@@ -72,12 +72,12 @@ public class ForecastWriteDataToFile {
                 if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
                     continue;
                 }
+                */
                 if (kategorie.get("forecast").equals(0)) {
                     // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
                     // berechnet werden");
                     continue;
                 }
-*/
 
                 String  where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
 
