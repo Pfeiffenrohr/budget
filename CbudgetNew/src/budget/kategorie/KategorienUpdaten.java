@@ -72,7 +72,7 @@ import budget.HeaderFooter;
 				hash.put("mode",mode);
 				hash.put("active",active);
 				hash.put("forecast",forecast);
-				hash.put("inflation",forecast);
+				hash.put("inflation",inflation);
 				
 				HeaderFooter hf = new HeaderFooter();
 				out.println("<html>");
@@ -81,15 +81,15 @@ import budget.HeaderFooter;
 				if (loeschen != null)
 				{
 					out.println("<p>");
-					out.println("Kategorie wird gelöscht...");
+					out.println("Kategorie wird gelï¿½scht...");
 					out.println("<p>");
 					if (db.deleteKategorieRecursive((String)hash.get("name")))
 					{
-					out.println("Kategorie und alle Untekategorien erfolgreich gelöscht");
+					out.println("Kategorie und alle Untekategorien erfolgreich gelï¿½scht");
 					}
 					else
 					{
-						out.println("<font color=\"red\">!!!Kategorie konte nicht gelöscht werden!!!</font>");
+						out.println("<font color=\"red\">!!!Kategorie konte nicht gelï¿½scht werden!!!</font>");
 					}
 				}
 				else

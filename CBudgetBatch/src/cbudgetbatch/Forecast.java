@@ -73,15 +73,15 @@ public class Forecast {
 				  double inflation=0.0;
 			        double inflationDay=0.0; 
 				
-			    /*   
-				if (!((String) kategorie.get("name")).equals("Zinsen Dividenden")) {
+/*
+				if (!((String) kategorie.get("name")).equals("Rentenversicherung")) {
 					continue;
 				}
                 
-				if (!((String) konto.get("name")).equals("Bondora")) {
+				if (!((String) konto.get("name")).equals("Sparkasse Giro")) {
 					continue;
 				}
-				*/
+*/
 				// System.out.println("Berechne Forecast: Kategorie "+ kategorie.get("name")+" Konto = "+konto.get("name"));
 				String where = " kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id")
 						+ " and planed = 'j' and name like 'Forecast%' ";
@@ -209,8 +209,11 @@ public class Forecast {
                         	dayOfYear = dayOfYear -1;
                         }
                         //System.out.println("Day Gewichtet "+ oat.getDayGewichtet(dayOfYear));
-                        double myWert=oat.getDayGewichtet(dayOfYear) + (oat.getDayGewichtet(dayOfYear) *inflation);
-                        inflation=inflation+ inflationDay;
+						double myWert=oat.getDayGewichtet(dayOfYear);
+						if ((Integer)kategorie.get("inflation") == 1) {
+							myWert = oat.getDayGewichtet(dayOfYear) + (oat.getDayGewichtet(dayOfYear) * inflation);
+							inflation = inflation + inflationDay;
+						}
                         /*
 
                         System.out.println("Wert ohne inflation = "+wert * prozent[getMonth(calstart)] );
