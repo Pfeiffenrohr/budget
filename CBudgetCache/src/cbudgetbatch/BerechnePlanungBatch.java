@@ -30,6 +30,7 @@ public class BerechnePlanungBatch {
             Calendar cal_end = Calendar.getInstance();
             cal_begin.setTime((Date) hash_plan.get("startdatum"));
             cal_end.setTime((Date) hash_plan.get("enddatum"));
+            cal_end.set(Calendar.HOUR_OF_DAY, 24);
             // liegt ds jetzige Datum zwischenStart und Endzeit?
             if (cal_akt.before(cal_begin)) {
                 // System.out.println("Datum ausserhalb des Zeitraums");
