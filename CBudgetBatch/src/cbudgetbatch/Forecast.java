@@ -1,9 +1,9 @@
 package cbudgetbatch;
 
-import cbudgetbatch.forecastnew.OverAllTable;
-import cbudgetbatch.forecastnew.YearTable;
+import cbudgetbatch.gewichtung.OverAllTable;
+import cbudgetbatch.gewichtung.YearTable;
 import sonstiges.MyLogger;
-import cbudgetbatch.forecastnew.ForecastWriteDataToFile;
+import cbudgetbatch.gewichtung.ForecastWriteDataToFile;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

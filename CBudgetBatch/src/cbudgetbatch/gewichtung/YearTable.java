@@ -1,4 +1,4 @@
-package cbudgetbatch.forecastnew;
+package cbudgetbatch.gewichtung;
 
 import java.util.Map;
 
