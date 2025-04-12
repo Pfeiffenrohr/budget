@@ -19,9 +19,9 @@ jobs:
     
     runs-on: ubuntu-latest
        defaults:
-       run:
-        shell: bash
-        working-directory: ./CBudgetCache
+         run:
+          shell: bash
+          working-directory: ./CBudgetCache
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 17
