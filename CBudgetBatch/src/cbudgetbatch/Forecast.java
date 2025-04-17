@@ -102,7 +102,7 @@ public class Forecast {
 				double[][] montharry = new double[12][3];
                //Hier machen wir das Ganze 3 Mal hintereinander für jedes Jahr. Das sollte man eigentlich besser machen.
 				OverAllTable oat = new OverAllTable();
-				Map <Integer,Double >mapYear3 = new HashMap<Integer, Double>();
+				Map <Integer,Double >mapYear3 = new HashMap<>();
 				YearTable yt3 = new YearTable();
 				
 				
