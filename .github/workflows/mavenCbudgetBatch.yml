@@ -1,5 +1,5 @@
 ---
-name: Java CI CBudgetCache
+name: Java CI CBudgetBatch
 on:
   push:
     branches:
@@ -13,7 +13,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./CBudgetCache
+        working-directory: ./CBudgetBatch
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
@@ -35,7 +35,7 @@ jobs:
         id: build-docker-image
         run: |
           ls -la 
-          docker build . -f Dockerfile -t pfeiffenrohr/cbudgetcache:latest
+          docker build . -f Dockerfile -t pfeiffenrohr/cbudgetbatch:latest
       - name: push the docker image
         id: push-docker-image
-        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/cbudgetcache:latest
+        run: docker push ${{secrets.DOCKERHUB_USERNAME}}/cbudgetbatch:latest
