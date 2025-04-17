@@ -10,7 +10,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./CBudgetBatch
+        working-directory: ./CBudgetNew
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
