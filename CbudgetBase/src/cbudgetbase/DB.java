@@ -796,7 +796,55 @@ public class DB {
 		// return summe/(float)getAnz(tag,monat,year);
 		return sum;
 	}
-	
+
+	public double getallErtragTransaktionen(Integer konto,  String startdatum, String enddatum) {
+		double sum=0.0;
+		try {debug=true;
+			PreparedStatement stmt;
+			ResultSet res = null;
+			String str_stm="select sum(wert) as summe from transaktionen where konto_id = " + konto +" and datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum +"' and name = 'Ertrag' ";
+			if (debug)System.out.println(str_stm);
+			stmt = con
+					.prepareStatement(str_stm);
+			res = stmt.executeQuery();
+			while (res.next()) {
+				sum=(res.getDouble("summe"));
+			}
+			debug=false;
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return sum;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return sum;
+	}
+	public double getallWithoutErtragTransaktionen(Integer konto,  String startdatum, String enddatum) {
+		double sum=0.0;
+		try {
+			debug=true;
+			PreparedStatement stmt;
+			ResultSet res = null;
+			String str_stm="select sum(wert) as summe from transaktionen where konto_id = " + konto +" and datum >=  '"+startdatum+"'"+" and datum <=  '"+enddatum +"' and name != 'Ertrag' ";
+			if (debug)System.out.println(str_stm);
+			stmt = con
+					.prepareStatement(str_stm);
+			res = stmt.executeQuery();
+			while (res.next()) {
+				sum=(res.getDouble("summe"));
+			}
+			debug = false;
+		} catch (SQLException e) {
+			System.err.println("Konnte Select-Anweisung nicht ausführen" + e);
+			return sum;
+		}
+		if (debug) System.out.println("Select-Anweisung ausgeführt");
+		// return summe/(float)getAnz(tag,monat,year);
+		return sum;
+	}
+
+
+
 	public Map <Integer,Double> getKategorienAlleSummeWhereAsMapPerDay(String startdatum, String enddatum,String where) {
 		double sum=0.0;
 		Map <Integer,Double >map = new HashMap<Integer, Double>();
@@ -965,7 +1013,14 @@ public class DB {
 			res = stmt.executeQuery();
 			while (res.next()) {
 				Hashtable hash = new Hashtable();
-				
+
+				Double wert = res.getDouble("wert");
+				Date datum = res.getDate("datum");
+				String mode = res.getString("mode");
+				if (wert == null || datum == null || mode == null )
+				{
+					System.out.println("!!!Datum = " + datum.toString()+ " wert = "+wert+" mode = "+mode);
+				}
 				hash.put("datum", (Date)( res.getDate("datum")));
 				hash.put("wert", new Double(res.getDouble("wert")));
 				hash.put("mode", (String) res.getString("mode"));	
