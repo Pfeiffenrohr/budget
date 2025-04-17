@@ -1,5 +1,5 @@
 ---
-name: Java CI with Maven
+name: Java CI CBudgetBatch
 on:
   push:
     branches:
