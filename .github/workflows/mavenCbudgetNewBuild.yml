@@ -1,5 +1,5 @@
 ---
-name: Java CI CbudgetNew
+name: Java CI CbudgetNew Build
 on:
   push:
     branches:
