@@ -149,7 +149,7 @@ public class Forecast {
                     //Ganz schmutzig hatcoded :>>
                      if (! isCalendarBeforeYear(calstart, 2030) && kategorie.equals("Rentenversicherung"))
                      {
-                         break;
+                         continue;
                      }
 
                     Hashtable trans = new Hashtable();
