@@ -51,7 +51,7 @@ public class Forecast {
         Calendar calTowYearBack = Calendar.getInstance();
         Calendar calThreeYearBack = Calendar.getInstance();
         Calendar calnow = Calendar.getInstance();
-        // Drei Jahre zurück rechnen
+        // Drei Jahre zurï¿½ck rechnen
         calThreeYearBack.add(Calendar.YEAR, -3);
         calTowYearBack.add(Calendar.YEAR, -2);
         calOneYearBack.add(Calendar.YEAR, -1);
@@ -82,10 +82,10 @@ public class Forecast {
                     inflationDay = inflationDay / 365;
                     inflationDay = inflationDay / 100;
                 }
-                where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + "and cycle = 0";
+                where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + " and cycle = 0";
 
                 double[][] montharry = new double[12][3];
-                //Hier machen wir das Ganze 3 Mal hintereinander für jedes Jahr. Das sollte man eigentlich besser machen.
+                //Hier machen wir das Ganze 3 Mal hintereinander fï¿½r jedes Jahr. Das sollte man eigentlich besser machen.
                 OverAllTable oat = new OverAllTable();
                 Map<Integer, Double> mapYear3 = new HashMap<>();
                 YearTable yt3 = new YearTable();
@@ -97,7 +97,6 @@ public class Forecast {
                 Calendar calmonth_end = (Calendar) calmonth_start.clone();
                 calmonth_end.add(Calendar.MONTH, 1);
                 calmonth_end.add(Calendar.DATE, -1);
-
                 for (int k = 0; k < 12; k++) {
                     montharry[getMonth(calmonth_start)][0] = db.getKategorienAlleSummeWhere(
                             formatter.format(calmonth_start.getTime()), formatter.format(calmonth_end.getTime()),
@@ -130,7 +129,6 @@ public class Forecast {
                 ;
                 Hashtable weights = db.getForecastWeihts((int) kategorie.get("id"), (int) konto.get("id"));
                 oat.gewichteWert(yt1, yt2, yt3, weights);
-
                 for (int k = 1; k < 366; k++) {
                     if (mapYear1.get(k) == null) mapYear1.put(k, 0.0);
                     if (mapYear2.get(k) == null) mapYear2.put(k, 0.0);
@@ -205,7 +203,7 @@ public class Forecast {
         return false;
     }
 
-    // Methode zum Prüfen, ob das Jahr kleiner als jahrGrenze ist
+    // Methode zum Prï¿½fen, ob das Jahr kleiner als jahrGrenze ist
     public static boolean isCalendarBeforeYear(Calendar calendar, int jahrGrenze) {
         return calendar.get(Calendar.YEAR) < jahrGrenze;
     }

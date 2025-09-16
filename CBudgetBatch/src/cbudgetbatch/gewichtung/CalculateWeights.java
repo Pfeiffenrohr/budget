@@ -3,6 +3,7 @@ package cbudgetbatch.gewichtung;
 import cbudgetbatch.DBBatch;
 import sonstiges.MyLogger;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -65,12 +66,14 @@ public class CalculateWeights {
        /* if (targetSum * targetSum< 0.001) {
             continue;
         }*/
+        Calendar calnow = Calendar.getInstance();
+        int aktYear= calnow.get(Calendar.YEAR);
         Map<Integer, Double> mapComputedAvg = new HashMap<Integer, Double>();
-        Map<Integer, Double> map2022 = maps.get(2022).getMapYear();
-        Map<Integer, Double> map2021 = maps.get(2021).getMapYear();
-        Map<Integer, Double> map2020 = maps.get(2020).getMapYear();
-        Map<Integer, Double> map2019 = maps.get(2019).getMapYear();
-        Map<Integer, Double> map2018 = maps.get(2018).getMapYear();
+        Map<Integer, Double> map2022 = maps.get(aktYear-1).getMapYear();
+        Map<Integer, Double> map2021 = maps.get(aktYear-2).getMapYear();
+        Map<Integer, Double> map2020 = maps.get(aktYear-3).getMapYear();
+        Map<Integer, Double> map2019 = maps.get(aktYear-4).getMapYear();
+        Map<Integer, Double> map2018 = maps.get(aktYear-5).getMapYear();
         /*
         Wenn drei Jahre die Summe null war, dann ist die Wahrscheinlichkeit groß,
         dass sie auch null wird
@@ -92,7 +95,7 @@ public class CalculateWeights {
                     //String str ="";
                     Double differenz[] = new Double[2];
                     Double differenzAll;
-                    for (int cycle = 2022; cycle > 2020; cycle--) {
+                    for (int cycle = aktYear-1; cycle > aktYear-3; cycle--) {
                         mapComputedAvg.clear();
                         targetSum = computeSumOfMap(maps.get(cycle).getMapYear());
                         for (int k = 0; k <= 366; k++) {
@@ -101,7 +104,7 @@ public class CalculateWeights {
                             //str = str   + map2021.get(k) +";"+map2020.get(k) +";"+ map2019.get(k)+"; "+mapComputedAvg.get(k)  + "\n";
                         }
                         Double avgSum = computeSumOfMap(mapComputedAvg);
-                        differenz[2022 - cycle] = ((avgSum - targetSum) * (avgSum - targetSum));
+                        differenz[aktYear-1 - cycle] = ((avgSum - targetSum) * (avgSum - targetSum));
                     }
                     differenzAll = sum(differenz);
                     if (differenzAll < differenzMax) {
