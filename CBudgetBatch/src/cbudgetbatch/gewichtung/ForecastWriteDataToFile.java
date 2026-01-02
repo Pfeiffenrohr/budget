@@ -61,17 +61,18 @@ public class ForecastWriteDataToFile {
 
                 Hashtable kategorie = (Hashtable) kategories.elementAt(i);
                 Hashtable konto = (Hashtable) konten.elementAt(j);
-                /*
-                if (!((String) kategorie.get("name")).equals("Einrichtung Möbel")) {
+/*
+                if (!((String) kategorie.get("name")).equals("Katzen")) {
                     continue;
                 }
 
-                if (!((String) konto.get("name")).equals("Kreditkarte Hypo")) {
+                if (!((String) konto.get("name")).equals("Consors Giro")) {
                     continue;
-                }*/
+                }
+
+ */
                 if (kategorie.get("forecast").equals(0)) {
-                    // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht
-                    // berechnet werden");
+                   // System.out.println("Kategorie "+ kategorie.get("name") + " muss nicht berechnet werden");
                     continue;
                 }
 

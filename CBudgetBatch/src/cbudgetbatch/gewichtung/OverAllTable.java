@@ -54,7 +54,7 @@ public class OverAllTable {
 	     //   System.out.println("Summe ungewichtet: " +this.summeUngewichtet);
 	        if (dayOfYear % 30 == 0)
 	        {
-	            prozentDayOfYear.put(dayOfYear, 0.833333); //Ein zwölftel des Jahres = 1/12
+	            prozentDayOfYear.put(dayOfYear, 0.0833333); //Ein zwï¿½lftel des Jahres = 1/12
 	        }
 	        else
 	        {
@@ -69,7 +69,7 @@ public class OverAllTable {
 		      prozentTag = (y1+y2+y3) / this.summeUngewichtet;
 	        }
 		/*
-		 * Es können große Ausreisser entstehen, wenn die Schwankungen nach oben und unten groß sind, 
+		 * Es kï¿½nnen groï¿½e Ausreisser entstehen, wenn die Schwankungen nach oben und unten groï¿½ sind, 
 		 * aber der Andwert klein. Deshalb werden die Prozentwerte gedeckelt:
 		 */
 		if (prozentTag > 1 ) prozentTag=1.0;
