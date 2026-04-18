@@ -38,6 +38,8 @@ import budget.HeaderFooter;
 			public void performTask(javax.servlet.http.HttpServletRequest request,
 					javax.servlet.http.HttpServletResponse response) {
 				try {
+					Double einnahmeSumme =0.0;
+					Double ausgabeSumme = 0.0;
 					//FileHandling fh = new FileHandling();
 					response.setContentType("text/html");
 					PrintWriter out = response.getWriter();
@@ -180,6 +182,7 @@ import budget.HeaderFooter;
 						if (wert_relativ !=0.0)
 						{
 						out.println("<tr>");
+						ausgabeSumme=summe;
 						out.println("<td>Alle Ausgaben</td><td>"
 								+formater(wert_relativ)+"</td><td>"
 								+formater(summe)+"</td><td>"
@@ -250,6 +253,7 @@ import budget.HeaderFooter;
 						if (wert_relativ !=0.0)
 						{
 						out.println("<tr>");
+						einnahmeSumme=summe;
 						out.println("<td>Alle Einnahmen</td><td>"
 								+formater(wert_relativ)+"</td><td>"
 								+formater(summe)+"</td><td>"
@@ -261,7 +265,9 @@ import budget.HeaderFooter;
 					out.println("</tr>");	
 					out.println("</tbody>");
 					out.println("</table>");
-					
+					out.println("<br><br>");
+					Double differenz = ausgabeSumme + einnahmeSumme;
+					out.println("Differenz der Ein und Ausgabe: " + formater(differenz));
 					
 					out.println("</body>");
 					out.println("</html>");
