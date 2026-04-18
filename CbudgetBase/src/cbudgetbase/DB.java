@@ -1988,7 +1988,7 @@ public class DB {
 			PreparedStatement stmt;
 			ResultSet res = null;
 			stmt = con
-					.prepareStatement("select id,name,beschreibung,startdate,enddate,plan_id,batch,rule_id,prio from planung where plan_id="+plan_id+ "order by name DESC");
+					.prepareStatement("select id,name,beschreibung,startdate,enddate,plan_id,batch,rule_id,prio from planung where plan_id="+plan_id+ " order by name DESC");
 			res = stmt.executeQuery();
 			while (res.next()) {
 				
