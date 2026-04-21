@@ -41,6 +41,8 @@ public class ZeigePlanung extends javax.servlet.http.HttpServlet {
         try {
             Double einnahmeSumme = 0.0;
             Double ausgabeSumme = 0.0;
+            Double einnahmeSummeGeplant = 0.0;
+            Double ausgabeSummeGeplant = 0.0;
             //FileHandling fh = new FileHandling();
             response.setContentType("text/html");
             PrintWriter out = response.getWriter();
@@ -170,6 +172,7 @@ public class ZeigePlanung extends javax.servlet.http.HttpServlet {
             if (wert_relativ != 0.0) {
                 out.println("<tr>");
                 ausgabeSumme = summe;
+                ausgabeSummeGeplant=wert_relativ;
                 out.println("<td>Alle Ausgaben</td><td>"
                         + formater(wert_relativ) + "</td><td>"
                         + formater(summe) + "</td><td>"
@@ -232,6 +235,7 @@ public class ZeigePlanung extends javax.servlet.http.HttpServlet {
             if (wert_relativ != 0.0) {
                 out.println("<tr>");
                 einnahmeSumme = summe;
+                einnahmeSummeGeplant=wert_relativ;
                 out.println("<td>Alle Einnahmen</td><td>"
                         + formater(wert_relativ) + "</td><td>"
                         + formater(summe) + "</td><td>"
@@ -244,6 +248,9 @@ public class ZeigePlanung extends javax.servlet.http.HttpServlet {
             out.println("</tbody>");
             out.println("</table>");
             out.println("<br><br>");
+            Double differenzGeplant = ausgabeSummeGeplant + einnahmeSummeGeplant;
+            out.println("Differenz der Ein und Ausgabe geplant: " + formater(differenzGeplant));
+            out.println("<br>");
             Double differenz = ausgabeSumme + einnahmeSumme;
             out.println("Differenz der Ein und Ausgabe: " + formater(differenz));
 
