@@ -17,6 +17,8 @@ public class CalculatePlanInOutHistory {
         Vector allPlanungen = db.getAllPlanungen();
         for (int j = 0; j < allPlanungen.size(); j++) {
             String plan_id = ((Hashtable) allPlanungen.elementAt(j)).get("plan_id").toString();
+            String planName = ((Hashtable) allPlanungen.elementAt(j)).get("name").toString();
+            System.out.println(" Bearbeite Plan " +  planName);
             try {
                 Double einnahmeSumme = 0.0;
                 Double ausgabeSumme = 0.0;
@@ -39,6 +41,7 @@ public class CalculatePlanInOutHistory {
                 Vector kat_ein = db.getAllKategorien("einnahme");
                 String rule_id = ((Integer) hash_plan.get("rule_id")).toString();
                 String rule;
+
                 if (rule_id.equals("-1")) {
                     //dummy
 
@@ -137,6 +140,7 @@ public class CalculatePlanInOutHistory {
                 Double differenzGeplant = ausgabeSummeGeplant + einnahmeSummeGeplant;
 
                 Double differenz = ausgabeSumme + einnahmeSumme;
+                System.out.println("Die Differenz von " +planName + " ist "+ formater(differenz));
 
             } catch (Throwable theException) {
                 theException.printStackTrace();
