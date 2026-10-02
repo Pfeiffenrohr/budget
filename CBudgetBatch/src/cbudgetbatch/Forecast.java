@@ -1,11 +1,15 @@
 package cbudgetbatch;
 
+import cbudgetbatch.evaluation.ForecastEvaluationDb;
+import cbudgetbatch.evaluation.ForecastSnapshotWriter;
+import cbudgetbatch.evaluation.Monat;
 import cbudgetbatch.gewichtung.OverAllTable;
 import cbudgetbatch.gewichtung.YearTable;
 import sonstiges.MyLogger;
 import cbudgetbatch.gewichtung.ForecastWriteDataToFile;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 
@@ -17,6 +21,31 @@ public class Forecast {
     DBBatch db = new DBBatch();
 
     private static final MyLogger logger = new MyLogger();
+
+    /**
+     * Fester Stichtag statt "jetzt", damit ein Lauf wiederholbar ist.
+     * null heisst: aktuelles Datum verwenden.
+     */
+    private Calendar basisZeit;
+
+    public void setBasisZeit(Calendar basisZeit) {
+        this.basisZeit = basisZeit == null ? null : (Calendar) basisZeit.clone();
+    }
+
+    private LocalDate heute() {
+        return basisZeit == null
+                ? LocalDate.now()
+                : LocalDate.of(basisZeit.get(Calendar.YEAR), basisZeit.get(Calendar.MONTH) + 1,
+                        basisZeit.get(Calendar.DAY_OF_MONTH));
+    }
+
+    /**
+     * Frischer Kalender auf dem Stichtag. Jeder Aufruf liefert eine eigene
+     * Instanz, weil die Aufrufer mit add() und before() weiterrechnen.
+     */
+    private Calendar stichtag() {
+        return basisZeit == null ? Calendar.getInstance() : (Calendar) basisZeit.clone();
+    }
 
     public static void main(String[] args) {
 
@@ -45,12 +74,13 @@ public class Forecast {
     }
 
     private void getAllKategoriesWithForecast(DBBatch db) {
+        long start = System.currentTimeMillis();
         logger.log("Starte Berechung Forecast ...");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calOneYearBack = Calendar.getInstance();
-        Calendar calTowYearBack = Calendar.getInstance();
-        Calendar calThreeYearBack = Calendar.getInstance();
-        Calendar calnow = Calendar.getInstance();
+        Calendar calOneYearBack = stichtag();
+        Calendar calTowYearBack = stichtag();
+        Calendar calThreeYearBack = stichtag();
+        Calendar calnow = stichtag();
         // Drei Jahre zur�ck rechnen
         calThreeYearBack.add(Calendar.YEAR, -3);
         calTowYearBack.add(Calendar.YEAR, -2);
@@ -60,6 +90,10 @@ public class Forecast {
         // Dann alle Konten
         Vector konten = db.getAllKonto();
         Hashtable settings = db.getSettings();
+        ForecastEvaluationDb evaluationDb = new ForecastEvaluationDb(db);
+        int horizont = evaluationDb.getIntSetting(ForecastSnapshotWriter.SETTING_HORIZONT,
+                ForecastSnapshotWriter.STANDARD_HORIZONT_MONATE);
+        List<ForecastEvaluationDb.SnapshotZeile> snapshotZeilen = new ArrayList<ForecastEvaluationDb.SnapshotZeile>();
         // Dann von allen Kategorien den Durchschnitt der letzten drei Jahre holen und
         // den Durchschnitt pro Monat ausrechnen.
 
@@ -83,6 +117,8 @@ public class Forecast {
                     inflationDay = inflationDay / 100;
                 }
                 where = "kategorie = " + kategorie.get("id") + " and konto_id = " + konto.get("id") + " and cycle = 0";
+                ForecastSnapshotWriter writer = new ForecastSnapshotWriter(horizont);
+                String kategorieName = (String) kategorie.get("name");
 
                 double[][] montharry = new double[12][3];
                 //Hier machen wir das Ganze 3 Mal hintereinander f�r jedes Jahr. Das sollte man eigentlich besser machen.
@@ -136,17 +172,23 @@ public class Forecast {
                     oat.computeProzentDay(k, mapYear1.get(k), mapYear2.get(k), mapYear3.get(k), yt1.getAnzOfDaysNotZero(), yt2.getAnzOfDaysNotZero(), yt3.getAnzOfDaysNotZero());
                 }
                 oat.computeDayGewichtet();
-                Calendar cal_end = Calendar.getInstance();
+Calendar cal_end = stichtag();
                 cal_end.add(Calendar.YEAR, 30);
-                Calendar calstart = Calendar.getInstance();
+                Calendar calstart = stichtag();
                 calstart.add(Calendar.DATE, 1);
                 while (calstart.before(cal_end))
                 // TODO: Hier muss evtl geschaut werde, ob ein Enddatum vorhanden ist.
 
                 {
-                    //Ganz schmutzig hatcoded :>>
-                     if (! isCalendarBeforeYear(calstart, 2030) && kategorie.equals("Rentenversicherung"))
+                    /*
+                     * Der Vergleich lief bisher nie: er verglich eine Hashtable mit
+                     * einem String und war damit immer false. Waere er je true
+                     * geworden, haette das continue ohne Tageszaehler die Schleife
+                     * endlos laufen lassen.
+                     */
+                     if (! isCalendarBeforeYear(calstart, 2030) && "Rentenversicherung".equals(kategorieName))
                      {
+                         calstart.add(Calendar.DATE, 1);
                          continue;
                      }
 
@@ -175,13 +217,50 @@ public class Forecast {
 
                     if (oat.getDayGewichtet(dayOfYear) > 0.001 || oat.getDayGewichtet(dayOfYear) < -0.001) {
                         db.insertTransaktionZycl(trans);
+                        /*
+                         * Nur tatsaechlich geschriebene Tage in den Snapshot geben.
+                         * Sonst waere der Snapshot nicht mehr die Summe der
+                         * Forecast-Zeilen und die Auswertung vergliche gegen einen
+                         * Wert, den es nie gab.
+                         */
+                        writer.addTag(LocalDate.of(calstart.get(Calendar.YEAR),
+                                calstart.get(Calendar.MONTH) + 1, calstart.get(Calendar.DAY_OF_MONTH)), myWert);
                     }
                     calstart.add(Calendar.DATE, 1);
                 }
+                snapshotZeilen.addAll(writer.zeilenFuer((int) kategorie.get("id"),
+                        (int) konto.get("id"), heute()));
                 // --------------------------Eintag in kategorien
             }
         }
+        schreibeSnapshot(evaluationDb, snapshotZeilen, start);
         logger.log("Forcast Berechnet :)");
+    }
+
+    /**
+     * Schreibt den Stand des Laufs in forecast_snapshot.
+     *
+     * Forecast hat die vorherigen Zeilen bereits geloescht. Dieser Lauf ist
+     * die letzte Moeglichkeit, sie fuer die spaetere Auswertung festzuhalten.
+     */
+    private void schreibeSnapshot(ForecastEvaluationDb evaluationDb,
+                                  List<ForecastEvaluationDb.SnapshotZeile> zeilen, long start) {
+        try {
+            String algorithmus = evaluationDb.getSetting(
+                    ForecastSnapshotWriter.SETTING_ALGORITHMUS, ForecastSnapshotWriter.STANDARD_ALGORITHMUS);
+            evaluationDb.insertSnapshots(zeilen, algorithmus, heute());
+            evaluationDb.insertSnapshotMeta(heute(), System.currentTimeMillis() - start,
+                    "ja".equals(computeWeights), algorithmus);
+            logger.log("Snapshot geschrieben: " + zeilen.size() + " Zeilen ab Monat " + Monat.from(heute()));
+        } catch (RuntimeException e) {
+            /*
+             * Der Forecast selbst liegt bereits in der Datenbank. Ein
+             * fehlgeschlagener Snapshot darf den Lauf nicht abbrechen, sonst waeren
+             * die Prognosen weg und ihre Historie gleich mit. Der Fehler wird
+             * laut gemeldet, damit er nicht wochenlang unentdeckt bleibt.
+             */
+            logger.log("FEHLER beim Schreiben des Snapshots: " + e);
+        }
     }
 
 

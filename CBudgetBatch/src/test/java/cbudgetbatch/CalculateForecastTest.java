@@ -1,4 +1,4 @@
-package test.java.cbudgetbatch;
+package cbudgetbatch;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

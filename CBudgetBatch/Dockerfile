@@ -41,6 +41,10 @@ ADD scripts/deleteOldHistoryFiles.sh /var/lib/cbudgetbatch/deleteOldHistoryFiles
 RUN chmod 777 /var/lib/cbudgetbatch/deleteOldHistoryFiles.sh
 RUN dos2unix /var/lib/cbudgetbatch/deleteOldHistoryFiles.sh
 
+ADD scripts/forecast-evaluation.sh /var/lib/cbudgetbatch/forecast-evaluation.sh
+RUN chmod 777 /var/lib/cbudgetbatch/forecast-evaluation.sh
+RUN dos2unix /var/lib/cbudgetbatch/forecast-evaluation.sh
+
 COPY lib/*.jar /var/lib/cbudgetbatch/
 COPY target/lib/*.jar /var/lib/cbudgetbatch/
 ENTRYPOINT ["/var/lib/cbudgetbatch/wrapper.sh"]

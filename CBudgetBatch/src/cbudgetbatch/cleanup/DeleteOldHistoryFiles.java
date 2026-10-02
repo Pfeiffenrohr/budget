@@ -1,6 +1,7 @@
 package cbudgetbatch.cleanup;
 
 import cbudgetbatch.DBBatch;
+import cbudgetbatch.evaluation.ForecastEvaluationDb;
 import sonstiges.MyLogger;
 
 //import budget.HeaderFooter;
@@ -49,6 +50,16 @@ public class DeleteOldHistoryFiles {
 		ThreadDeleteOldHistoryFiles deleteOldHistoryFiles = new ThreadDeleteOldHistoryFiles();
 		deleteOldHistoryFiles.setDBBatch(dbHis);
 		deleteOldHistoryFiles.start();
+		/*
+		 * forecast_snapshot waechst um etwa dreihunderttausend Zeilen pro Jahr,
+		 * weil jeder Forecast-Lauf fuer 24 rollierende Monate je Kategorie und
+		 * Konto wieder einen Stand schreibt. Ohne diesen Thread bliebe nur die
+		 * Wahl zwischen unbegrenztem Wachstum und einer festen Abschneidegrenze
+		 * im Code.
+		 */
+		DBBatch dbSnapshot = new DBBatch();
+		dbSnapshot.dataBaseConnect(user, pass, datenbank);
+		new ThreadDeleteForecastSnapshots(new ForecastEvaluationDb(dbSnapshot)).start();
 		//db.closeConnection();
     }
 }
