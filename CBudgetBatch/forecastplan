@@ -1,0 +1,43 @@
+Feature: Forecast-Genauigkeit historisch auswerten
+
+Ziel
+- Transparenz über die Prognosequalität je Jahr, Monat, Kategorie und Budget.
+- Erkennen, ob Forecasts systematisch zu hoch oder zu niedrig liegen.
+
+Benötigte Daten
+- Historische Forecast-Snapshots mit Erstellungsdatum und prognostiziertem Betrag.
+- Tatsächliche Ist-Werte für denselben Zeitraum.
+- Zuordnung zu Budget, Kategorie und optional Konto/Projekt.
+
+Berechnungen
+- Absolute Abweichung: Ist - Forecast
+- Prozentuale Abweichung: (Ist - Forecast) / Forecast * 100
+- Mittlere absolute Abweichung je Zeitraum.
+- Trefferquote innerhalb einer konfigurierbaren Toleranz, z. B. +/-5 % oder +/-10 %.
+- Bias: Durchschnittliche Über- oder Unterschätzung.
+
+Ansicht
+- Filter: Jahr, Budget, Kategorie, Forecast-Modell/Version.
+- Übersichtskarten: durchschnittliche Abweichung, Trefferquote, stärkste Über- und Unterschätzung.
+- Zeitreihe: Forecast gegen Ist pro Monat.
+- Tabelle: Zeitraum, damaliger Forecast, Ist, absolute und prozentuale Differenz.
+- Optional Heatmap: Genauigkeit nach Monat und Kategorie.
+
+Fachliche Regeln
+- Ein Forecast wird immer gegen den Stand verglichen, der vor Beginn des prognostizierten Zeitraums erstellt wurde.
+- Nachträgliche Änderungen am Forecast dürfen historische Ergebnisse nicht verfälschen.
+- Fehlende Ist-Werte werden klar markiert und nicht in Kennzahlen einbezogen.
+- Nahezu null Forecasts benötigen eine Sonderbehandlung für Prozentwerte.
+
+Technische Planung
+1. Forecast-Snapshots versioniert speichern oder aus bestehenden Historientabellen nutzen.
+2. Service/Job zur Berechnung der Abweichungen je Forecast-Snapshot und Zielperiode.
+3. Aggregierte Kennzahlen für schnelle Abfragen speichern oder bei Bedarf berechnen.
+4. API bzw. Export für Filter, Zeitreihe und Detailtabelle bereitstellen.
+5. Automatisierte Tests für Zeitpunktlogik, fehlende Ist-Werte und Prozentberechnung.
+
+Akzeptanzkriterien
+- Für ein gewähltes Jahr lassen sich Forecast und Ist monatlich vergleichen.
+- Die Auswertung verwendet den historisch korrekten Forecast-Stand.
+- Kennzahlen sind nach Budget und Kategorie filterbar.
+- Über- und Unterschätzungen sind eindeutig unterscheidbar.
